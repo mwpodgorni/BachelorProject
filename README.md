@@ -1,4 +1,4 @@
-# bachelor-project
+# Repository for JugSquare Bachelor project
 
 ## Project setup
 ```
