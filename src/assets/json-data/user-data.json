@@ -1,0 +1,47 @@
+{
+  "username": "John Wick",
+  "recentlyPlayed": [
+    {
+      "title": "Game Title",
+      "lastPlayed": "16.04.2020"
+    },
+    {
+      "title": "Game Title",
+      "lastPlayed": "16.04.2020"
+    },
+    {
+      "title": "Game Title",
+      "lastPlayed": "16.04.2020"
+    },
+    {
+      "title": "Game Title",
+      "lastPlayed": "16.04.2020"
+    },
+    {
+      "title": "Game Title",
+      "lastPlayed": "16.04.2020"
+    }
+  ],
+  "suggestions": [
+    {
+      "title": "Game ",
+      "description": "Description"
+    },
+    {
+      "title": "Game ",
+      "description": "Description"
+    },
+    {
+      "title": "Game ",
+      "description": "Description"
+    },
+    {
+      "title": "Game ",
+      "description": "Description"
+    },
+    {
+      "title": "Game ",
+      "description": "Description"
+    }
+  ]
+}
