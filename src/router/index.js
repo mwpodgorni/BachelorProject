@@ -5,6 +5,7 @@ import Register from "../views/Register";
 import Games from "../views/Games";
 import Game from "../views/Game";
 import Profile from "../views/Profile";
+import EditProfile from "../views/EditProfile";
 import store from "../store";
 Vue.use(Router);
 
@@ -30,6 +31,14 @@ const router = new Router({
       path: "/profile",
       name: "profile",
       component: Profile,
+      // meta: {
+      //   requiresAuth: true,
+      // },
+    },
+    {
+      path: "/edit-profile",
+      name: "edit-profile",
+      component: EditProfile,
       // meta: {
       //   requiresAuth: true,
       // },

@@ -1,58 +1,37 @@
 <template>
   <div id="app">
-    <nav class="main-nav">
-      <div class="logo">
-        <!-- <img src="./assets/jsq-background-logo.png" class="mx-auto" height="30px" width="30px" /> -->
-        <!-- <img
-          src="https://www.webfreecounter.com/hit.php?id=gekdkfo&nd=4&style=20"
-          border="0"
-          alt="visitor counter"
-        />-->
-      </div>
-      <Burger></Burger>
-      <b-icon
-        @click.prevent="signOut"
-        :style="isBurgerActive ? { color: 'black' } : { color: 'white' }"
-        v-if="user.loggedIn"
-        id="icon"
-        icon="box-arrow-left"
-        v-on:click="openGames"
-      ></b-icon>
-      <b-icon
-        :style="changeIconColor ? { color: 'black' } : { color: 'white' }"
-        id="icon"
-        v-if="component != 'Games' && isPanelOpen"
-        icon="arrow-left"
-        v-on:click="openGames"
-      ></b-icon>
-    </nav>
-    <b-alert
-      :show="dismissCountDown"
-      dismissible
-      @dismissed="dismissCountDown=0"
-      class="m-0"
-    >You are logged out</b-alert>
-    <Sidebar>
-      <div id="nav-buttons"></div>
-      <ul class="sidebar-panel-nav">
-        <li>
-          <img class="my-2" src="./assets/jsq2.png" height="50px" width="50px" />
-        </li>
-        <li>
-          <router-link to="games" class="nav-link sidenav-link">Games</router-link>
-        </li>
-        <li>
-          <router-link v-if="!user.loggedIn" to="login" class="nav-link sidenav-link">Login</router-link>
-        </li>
-        <li>
-          <router-link v-if="!user.loggedIn" to="register" class="nav-link sidenav-link">Register</router-link>
-        </li>
-        <li>
-          <router-link to="profile" class="nav-link sidenav-link">Profile</router-link>
-        </li>
-        <!-- <li v-on:click="openGames">Games</li> -->
-      </ul>
-    </Sidebar>
+    <b-navbar toggleable="md" type="dark" variant="dark" class="py-0">
+      <b-navbar-brand>JugSquare</b-navbar-brand>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item>
+            <router-link to="games" class="nav-link py-0 my-0">Games</router-link>
+          </b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-form>
+            <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+          </b-nav-form>
+          <b-nav-item v-if="!user.loggedIn">
+            <router-link to="login" class="nav-link py-0 my-0">Login</router-link>
+          </b-nav-item>
+          <b-nav-item v-if="!user.loggedIn">
+            <router-link to="register" class="nav-link py-0 my-0">Register</router-link>
+          </b-nav-item>
+          <b-nav-item-dropdown right v-if="user.loggedIn">
+            <template v-slot:button-content>
+              <em>User</em>
+            </template>
+            <b-dropdown-item v-on:click="openProfile">Profile</b-dropdown-item>
+            <b-dropdown-item @click.prevent="signOut" v-on:click="openGames">Sign Out</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
     <transition name="component-fade" mode="out-in">
       <router-view v-on:chooseGame="chooseGame($event)"></router-view>
       <!-- <component
@@ -144,7 +123,7 @@ export default {
         .then(() => {
           this.dismissCountDown = this.dismissSecs;
           // this.$router.replace({
-          //   name: "dashboard"
+          //   name: "dashboard",
           // });
         });
     },
@@ -161,6 +140,12 @@ export default {
       this.component = "Games";
       this.$router.push("../games");
     },
+    openEditProfile: function () {
+      this.$router.push("../edit-profile");
+    },
+    openProfile: function () {
+      this.$router.push("/profile");
+    },
   },
   mounted: function () {
     this.$nextTick(function () {
@@ -175,23 +160,6 @@ export default {
 </script>
 
 <style lang="scss">
-#icon {
-  color: white;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  z-index: 999;
-  margin-top: -2px;
-  margin-left: -4px;
-}
-#nav-buttons {
-  width: 100%;
-  height: 30px;
-  background-color: #fff;
-}
-.sidenav-link {
-  color: black;
-}
 /* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
@@ -213,10 +181,17 @@ export default {
 .component-fade-leave-active {
   transition: opacity 0.3s ease;
 }
-
 .component-fade-enter, .component-fade-leave-to
 /* .component-fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.icon {
+  color: white;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  z-index: 999;
 }
 
 #app {
@@ -225,7 +200,6 @@ export default {
 }
 html {
   height: 100%;
-  overflow: hidden;
 }
 body {
   overflow-y: hidden;
@@ -245,38 +219,5 @@ body {
   //   rgba(96, 125, 139, 1) 48%,
   //   rgb(155, 189, 206) 100%
   // );
-}
-.logo {
-  z-index: 999;
-  align-self: center;
-  color: #fff;
-  font-weight: bold;
-  font-family: "Lato";
-}
-
-.main-nav {
-  display: flex;
-  align-items: right;
-  justify-content: flex-end;
-  padding: 0.1rem 0.8rem;
-}
-
-ul.sidebar-panel-nav {
-  list-style-type: none;
-  padding: 0;
-  text-align: center;
-}
-
-ul.sidebar-panel-nav > li {
-  color: #000000;
-  text-decoration: none;
-  font-size: 1.5rem;
-  display: block;
-  cursor: pointer;
-  min-width: 100px;
-  // padding-bottom: 0.5em;style=" margin-top:5px"
-}
-li:hover {
-  background-color: #fff;
 }
 </style>

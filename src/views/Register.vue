@@ -9,7 +9,9 @@
             <div v-if="success" class="alert alert-success">Success</div>
             <form @submit.prevent="submit">
               <div class="form-group row">
-                <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+                <label for="name" class="col-md-4 col-form-label text-md-right"
+                  >Username</label
+                >
                 <div class="col-md-6">
                   <input
                     id="username"
@@ -24,7 +26,9 @@
               </div>
 
               <div class="form-group row">
-                <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
+                <label for="email" class="col-md-4 col-form-label text-md-right"
+                  >Email</label
+                >
 
                 <div class="col-md-6">
                   <input
@@ -39,7 +43,11 @@
               </div>
 
               <div class="form-group row">
-                <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                <label
+                  for="password"
+                  class="col-md-4 col-form-label text-md-right"
+                  >Password</label
+                >
 
                 <div class="col-md-6">
                   <input
@@ -56,7 +64,8 @@
                 <label
                   for="confim-password"
                   class="col-md-4 col-form-label text-md-right"
-                >Confirm Password</label>
+                  >Confirm Password</label
+                >
 
                 <div class="col-md-6">
                   <input
@@ -72,7 +81,9 @@
 
               <div class="form-group row mb-0">
                 <div class="col-md-8 offset-md-4">
-                  <button type="submit" class="btn btn-primary">Register</button>
+                  <button type="submit" class="btn btn-primary">
+                    Register
+                  </button>
                 </div>
               </div>
             </form>

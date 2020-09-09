@@ -140,8 +140,8 @@ export default {
       //   name: "dashboard"
       // });
       this.$emit("chooseGame", event);
-    }
-  }
+    },
+  },
 };
 </script>
 
