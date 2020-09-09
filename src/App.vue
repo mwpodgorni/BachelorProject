@@ -26,20 +26,23 @@
               <em>User</em>
             </template>
             <b-dropdown-item v-on:click="openProfile">Profile</b-dropdown-item>
+            <b-dropdown-item v-on:click="openChat">Messages</b-dropdown-item>
             <b-dropdown-item @click.prevent="signOut" v-on:click="openGames">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
 
-    <transition name="component-fade" mode="out-in">
-      <router-view v-on:chooseGame="chooseGame($event)"></router-view>
-      <!-- <component
+    <div id="content" class="pb-1">
+      <transition name="component-fade" mode="out-in">
+        <router-view v-on:chooseGame="chooseGame($event)"></router-view>
+        <!-- <component
         v-bind:is="component"
         v-on:chooseGame="chooseGame($event)"
         style="margin-top:-33px;"
-      ></component>-->
-    </transition>
+        ></component>-->
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -146,6 +149,9 @@ export default {
     openProfile: function () {
       this.$router.push("/profile");
     },
+    openChat: function () {
+      this.$router.push("/messages");
+    },
   },
   mounted: function () {
     this.$nextTick(function () {
@@ -194,30 +200,47 @@ export default {
   z-index: 999;
 }
 
-#app {
-  width: 100%;
-  height: 100%;
-}
-html {
-  height: 100%;
-}
+html,
 body {
-  overflow-y: hidden;
-  overflow-x: hidden;
-  border: 0;
+  overflow: hidden;
   margin: 0;
-  padding: 0;
-  font-family: "Lato";
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
-  // background: linear-gradient(
-  //   45deg,
-  //   rgb(75, 96, 107) 0%,
-  //   rgba(96, 125, 139, 1) 48%,
-  //   rgb(155, 189, 206) 100%
-  // );
 }
+#app {
+  height: 100vh;
+  width: 100vw;
+}
+#content {
+  height: 95%;
+  overflow-y: auto;
+}
+
+// #app {
+//   width: 100%;
+//   height: 100%;
+// }
+// #content {
+//   height: 100%;
+//   overflow-y: auto;
+// }
+// html {
+//   height: 100%;
+// }
+// body {
+//   overflow: hidden;
+//   border: 0;
+//   margin: 0;
+//   padding: 0;
+//   font-family: "Lato";
+//   height: 100%;
+//   justify-content: center;
+//   align-items: center;
+//   margin: 0;
+//   background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+//   // background: linear-gradient(
+//   //   45deg,
+//   //   rgb(75, 96, 107) 0%,
+//   //   rgba(96, 125, 139, 1) 48%,
+//   //   rgb(155, 189, 206) 100%
+//   // );
+// }
 </style>

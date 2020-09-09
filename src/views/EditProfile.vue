@@ -1,26 +1,27 @@
 <template>
-  <b-container id="wrapper" class="p-5">
-    <b-row class="py-2">
-      <b-col>
-        <h1>Edit Profile</h1>
-      </b-col>
-    </b-row>
-    <b-row class="py-2">
-      <b-col>
+  <div class="container">
+    <div class="row" id="header">
+      <div class="col">
+        <h1 class="my-3">Edit Profile</h1>
+      </div>
+      <div class="col-2 my-auto d-flex justify-content-end">
+        <router-link to="profile">
+          <b-icon class="icon mr-1" icon="arrow-left"></b-icon>
+        </router-link>
+      </div>
+    </div>
+    <div class="row" id="current-password">
+      <div class="col my-3">
         <b-form-group
           class="mb-0"
-          label="To make any changes enter your current password:"
+          label="To make any changes enter your current password before submitting:"
         >
-          <b-form-input
-            id="input-formatter"
-            v-model="text1"
-            placeholder="Enter password"
-          ></b-form-input>
+          <b-form-input id="input-formatter" v-model="text1" placeholder="Enter password"></b-form-input>
         </b-form-group>
-      </b-col>
-    </b-row>
-    <b-row class="py-3">
-      <b-col>
+      </div>
+    </div>
+    <div class="row" id="form">
+      <div class="col my-3">
         <b-form-group
           label-cols-sm="3"
           label="Username:"
@@ -30,12 +31,7 @@
           <b-form-input id="username"></b-form-input>
         </b-form-group>
 
-        <b-form-group
-          label-cols-sm="3"
-          label="Email:"
-          label-align-sm="right"
-          label-for="email"
-        >
+        <b-form-group label-cols-sm="3" label="Email:" label-align-sm="right" label-for="email">
           <b-form-input id="email"></b-form-input>
         </b-form-group>
 
@@ -55,22 +51,29 @@
           label-for="confirm-password"
         >
           <b-form-input id="confirm-password"></b-form-input>
+          <b-button variant="secondary" class="mt-2">Save</b-button>
+          <b-button variant="danger" class="mt-2 float-right">Delete Account</b-button>
         </b-form-group>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col offset="3"><b-button variant="primary">Save</b-button></b-col>
-      <b-col><b-button variant="danger">Delete Account</b-button></b-col>
-    </b-row>
-  </b-container>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 export default {};
 </script>
 <style>
-#wrapper {
-  height: 100%;
-  background-color: #343a40;
+.container {
+  min-height: 100%;
+  height: auto;
+  background-color: #595858;
+}
+.container * {
   color: white;
+}
+/* #header,
+#form {
+} */
+#current-password {
+  background-color: #949292;
 }
 </style>

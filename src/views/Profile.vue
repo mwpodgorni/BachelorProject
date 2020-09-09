@@ -4,9 +4,9 @@
       <div class="col">
         <h1 class="my-3">{{ userData.username }}</h1>
       </div>
-      <div class="col-2 my-auto justify-content-end">
+      <div class="col-2 my-auto d-flex justify-content-end">
         <router-link to="edit-profile">
-          <b-icon class="icon" icon="pencil-square"></b-icon>
+          <b-icon class="icon mr-1" icon="pencil-square"></b-icon>
         </router-link>
       </div>
     </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="row">
           <div class="col text-center px-0" style="height: 100%">
-            <div style="height: 100vh">
+            <div>
               <ul class="hs full">
                 <li class="item">test</li>
                 <li class="item">test</li>
@@ -135,19 +135,20 @@ export default {
 .container {
   height: 100%;
 }
+.container * {
+  color: white;
+}
 #username-row,
 #recentlyPlayed-item {
   background-color: #595858;
-  color: white;
 }
 #recentlyPlayed-row,
 #suggestions-row {
   background-color: #949292;
-  color: white;
 }
 #recentlyPlayed-list {
   overflow: auto;
-  height: 300px;
+  height: 290px;
 }
 
 :root {

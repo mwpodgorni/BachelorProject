@@ -6,6 +6,7 @@ import Games from "../views/Games";
 import Game from "../views/Game";
 import Profile from "../views/Profile";
 import EditProfile from "../views/EditProfile";
+import Chat from "../views/Chat";
 import store from "../store";
 Vue.use(Router);
 
@@ -39,9 +40,11 @@ const router = new Router({
       path: "/edit-profile",
       name: "edit-profile",
       component: EditProfile,
-      // meta: {
-      //   requiresAuth: true,
-      // },
+    },
+    {
+      path: "/messages",
+      name: "messages",
+      component: Chat,
     },
     {
       path: "/login",
