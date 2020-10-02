@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Login from "../views/Login";
 import Register from "../views/Register";
+import ForgotPassword from "../views/ForgotPassword";
 import Games from "../views/Games";
 import Game from "../views/Game";
 import Profile from "../views/Profile";
@@ -32,9 +33,9 @@ const router = new Router({
       path: "/profile",
       name: "profile",
       component: Profile,
-      // meta: {
-      //   requiresAuth: true,
-      // },
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/edit-profile",
@@ -50,12 +51,22 @@ const router = new Router({
       path: "/login",
       name: "login",
       component: Login,
+      meta: {
+        disableIfLoggedIn: true,
+      },
     },
-
     {
       path: "/register",
-      name: "Register",
+      name: "register",
       component: Register,
+      meta: {
+        disableIfLoggedIn: true,
+      },
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: ForgotPassword,
     },
   ],
 });
@@ -65,6 +76,17 @@ router.beforeEach((to, from, next) => {
     // if not, redirect to login page.
     if (!store.getters.user.loggedIn) {
       next({ name: "login" });
+    } else {
+      next(); // go to wherever I'm going
+    }
+  } else {
+    next(); // does not require auth, make sure to always call next()!
+  }
+  if (to.matched.some((record) => record.meta.disableIfLoggedIn)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (store.getters.user.loggedIn) {
+      next({ name: "profile" });
     } else {
       next(); // go to wherever I'm going
     }

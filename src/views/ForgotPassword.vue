@@ -3,10 +3,13 @@
     <div class="row justify-content-center h-100">
       <div class="col-md-8">
         <div class="card text-white bg-dark mt-5">
-          <div class="card-header">Login</div>
+          <div class="card-header">Reset Password</div>
           <div class="card-body">
+            <div v-if="success" class="alert alert-success">
+              {{ success }}
+            </div>
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
-            <form @submit.prevent="login">
+            <form @submit.prevent="forgetPassword">
               <div class="form-group row">
                 <div class="col">
                   <input
@@ -20,38 +23,23 @@
                   />
                 </div>
               </div>
-              <div class="form-group row">
-                <div class="col">
-                  <input
-                    id="password"
-                    type="password"
-                    placeholder="Password"
-                    class="form-control"
-                    name="password"
-                    required
-                    v-model="user.password"
-                  />
-                </div>
-              </div>
+
               <div class="form-group row">
                 <div class="col">
                   <button class="btn btn-outline-light btn-block">
-                    Login
+                    Reset Password
                   </button>
                 </div>
               </div>
               <div class="form-group row my-0 py-0">
                 <div class="col-6 text-center">
-                  <router-link to="register" class="my-0 py-0" id="login-link"
-                    >Create new account</router-link
+                  <router-link to="login" class="my-0 py-0" id="login-link"
+                    >Login</router-link
                   >
                 </div>
                 <div class="col-6 text-center">
-                  <router-link
-                    to="forgot-password"
-                    class="my-0 py-0"
-                    id="login-link"
-                    >Forgot password</router-link
+                  <router-link to="register" class="my-0 py-0" id="login-link"
+                    >Create new account</router-link
                   >
                 </div>
               </div>
@@ -67,24 +55,25 @@
 import firebase from "firebase";
 
 export default {
-  name: "Login",
   data() {
     return {
       user: {
         email: "",
-        password: "",
       },
       error: null,
+      success: null,
     };
   },
   methods: {
-    login() {
+    forgetPassword() {
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.user.email, this.user.password)
-        .then((user) => {
-          this.$store.dispatch("fetchUser", user.user);
-          this.$router.replace({ name: "profile" });
+        .sendPasswordResetEmail(this.user.email)
+        .then(() => {
+          this.success = "Check your registered email to reset the password.";
+          this.user = {
+            email: "",
+          };
         })
         .catch((error) => {
           this.error = error.message;

@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container" id="profile">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-3">{{ userData.username }}</h1>
+        <h1 class="my-3">{{ user.data.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
         <router-link to="edit-profile">
@@ -32,7 +32,9 @@
                       <div class="col m-0 p-0">{{ item.title }}</div>
                     </div>
                     <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">Last played on {{ item.lastPlayed }}</div>
+                      <div class="col m-0 p-0">
+                        Last played on {{ item.lastPlayed }}
+                      </div>
                     </div>
                   </div>
                   <div class="col-3 my-auto">
@@ -55,16 +57,91 @@
           </div>
         </div>
         <div class="row">
-          <div class="col text-center px-0" style="height: 100%">
+          <div class="col text-center py-4 px-0" style="height: 100%">
             <div>
-              <ul class="hs full">
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-              </ul>
+              <div
+                id="carouselExampleIndicators"
+                class="carousel slide"
+                data-ride="carousel"
+              >
+                <ol class="carousel-indicators">
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="0"
+                    class="active"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="1"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="2"
+                  ></li>
+                </ol>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img
+                      style="height:200px"
+                      class="d-block mx-auto img-fluid"
+                      src="./../assets/jsq.png"
+                      alt="First slide"
+                    />
+                    <div class="carousel-caption d-md-block">
+                      <h5>Game Title</h5>
+                      <p>Very descriptive game description</p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <img
+                      style="height:200px"
+                      class="d-block mx-auto img-fluid"
+                      src="./../assets/jsq.png"
+                      alt="Second slide"
+                    />
+                    <div class="carousel-caption  d-md-block">
+                      <h5>Game Title</h5>
+                      <p>Very descriptive game description</p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <img
+                      style="height:200px"
+                      class="d-block mx-auto img-fluid"
+                      src="./../assets/jsq.png"
+                      alt="Third slide"
+                    />
+                    <div class="carousel-caption  d-md-block">
+                      <h5>Game Title</h5>
+                      <p>Very descriptive game description</p>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  class="carousel-control-prev"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a
+                  class="carousel-control-next"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -111,18 +188,7 @@ export default {
       userData: userData,
     };
   },
-  methods: {
-    signOut() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          // this.$router.replace({
-          //   name: "dashboard"
-          // });
-        });
-    },
-  },
+  methods: {},
   computed: {
     // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
@@ -133,9 +199,12 @@ export default {
 </script>
 <style>
 .container {
+  display: flex;
+  flex-flow: column;
   height: 100%;
+  /* overflow-y: hidden; */
 }
-.container * {
+#profile * {
   color: white;
 }
 #username-row,
@@ -144,14 +213,16 @@ export default {
 }
 #recentlyPlayed-row,
 #suggestions-row {
-  background-color: #949292;
+  background-color: #32383e;
 }
 #recentlyPlayed-list {
   overflow: auto;
-  height: 290px;
+  height: 265px;
+  /* height: 50%; */
 }
-
-:root {
+#suggestions-row {
+}
+/* :root {
   --gutter: 20px;
 }
 
@@ -191,5 +262,5 @@ ul {
   background: #fff;
   border-radius: 8px;
   height: 190px;
-}
+} */
 </style>

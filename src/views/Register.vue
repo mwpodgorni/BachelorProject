@@ -1,89 +1,78 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
+  <div class="container h-100">
+    <div class="row justify-content-center h-100">
       <div class="col-md-8">
-        <div class="card">
+        <div class="card text-white bg-dark mt-5">
           <div class="card-header">Register</div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
-            <div v-if="success" class="alert alert-success">Success</div>
-            <form @submit.prevent="submit">
+            <form @submit.prevent="register">
               <div class="form-group row">
-                <label for="name" class="col-md-4 col-form-label text-md-right"
-                  >Username</label
-                >
-                <div class="col-md-6">
+                <div class="col">
                   <input
                     id="username"
                     type="text"
+                    placeholder="Username"
                     class="form-control"
                     name="username"
                     required
                     autofocus
-                    v-model="registration.username"
+                    v-model="user.username"
                   />
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="email" class="col-md-4 col-form-label text-md-right"
-                  >Email</label
-                >
-
-                <div class="col-md-6">
+                <div class="col">
                   <input
                     id="email"
                     type="email"
+                    placeholder="Email"
                     class="form-control"
                     name="email"
                     required
-                    v-model="registration.email"
+                    v-model="user.email"
                   />
                 </div>
               </div>
-
               <div class="form-group row">
-                <label
-                  for="password"
-                  class="col-md-4 col-form-label text-md-right"
-                  >Password</label
-                >
-
-                <div class="col-md-6">
+                <div class="col">
                   <input
                     id="password"
-                    type="text"
+                    type="password"
+                    placeholder="Password"
                     class="form-control"
                     name="password"
                     required
-                    v-model="registration.password"
+                    v-model="user.password"
                   />
                 </div>
               </div>
               <div class="form-group row">
-                <label
-                  for="confim-password"
-                  class="col-md-4 col-form-label text-md-right"
-                  >Confirm Password</label
-                >
-
-                <div class="col-md-6">
+                <div class="col">
                   <input
                     id="confirm-password"
-                    type="text"
+                    type="password"
+                    placeholder="Confirm Password"
                     class="form-control"
                     name="confirm-password"
                     required
-                    v-model="registration.confirmPassword"
+                    v-model="user.confirmPassword"
                   />
                 </div>
               </div>
-
-              <div class="form-group row mb-0">
-                <div class="col-md-8 offset-md-4">
-                  <button type="submit" class="btn btn-primary">
+              <div class="form-group row">
+                <div class="col">
+                  <button class="btn btn-outline-light btn-block">
                     Register
                   </button>
+                </div>
+              </div>
+              <div class="form-group row my-0 py-0">
+                <div class="col text-center">
+                  <router-link to="login" class="my-0 py-0" id="login-link"
+                    >Log in to your account</router-link
+                  >
                 </div>
               </div>
             </form>
@@ -98,38 +87,45 @@
 import firebase from "firebase";
 
 export default {
+  name: "Register",
   data() {
     return {
-      registration: {
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
+      user: { username: "", email: "", password: "", confirmPassword: "" },
       error: null,
-      success: null,
     };
   },
   methods: {
-    submit() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(
-          this.registration.email,
-          this.registration.password
-        )
-        .then((data) => {
-          this.success = true;
-          data.user
-            .updateProfile({
-              displayName: this.registration.username,
-            })
-            .then(() => {});
-        })
-        .catch((err) => {
-          this.error = err.message;
-        });
+    register() {
+      if (this.user.password == this.user.confirmPassword) {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.user.email, this.user.password)
+          .then((res) => {
+            res.user
+              .updateProfile({
+                displayName: this.user.username,
+              })
+              .then(() => {
+                this.$router.push("/login");
+              });
+          })
+          .catch((error) => {
+            this.error = error.message;
+            console.log("err", error);
+          });
+      } else {
+        this.error = "Password and Password confirmation don't match.";
+      }
     },
   },
 };
 </script>
+<style>
+#login-link {
+  color: #aaaaaa;
+  text-decoration: none;
+}
+#login-link:hover {
+  color: white;
+}
+</style>

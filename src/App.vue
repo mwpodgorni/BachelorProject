@@ -1,33 +1,69 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="md" type="dark" variant="dark" class="py-0">
+    <b-navbar
+      id="navbar"
+      toggleable="md"
+      type="dark"
+      variant="dark"
+      class="py-0"
+    >
       <b-navbar-brand>JugSquare</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="games" class="nav-link py-0 my-0">Games</router-link>
+            <router-link to="games" class="nav-link py-0 my-0"
+              >Games</router-link
+            >
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
-            <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+            <b-form-input
+              size="sm"
+              class="mr-sm-2"
+              placeholder="Search"
+            ></b-form-input>
+            <b-button
+              variant="outline-light"
+              size="sm"
+              class="my-2 my-sm-0"
+              type="submit"
+              >Search</b-button
+            >
           </b-nav-form>
+
           <b-nav-item v-if="!user.loggedIn">
-            <router-link to="login" class="nav-link py-0 my-0">Login</router-link>
+            <router-link to="login" class="nav-link p-0 ml-2 m-0"
+              >Login</router-link
+            >
           </b-nav-item>
           <b-nav-item v-if="!user.loggedIn">
-            <router-link to="register" class="nav-link py-0 my-0">Register</router-link>
+            <router-link to="register" class="nav-link p-0 m-0"
+              >Register</router-link
+            >
           </b-nav-item>
           <b-nav-item-dropdown right v-if="user.loggedIn">
             <template v-slot:button-content>
               <em>User</em>
             </template>
-            <b-dropdown-item v-on:click="openProfile">Profile</b-dropdown-item>
-            <b-dropdown-item v-on:click="openChat">Messages</b-dropdown-item>
-            <b-dropdown-item @click.prevent="signOut" v-on:click="openGames">Sign Out</b-dropdown-item>
+            <b-dropdown-item variant="dark"
+              ><router-link to="profile" class="account-link p-0 m-0"
+                >Profile</router-link
+              ></b-dropdown-item
+            >
+            <b-dropdown-item
+              ><router-link to="messages" class="account-link p-0 m-0"
+                >Messages</router-link
+              ></b-dropdown-item
+            >
+            <b-dropdown-item
+              variant="dark"
+              @click.prevent="signOut"
+              class="account-link"
+              >Sign Out</b-dropdown-item
+            >
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -60,8 +96,6 @@ import SquareSlingshot from "@/components/games/10-square_slingshot/SquareSlings
 import DrawRoad from "@/components/games/11-draw_road/DrawRoad";
 import SquareSnake from "@/components/games/12-square_snake/SquareSnake";
 import Games from "@/views/Games";
-import Burger from "./components/Menu/Burger.vue";
-import Sidebar from "./components/Menu/Sidebar.vue";
 // import { store, mutations } from "@/store.js";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
@@ -80,8 +114,6 @@ export default {
     SquareSlingshot,
     DrawRoad,
     SquareSnake,
-    Burger,
-    Sidebar,
     Games,
   },
   data() {
@@ -90,7 +122,7 @@ export default {
       backgroud: [
         "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
         "linear-gradient(to right, #434343 0%, black 100%)",
-        "linear-gradient(to top, #09203f 0%, #537895 100%)",
+        "linear-gradient(to bottom, #09203f 0%, #537895 100%)",
       ],
       changeIconColor: false,
       dismissSecs: 5,
@@ -98,25 +130,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      isBurgerActive: "isNavOpen",
-    }),
-    ...mapGetters({
-      isNavOpen: "isNavOpen",
-    }), // map `this.user` to `this.$store.getters.user`
+    // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
       user: "user",
     }),
-    isPanelOpen() {
-      if (this.isNavOpen) {
-        this.changeIconColor = true;
-        // document.getElementById("icon").color = "black";
-      } else {
-        this.changeIconColor = false;
-        // document.getElementById("icon").color = "white";
-      }
-      return true;
-    },
   },
   methods: {
     signOut() {
@@ -125,17 +142,19 @@ export default {
         .signOut()
         .then(() => {
           this.dismissCountDown = this.dismissSecs;
+          this.$store.dispatch("logout");
+          this.openGames();
           // this.$router.replace({
           //   name: "dashboard",
           // });
         });
     },
-    chooseGame: function (game) {
+    chooseGame: function(game) {
       console.log("game app", game);
       this.component = game;
       document.body.style.background = "#007267";
     },
-    openGames: function () {
+    openGames: function() {
       if (this.component != "Games") {
         document.body.style.background = this.backgroud[0];
         // Math.floor(Math.random() * 3)
@@ -143,22 +162,16 @@ export default {
       this.component = "Games";
       this.$router.push("../games");
     },
-    openEditProfile: function () {
+    openEditProfile: function() {
       this.$router.push("../edit-profile");
     },
-    openProfile: function () {
-      this.$router.push("/profile");
-    },
-    openChat: function () {
-      this.$router.push("/messages");
-    },
   },
-  mounted: function () {
-    this.$nextTick(function () {
+  mounted: function() {
+    this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
-
-      document.body.style.background = this.backgroud[0];
+      // document.body.style.background = this.backgroud[2];
+      document.body.style.background = this.backgroud[2];
       // Math.floor(Math.random() * 3)
     });
   },
@@ -211,7 +224,17 @@ body {
 }
 #content {
   height: 95%;
+
   overflow-y: auto;
+}
+.account-link,
+.account-link:hover {
+  text-decoration: none;
+  color: #272a2b !important;
+  // background-color: #272a2b !important;
+}
+#navbar {
+  background-color: #32383e !important;
 }
 
 // #app {
@@ -236,11 +259,11 @@ body {
 //   align-items: center;
 //   margin: 0;
 //   background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
-//   // background: linear-gradient(
-//   //   45deg,
-//   //   rgb(75, 96, 107) 0%,
-//   //   rgba(96, 125, 139, 1) 48%,
-//   //   rgb(155, 189, 206) 100%
-//   // );
+// background: linear-gradient(
+//   45deg,
+//   rgb(75, 96, 107) 0%,
+//   rgba(96, 125, 139, 1) 48%,
+//   rgb(155, 189, 206) 100%
+// );
 // }
 </style>

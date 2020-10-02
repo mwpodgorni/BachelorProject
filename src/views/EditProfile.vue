@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" id="edit-profile">
     <div class="row" id="header">
       <div class="col">
         <h1 class="my-3">Edit Profile</h1>
@@ -16,7 +16,11 @@
           class="mb-0"
           label="To make any changes enter your current password before submitting:"
         >
-          <b-form-input id="input-formatter" v-model="text1" placeholder="Enter password"></b-form-input>
+          <b-form-input
+            id="input-formatter"
+            v-model="text1"
+            placeholder="Enter password"
+          ></b-form-input>
         </b-form-group>
       </div>
     </div>
@@ -31,7 +35,12 @@
           <b-form-input id="username"></b-form-input>
         </b-form-group>
 
-        <b-form-group label-cols-sm="3" label="Email:" label-align-sm="right" label-for="email">
+        <b-form-group
+          label-cols-sm="3"
+          label="Email:"
+          label-align-sm="right"
+          label-for="email"
+        >
           <b-form-input id="email"></b-form-input>
         </b-form-group>
 
@@ -52,7 +61,9 @@
         >
           <b-form-input id="confirm-password"></b-form-input>
           <b-button variant="secondary" class="mt-2">Save</b-button>
-          <b-button variant="danger" class="mt-2 float-right">Delete Account</b-button>
+          <b-button variant="danger" class="mt-2 float-right"
+            >Delete Account</b-button
+          >
         </b-form-group>
       </div>
     </div>
@@ -62,13 +73,16 @@
 export default {};
 </script>
 <style>
+#edit-profile * {
+  color: white;
+}
 .container {
-  min-height: 100%;
+  /* min-height: 100%; */
   height: auto;
-  background-color: #595858;
+  background-color: #32383e;
 }
 .container * {
-  color: white;
+  /* color: white; */
 }
 /* #header,
 #form {

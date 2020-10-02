@@ -3,7 +3,7 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import { defineCustomElements as defineIonPhaser } from "@ion-phaser/core/loader";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,23 +16,28 @@ Vue.use(BootstrapVueIcons);
 
 defineIonPhaser(window);
 
-const firebaseConfigOptions = {
-  apiKey: "AIzaSyBbguNA-JpLCNM1z9zZid3UYuvrbFoKAUY",
-  authDomain: "vue-firebase-auth-c1ff6.firebaseapp.com",
-  databaseURL: "https://vue-firebase-auth-c1ff6.firebaseio.com",
-  projectId: "vue-firebase-auth-c1ff6",
-  storageBucket: "vue-firebase-auth-c1ff6.appspot.com",
-  messagingSenderId: "589725106771",
-  appId: "1:589725106771:web:512498f0aa8fe68c94bca6",
-};
-firebase.initializeApp(firebaseConfigOptions);
-
-firebase.auth().onAuthStateChanged((user) => {
-  store.dispatch("fetchUser", user);
+firebase.initializeApp({
+  apiKey: "AIzaSyBqPvdfLKfnm_-9K6t-cRwu_35jzova9fU",
+  authDomain: "jugsquare-1.firebaseapp.com",
+  databaseURL: "https://jugsquare-1.firebaseio.com",
+  projectId: "jugsquare-1",
+  storageBucket: "jugsquare-1.appspot.com",
+  messagingSenderId: "15561258022",
+  appId: "1:15561258022:web:7e864062a9d3324530e2e7",
+  measurementId: "G-YWP9QLLEGV",
 });
-
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+let app;
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    store.dispatch("fetchUser", user);
+  } else {
+    store.dispatch("logout");
+  }
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      render: (h) => h(App),
+    }).$mount("#app");
+  }
+});
