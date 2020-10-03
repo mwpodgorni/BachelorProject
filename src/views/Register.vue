@@ -106,7 +106,13 @@ export default {
                 displayName: this.user.username,
               })
               .then(() => {
-                this.$router.push("/login");
+                db.collection("users").doc(res.user.uid).set({
+                  recentlyPlayed: [],
+                  suggestions: [],
+                  friends: [],
+                });
+                this.$store.dispatch("fetchUser", res.user);
+                this.$router.push("/profile");
               });
           })
           .catch((error) => {
@@ -114,7 +120,7 @@ export default {
             console.log("err", error);
           });
       } else {
-        this.error = "Password and Password confirmation don't match.";
+        this.error = "Password and password confirmation don't match.";
       }
     },
   },

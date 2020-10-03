@@ -14,16 +14,26 @@
       <div class="col">
         <div class="row">
           <div class="col text-center">
-            <h3 class="mx-auto my-2">Recently Played</h3>
+            <h3 class="mx-auto my-2" @click.prevent="check">Recently Played</h3>
           </div>
         </div>
         <div class="row">
           <div class="col px-0">
-            <b-list-group id="recentlyPlayed-list">
+            <div
+              class="text-center w-100 h-100 py-5"
+              id="no-activity"
+              v-if="!user.data.recentlyPlayed.length"
+            >
+              <h4>No recent activity</h4>
+            </div>
+            <b-list-group
+              id="recentlyPlayed-list"
+              v-if="user.data.recentlyPlayed.length"
+            >
               <b-list-group-item
                 variant="dark"
                 class="px-1"
-                v-for="item in userData.recentlyPlayed"
+                v-for="item in user.data.recentlyPlayed"
                 :key="item.title"
               >
                 <div class="row mx-0" id="recentlyPlayed-item">
@@ -33,7 +43,10 @@
                     </div>
                     <div class="row m-0 p-0">
                       <div class="col m-0 p-0">
-                        Last played on {{ item.lastPlayed }}
+                        Last played on:
+                        {{
+                          item.lastPlayed.toDate().toLocaleDateString("en-US")
+                        }}
                       </div>
                     </div>
                   </div>
@@ -82,7 +95,7 @@
                 <div class="carousel-inner">
                   <div class="carousel-item active">
                     <img
-                      style="height:200px"
+                      style="height: 200px"
                       class="d-block mx-auto img-fluid"
                       src="./../assets/jsq.png"
                       alt="First slide"
@@ -94,24 +107,24 @@
                   </div>
                   <div class="carousel-item">
                     <img
-                      style="height:200px"
+                      style="height: 200px"
                       class="d-block mx-auto img-fluid"
                       src="./../assets/jsq.png"
                       alt="Second slide"
                     />
-                    <div class="carousel-caption  d-md-block">
+                    <div class="carousel-caption d-md-block">
                       <h5>Game Title</h5>
                       <p>Very descriptive game description</p>
                     </div>
                   </div>
                   <div class="carousel-item">
                     <img
-                      style="height:200px"
+                      style="height: 200px"
                       class="d-block mx-auto img-fluid"
                       src="./../assets/jsq.png"
                       alt="Third slide"
                     />
-                    <div class="carousel-caption  d-md-block">
+                    <div class="carousel-caption d-md-block">
                       <h5>Game Title</h5>
                       <p>Very descriptive game description</p>
                     </div>
@@ -147,34 +160,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">Dashboard</div>
-          <div class="card-body">
-            <div
-              v-if="!user.loggedIn"
-              class="alert alert-secondary"
-              role="alert"
-            >You are not logged in.</div>
-            <div
-              v-if="user.loggedIn"
-              class="alert alert-success"
-              role="alert"
-            >You are logged in {{ }}!</div>
-            <button
-              v-if="user.loggedIn"
-              type="button"
-              class="btn btn-secondary"
-              @click.prevent="signOut"
-            >Sign Out</button>
-            <router-link to="login" class="nav-link">
-              <button v-if="!user.loggedIn" type="button" class="btn btn-success">Log In</button>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 <script>
@@ -188,7 +173,11 @@ export default {
       userData: userData,
     };
   },
-  methods: {},
+  methods: {
+    check() {
+      console.log(this.user.data);
+    },
+  },
   computed: {
     // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
@@ -209,11 +198,14 @@ export default {
 }
 #username-row,
 #recentlyPlayed-item {
-  background-color: #595858;
+  background-color: #636a70;
 }
 #recentlyPlayed-row,
 #suggestions-row {
   background-color: #32383e;
+}
+#no-activity {
+  background-color: #636a70;
 }
 #recentlyPlayed-list {
   overflow: auto;
@@ -222,6 +214,7 @@ export default {
 }
 #suggestions-row {
 }
+
 /* :root {
   --gutter: 20px;
 }

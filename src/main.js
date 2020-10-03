@@ -16,6 +16,9 @@ Vue.use(BootstrapVueIcons);
 
 defineIonPhaser(window);
 
+//required for side-effects
+require("firebase/firestore");
+
 firebase.initializeApp({
   apiKey: "AIzaSyBqPvdfLKfnm_-9K6t-cRwu_35jzova9fU",
   authDomain: "jugsquare-1.firebaseapp.com",
@@ -26,10 +29,19 @@ firebase.initializeApp({
   appId: "1:15561258022:web:7e864062a9d3324530e2e7",
   measurementId: "G-YWP9QLLEGV",
 });
+//Initialize Cloud Firestore trhough Firebase
+var db = firebase.firestore();
+//Disable deprecated features
+window.db = db;
+// firebase.analytics();
 let app;
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
+    // console.log("user", user);
+    // console.log("nme", user.displayName);
+    // console.log("email", user.email);
     store.dispatch("fetchUser", user);
+    store.dispatch("fetchUserData", user);
   } else {
     store.dispatch("logout");
   }
