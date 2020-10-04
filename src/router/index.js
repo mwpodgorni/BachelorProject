@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Login from "../views/Login";
 import Register from "../views/Register";
 import ForgotPassword from "../views/ForgotPassword";
+import SearchResults from "../views/SearchResults";
 import Games from "../views/Games";
 import Game from "../views/Game";
 import Profile from "../views/Profile";
@@ -30,6 +31,11 @@ const router = new Router({
       component: Game,
     },
     {
+      path: "/search",
+      name: "search",
+      component: SearchResults,
+    },
+    {
       path: "/profile",
       name: "profile",
       component: Profile,
@@ -41,11 +47,17 @@ const router = new Router({
       path: "/edit-profile",
       name: "edit-profile",
       component: EditProfile,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/messages",
       name: "messages",
       component: Chat,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: "/login",
@@ -71,7 +83,7 @@ const router = new Router({
   ],
 });
 router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
+  if (to.meta.requiresAuth) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     if (!store.getters.user.loggedIn) {
@@ -82,7 +94,7 @@ router.beforeEach((to, from, next) => {
   } else {
     next(); // does not require auth, make sure to always call next()!
   }
-  if (to.matched.some((record) => record.meta.disableIfLoggedIn)) {
+  if (to.meta.disableIfLoggedIn) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     if (store.getters.user.loggedIn) {

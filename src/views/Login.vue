@@ -81,8 +81,8 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.user.email, this.user.password)
         .then((user) => {
-          // this.$store.dispatch("fetchUser", user.user);
-          // this.$store.dispatch("fetchUserData", user.user);
+          this.$store.dispatch("fetchUser", user.user);
+          this.$store.dispatch("fetchUserData", user.user);
           this.$router.replace({ name: "profile" });
         })
         .catch((error) => {

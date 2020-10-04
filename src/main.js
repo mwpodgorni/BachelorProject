@@ -5,9 +5,9 @@ import router from "./router";
 import store from "./store";
 import firebase from "firebase";
 import { defineCustomElements as defineIonPhaser } from "@ion-phaser/core/loader";
+import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
@@ -36,6 +36,7 @@ window.db = db;
 // firebase.analytics();
 let app;
 firebase.auth().onAuthStateChanged((user) => {
+  console.log("authentication");
   if (user) {
     // console.log("user", user);
     // console.log("nme", user.displayName);

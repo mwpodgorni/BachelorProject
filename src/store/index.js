@@ -9,7 +9,7 @@ export default new Vuex.Store({
       userId: null,
       loggedIn: false,
       data: {
-        username: null,
+        displayName: null,
         email: null,
         recentlyPlayed: [],
         suggestions: [],
@@ -35,11 +35,20 @@ export default new Vuex.Store({
       db.collection("users")
         .doc(user.uid)
         .onSnapshot(function(doc) {
-          console.log("Current data: ", doc.data());
+          // console.log("Current data: ", doc.data());
           state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
           state.user.data.suggestions = doc.data().suggestions;
           state.user.data.friends = doc.data().friends;
         });
+    },
+    CLEAR_USER(state) {
+      state.user.userId = null;
+      state.user.loggedIn = false;
+      state.user.data.displayName = null;
+      state.user.data.email = null;
+      state.user.data.recentlyPlayed = [];
+      state.user.data.suggestions = [];
+      state.user.data.friends = [];
     },
   },
   actions: {
@@ -52,17 +61,21 @@ export default new Vuex.Store({
           email: user.email,
         });
       } else {
-        commit("SET_USER", null);
+        commit("CLEAR_USER");
       }
     },
     fetchUserData({ commit }, user) {
       if (user) {
         commit("SET_USER_DATA", user);
+      } else {
+        commit("CLEAR_USER");
       }
+    },
+    check() {
+      console.log(this.state.user);
     },
     logout({ commit }) {
       commit("SET_LOGGED_IN", false);
-      commit("SET_USER", null);
     },
   },
 });

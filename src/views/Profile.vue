@@ -11,151 +11,154 @@
       </div>
     </div>
     <div class="row" id="recentlyPlayed-row">
-      <div class="col">
-        <div class="row">
-          <div class="col text-center">
-            <h3 class="mx-auto my-2" @click.prevent="check">Recently Played</h3>
-          </div>
-        </div>
-        <div class="row">
+      <div class="col-sm-12 col-md-8 px-2">
+        <h3 class="mx-auto my-2 text-center">Recently Played</h3>
+        <div
+          class="row text-center align-items-center mx-0"
+          id="no-activity"
+          v-if="!user.data.recentlyPlayed.length"
+        >
           <div class="col px-0">
-            <div
-              class="text-center w-100 h-100 py-5"
-              id="no-activity"
-              v-if="!user.data.recentlyPlayed.length"
-            >
-              <h4>No recent activity</h4>
-            </div>
-            <b-list-group
-              id="recentlyPlayed-list"
-              v-if="user.data.recentlyPlayed.length"
-            >
-              <b-list-group-item
-                variant="dark"
-                class="px-1"
-                v-for="item in user.data.recentlyPlayed"
-                :key="item.title"
-              >
-                <div class="row mx-0" id="recentlyPlayed-item">
-                  <div class="col-9">
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">{{ item.title }}</div>
-                    </div>
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">
-                        Last played on:
-                        {{
-                          item.lastPlayed.toDate().toLocaleDateString("en-US")
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-3 my-auto">
-                    <p class="h5">
-                      <b-icon class="float-right" icon="arrow-up"></b-icon>
-                    </p>
-                  </div>
-                </div>
-              </b-list-group-item>
-            </b-list-group>
+            <h4 class="my-auto py-auto">No recent activity</h4>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row" id="suggestions-row">
-      <div class="col">
-        <div class="row">
-          <div class="col text-center">
-            <h3 class="mx-auto my-2">Suggestions</h3>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col text-center py-4 px-0" style="height: 100%">
-            <div>
-              <div
-                id="carouselExampleIndicators"
-                class="carousel slide"
-                data-ride="carousel"
-              >
-                <ol class="carousel-indicators">
-                  <li
-                    data-target="#carouselExampleIndicators"
-                    data-slide-to="0"
-                    class="active"
-                  ></li>
-                  <li
-                    data-target="#carouselExampleIndicators"
-                    data-slide-to="1"
-                  ></li>
-                  <li
-                    data-target="#carouselExampleIndicators"
-                    data-slide-to="2"
-                  ></li>
-                </ol>
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <img
-                      style="height: 200px"
-                      class="d-block mx-auto img-fluid"
-                      src="./../assets/jsq.png"
-                      alt="First slide"
-                    />
-                    <div class="carousel-caption d-md-block">
-                      <h5>Game Title</h5>
-                      <p>Very descriptive game description</p>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <img
-                      style="height: 200px"
-                      class="d-block mx-auto img-fluid"
-                      src="./../assets/jsq.png"
-                      alt="Second slide"
-                    />
-                    <div class="carousel-caption d-md-block">
-                      <h5>Game Title</h5>
-                      <p>Very descriptive game description</p>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <img
-                      style="height: 200px"
-                      class="d-block mx-auto img-fluid"
-                      src="./../assets/jsq.png"
-                      alt="Third slide"
-                    />
-                    <div class="carousel-caption d-md-block">
-                      <h5>Game Title</h5>
-                      <p>Very descriptive game description</p>
-                    </div>
+        <b-list-group
+          id="recentlyPlayed-list"
+          v-if="user.data.recentlyPlayed.length"
+        >
+          <b-list-group-item
+            variant="dark"
+            class="px-1"
+            v-for="item in user.data.recentlyPlayed"
+            :key="item.title"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-9">
+                <div class="row m-0 p-0">
+                  <div class="col m-0 p-0">{{ item.title }}</div>
+                </div>
+                <div class="row m-0 p-0">
+                  <div class="col m-0 p-0">
+                    Last played on:
+                    {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
                   </div>
                 </div>
-                <a
-                  class="carousel-control-prev"
-                  href="#carouselExampleIndicators"
-                  role="button"
-                  data-slide="prev"
-                >
-                  <span
-                    class="carousel-control-prev-icon"
-                    aria-hidden="true"
-                  ></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a
-                  class="carousel-control-next"
-                  href="#carouselExampleIndicators"
-                  role="button"
-                  data-slide="next"
-                >
-                  <span
-                    class="carousel-control-next-icon"
-                    aria-hidden="true"
-                  ></span>
-                  <span class="sr-only">Next</span>
-                </a>
+              </div>
+              <div class="col-3 my-auto">
+                <p class="h5">
+                  <b-icon class="float-right" icon="arrow-up"></b-icon>
+                </p>
               </div>
             </div>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+
+      <div class="col-sm-12 col-md-4 px-2">
+        <h3 class="mx-auto my-2 text-center">Friends</h3>
+        <div
+          class="row text-center align-items-center mx-0"
+          id="no-activity"
+          v-if="!user.data.friends.length"
+        >
+          <div class="col px-0">
+            <h4 class="my-auto py-auto">No friends</h4>
+          </div>
+        </div>
+        <b-list-group id="recentlyPlayed-list" v-if="user.data.friends.length">
+          <b-list-group-item
+            variant="dark"
+            class="px-1"
+            v-for="item in user.data.friends"
+            :key="item.userId"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-9">
+                <div class="row m-0 p-0">
+                  <div class="col m-0 p-0">{{ item.displayName }}</div>
+                </div>
+              </div>
+              <div class="col-3 my-auto">
+                <p class="h5">
+                  <b-icon class="float-right" icon="arrow-up"></b-icon>
+                </p>
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+    </div>
+    <div class="row mb-3" id="suggestions-row">
+      <div class="col px-0 py-2">
+        <h3 class="mx-auto mb-3 pb-1 text-center">Suggestions</h3>
+        <div>
+          <div
+            class="text-center w-100 h-100 py-5"
+            id="no-suggestions"
+            v-if="!user.data.suggestions.length"
+          >
+            <h4>No suggestions</h4>
+          </div>
+          <div
+            v-if="user.data.suggestions.length"
+            id="carouselIndicators"
+            class="carousel slide"
+            data-ride="carousel"
+          >
+            <ol class="carousel-indicators">
+              <li
+                v-for="(suggestionI, index) in user.data.suggestions"
+                :key="suggestionI.gameId"
+                data-target="#carouselIndicators"
+                data-slide-to="index"
+                v-bind:class="[index === 0 ? carouselActiveClass : '']"
+              ></li>
+            </ol>
+            <div class="carousel-inner">
+              <div
+                v-for="(suggestion, index) in user.data.suggestions"
+                :key="suggestion.gameId"
+                v-bind:class="[
+                  carouselClass,
+                  index === 0 ? carouselActiveClass : '',
+                ]"
+              >
+                <img
+                  style="height: 220px"
+                  class="d-block mx-auto img-fluid"
+                  src="./../assets/jsq.png"
+                  alt="First slide"
+                />
+                <div class="carousel-caption d-md-block">
+                  <h5>{{ suggestion.title }}</h5>
+                  <p>{{ suggestion.description }}</p>
+                </div>
+              </div>
+            </div>
+            <a
+              class="carousel-control-prev"
+              href="#carouselIndicators"
+              role="button"
+              data-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a
+              class="carousel-control-next"
+              href="#carouselIndicators"
+              role="button"
+              data-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Next</span>
+            </a>
           </div>
         </div>
       </div>
@@ -171,11 +174,16 @@ export default {
   data() {
     return {
       userData: userData,
+      carouselClass: "carousel-item",
+      carouselActiveClass: "active",
     };
   },
   methods: {
     check() {
-      console.log(this.user.data);
+      // @click.prevent="check"
+      this.user.data.suggestions.forEach((element) => {
+        console.log("index:", element.index);
+      });
     },
   },
   computed: {
@@ -187,14 +195,13 @@ export default {
 };
 </script>
 <style>
-.container {
+#profile * {
+  color: white;
+}
+#profile {
   display: flex;
   flex-flow: column;
   height: 100%;
-  /* overflow-y: hidden; */
-}
-#profile * {
-  color: white;
 }
 #username-row,
 #recentlyPlayed-item {
@@ -205,6 +212,7 @@ export default {
   background-color: #32383e;
 }
 #no-activity {
+  height: 265px;
   background-color: #636a70;
 }
 #recentlyPlayed-list {
@@ -213,47 +221,6 @@ export default {
   /* height: 50%; */
 }
 #suggestions-row {
+  flex-grow: 1;
 }
-
-/* :root {
-  --gutter: 20px;
-}
-
-.hs {
-  display: grid;
-  grid-gap: calc(var(--gutter) / 2);
-  grid-template-columns: 10px;
-  grid-template-rows: minmax(150px, 1fr);
-  grid-auto-flow: column;
-  grid-auto-columns: calc(50% - var(--gutter) * 2);
-
-  overflow-x: scroll;
-  scroll-snap-type: x proximity;
-  padding-bottom: calc(0.75 * var(--gutter));
-  margin-bottom: calc(-0.25 * var(--gutter));
-}
-
-.hs:before,
-.hs:after {
-  content: "";
-  width: 10px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.hs > li,
-.item {
-  scroll-snap-align: center;
-  padding: calc(var(--gutter) / 2 * 1.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #fff;
-  border-radius: 8px;
-  height: 190px;
-} */
 </style>

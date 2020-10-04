@@ -1,5 +1,5 @@
 <template>
-  <div class="grid px-0 mx-0">
+  <div class="grid px-0 mx-0 pb-2">
     <figure class="effect-julia" v-on:click="chooseGame('SquareSnake')">
       <img src="../assets/games/12-square_snake/cover.jpg" alt="cover" />
       <figcaption>
@@ -16,7 +16,10 @@
         <h2>
           <span>Square Platformer</span>
         </h2>
-        <p>Basic platformer with 5 levels.Collect all yellow squares.Avoid red squares.Move white square with arrows.</p>
+        <p>
+          Basic platformer with 5 levels.Collect all yellow squares.Avoid red
+          squares.Move white square with arrows.
+        </p>
 
         <a>View more</a>
       </figcaption>

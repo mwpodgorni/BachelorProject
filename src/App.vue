@@ -21,15 +21,17 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-form>
             <b-form-input
+              v-model="keyword"
               size="sm"
               class="mr-sm-2"
               placeholder="Search"
             ></b-form-input>
             <b-button
+              to="search"
+              @click.prevent="search"
               variant="outline-light"
               size="sm"
               class="my-2 my-sm-0"
-              type="submit"
               >Search</b-button
             >
           </b-nav-form>
@@ -48,20 +50,9 @@
             <template v-slot:button-content>
               <em>User</em>
             </template>
-            <b-dropdown-item variant="dark"
-              ><router-link to="profile" class="account-link p-0 m-0"
-                >Profile</router-link
-              ></b-dropdown-item
-            >
-            <b-dropdown-item
-              ><router-link to="messages" class="account-link p-0 m-0"
-                >Messages</router-link
-              ></b-dropdown-item
-            >
-            <b-dropdown-item
-              variant="dark"
-              @click.prevent="signOut"
-              class="account-link"
+            <b-dropdown-item to="profile">Profile</b-dropdown-item>
+            <b-dropdown-item to="messages">Messages</b-dropdown-item>
+            <b-dropdown-item @click.prevent="signOut" class="account-link"
               >Sign Out</b-dropdown-item
             >
           </b-nav-item-dropdown>
@@ -127,6 +118,7 @@ export default {
       changeIconColor: false,
       dismissSecs: 5,
       dismissCountDown: 0,
+      keyword: "",
     };
   },
   computed: {
@@ -149,12 +141,12 @@ export default {
           // });
         });
     },
-    chooseGame: function(game) {
+    chooseGame: function (game) {
       console.log("game app", game);
       this.component = game;
       document.body.style.background = "#007267";
     },
-    openGames: function() {
+    openGames: function () {
       if (this.component != "Games") {
         document.body.style.background = this.backgroud[0];
         // Math.floor(Math.random() * 3)
@@ -162,12 +154,15 @@ export default {
       this.component = "Games";
       this.$router.push("../games");
     },
-    openEditProfile: function() {
+    openEditProfile: function () {
       this.$router.push("../edit-profile");
     },
+    search() {
+      console.log("search");
+    },
   },
-  mounted: function() {
-    this.$nextTick(function() {
+  mounted: function () {
+    this.$nextTick(function () {
       // Code that will run only after the
       // entire view has been rendered
       // document.body.style.background = this.backgroud[2];
@@ -223,7 +218,7 @@ body {
   width: 100vw;
 }
 #content {
-  height: 95%;
+  height: 96%;
 
   overflow-y: auto;
 }
