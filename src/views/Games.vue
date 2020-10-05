@@ -1,5 +1,5 @@
 <template>
-  <div class="grid px-0 mx-0 pb-2">
+  <div class="grid px-0 mx-0">
     <figure class="effect-julia" v-on:click="chooseGame('SquareSnake')">
       <img src="../assets/games/12-square_snake/cover.jpg" alt="cover" />
       <figcaption>
@@ -132,6 +132,7 @@
 <script>
 export default {
   name: "Games",
+
   data() {
     return {};
   },
@@ -168,7 +169,7 @@ export default {
   }
 }
 .grid {
-  overflow-y: scroll !important;
+  // overflow-y: scroll !important;
   position: relative;
   clear: both;
   margin: 0;
@@ -179,7 +180,6 @@ export default {
   background-color: transparent;
   text-align: center;
   line-height: 0 !important;
-  overflow: hidden;
 }
 /* Common style */
 .grid figure {

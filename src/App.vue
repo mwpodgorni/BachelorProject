@@ -6,6 +6,7 @@
       type="dark"
       variant="dark"
       class="py-0"
+      sticky
     >
       <b-navbar-brand>JugSquare</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -51,7 +52,7 @@
               <em>User</em>
             </template>
             <b-dropdown-item to="profile">Profile</b-dropdown-item>
-            <b-dropdown-item to="messages">Messages</b-dropdown-item>
+            <b-dropdown-item to="chat">Messages</b-dropdown-item>
             <b-dropdown-item @click.prevent="signOut" class="account-link"
               >Sign Out</b-dropdown-item
             >
@@ -60,7 +61,7 @@
       </b-collapse>
     </b-navbar>
 
-    <div id="content" class="pb-1">
+    <div id="content">
       <transition name="component-fade" mode="out-in">
         <router-view v-on:chooseGame="chooseGame($event)"></router-view>
         <!-- <component
@@ -161,15 +162,15 @@ export default {
       console.log("search");
     },
   },
-  mounted: function () {
-    this.$nextTick(function () {
-      // Code that will run only after the
-      // entire view has been rendered
-      // document.body.style.background = this.backgroud[2];
-      document.body.style.background = this.backgroud[2];
-      // Math.floor(Math.random() * 3)
-    });
-  },
+  // mounted: function () {
+  //   this.$nextTick(function () {
+  //     // Code that will run only after the
+  //     // entire view has been rendered
+  //     // document.body.style.background = this.backgroud[2];
+  //     document.body.style.background = this.backgroud[2];
+  //     // Math.floor(Math.random() * 3)
+  //   });
+  // },
 };
 </script>
 
@@ -210,17 +211,26 @@ export default {
 
 html,
 body {
-  overflow: hidden;
+  // overflow: hidden;
   margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #09203f 0%, #537895 100%);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 #app {
-  height: 100vh;
-  width: 100vw;
+  // height: 100vh;
+  // width: 100vw;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
 }
-#content {
-  height: 96%;
 
-  overflow-y: auto;
+#content {
+  // height: 96%;
+  // overflow-y: auto;
+  flex-grow: 1 1 auto;
 }
 .account-link,
 .account-link:hover {

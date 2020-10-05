@@ -88,7 +88,7 @@
         </b-list-group>
       </div>
     </div>
-    <div class="row mb-3" id="suggestions-row">
+    <div class="row" id="suggestions-row">
       <div class="col px-0 py-2">
         <h3 class="mx-auto mb-3 pb-1 text-center">Suggestions</h3>
         <div>
@@ -212,12 +212,12 @@ export default {
   background-color: #32383e;
 }
 #no-activity {
-  height: 265px;
+  height: 270px;
   background-color: #636a70;
 }
 #recentlyPlayed-list {
   overflow: auto;
-  height: 265px;
+  height: 270px;
   /* height: 50%; */
 }
 #suggestions-row {

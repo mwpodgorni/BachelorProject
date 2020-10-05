@@ -1,5 +1,5 @@
 <template>
-  <div class="container h-100">
+  <div class="container h-100" id="register">
     <div class="row justify-content-center h-100">
       <div class="col-md-8">
         <div class="card text-white bg-dark mt-5">
@@ -92,4 +92,11 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+#register {
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+  flex-grow: 1;
+}
+</style>
