@@ -14,7 +14,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="games" class="nav-link py-0 my-0"
+            <router-link to="../games" class="nav-link py-0 my-0"
               >Games</router-link
             >
           </b-nav-item>
@@ -28,7 +28,7 @@
               placeholder="Search"
             ></b-form-input>
             <b-button
-              to="search"
+              to="../search"
               @click.prevent="search"
               variant="outline-light"
               size="sm"
@@ -38,25 +38,52 @@
           </b-nav-form>
 
           <b-nav-item v-if="!user.loggedIn">
-            <router-link to="login" class="nav-link p-0 ml-2 m-0"
+            <router-link to="../login" class="nav-link p-0 ml-2 m-0"
               >Login</router-link
             >
           </b-nav-item>
           <b-nav-item v-if="!user.loggedIn">
-            <router-link to="register" class="nav-link p-0 m-0"
+            <router-link to="../register" class="nav-link p-0 m-0"
               >Register</router-link
             >
           </b-nav-item>
           <b-nav-item-dropdown right v-if="user.loggedIn">
             <template v-slot:button-content>
-              <em>User</em>
+              <!-- <b-icon
+                class="ml-2"
+                id="icon"
+                icon="person-square"
+                style="width: 27px; height: 27px"
+              ></b-icon> -->
+              <b-icon
+                class="ml-2"
+                id="icon"
+                style="width: 27px; height: 27px"
+                icon="person-circle"
+              ></b-icon>
             </template>
-            <b-dropdown-item to="profile">Profile</b-dropdown-item>
-            <b-dropdown-item to="chat">Messages</b-dropdown-item>
+            <b-dropdown-item to="../profile">Profile</b-dropdown-item>
+            <b-dropdown-item to="../chat">Messages</b-dropdown-item>
             <b-dropdown-item @click.prevent="signOut" class="account-link"
               >Sign Out</b-dropdown-item
             >
           </b-nav-item-dropdown>
+          <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
+            <b-icon
+              v-b-toggle.sidebar-variant
+              id="icon"
+              style="width: 27px; height: 27px"
+              icon="people"
+            ></b-icon>
+          </b-nav-item>
+          <b-nav-item v-if="component != 'Games'">
+            <b-icon
+              id="icon"
+              style="width: 27px; height: 27px"
+              icon="arrow-left"
+              v-on:click="openGames"
+            ></b-icon
+          ></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -64,6 +91,7 @@
     <div id="content">
       <transition name="component-fade" mode="out-in">
         <router-view v-on:chooseGame="chooseGame($event)"></router-view>
+        <!-- <router-view v-on:chooseGame="chooseGame($event)"></router-view> -->
         <!-- <component
         v-bind:is="component"
         v-on:chooseGame="chooseGame($event)"
@@ -149,11 +177,12 @@ export default {
     },
     openGames: function () {
       if (this.component != "Games") {
-        document.body.style.background = this.backgroud[0];
+        document.body.style.background =
+          "linear-gradient(to bottom, #09203f 0%, #537895 100%)";
         // Math.floor(Math.random() * 3)
       }
       this.component = "Games";
-      this.$router.push("../games");
+      this.$router.push("../");
     },
     openEditProfile: function () {
       this.$router.push("../edit-profile");
@@ -212,6 +241,7 @@ export default {
 html,
 body {
   // overflow: hidden;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
   background: linear-gradient(to bottom, #09203f 0%, #537895 100%);
@@ -231,6 +261,7 @@ body {
   // height: 96%;
   // overflow-y: auto;
   flex-grow: 1 1 auto;
+  width: 100%;
 }
 .account-link,
 .account-link:hover {

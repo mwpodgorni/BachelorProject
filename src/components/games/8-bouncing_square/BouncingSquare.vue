@@ -1,5 +1,5 @@
 <template>
-  <div :id="containerId" v-if="downloaded" />
+  <div :id="containerId" v-if="downloaded" style="height: 600px" />
   <div class="placeholder" v-else>
     <div class="m-auto placeholderIn">Downloading ...</div>
   </div>
@@ -12,7 +12,7 @@ export default {
     return {
       downloaded: false,
       gameInstance: null,
-      containerId: "game-container"
+      containerId: "game-container",
     };
   },
   async mounted() {
@@ -26,7 +26,7 @@ export default {
   },
   destroyed() {
     this.gameInstance.destroy(true);
-  }
+  },
 };
 </script>
 

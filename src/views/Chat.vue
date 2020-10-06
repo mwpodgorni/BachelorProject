@@ -1,18 +1,17 @@
 <template>
   <div class="container mt-2">
     <div>
-      <b-button variant="dark" block v-b-toggle.sidebar-variant
-        >Conversations</b-button
-      >
+      <b-button variant="dark" block> Username</b-button>
       <b-sidebar
+        class="mt-5 pt-5"
         id="sidebar-variant"
-        title="Conversations"
         bg-variant="dark"
         text-variant="light"
         right
         shadow
       >
-        <div class="py-2">
+        <div class="py-2 text-center">
+          <h4 style="">Conversations</h4>
           <b-list-group>
             <b-list-group-item variant="dark">Conversation</b-list-group-item>
             <b-list-group-item variant="dark">Conversation</b-list-group-item>
@@ -38,28 +37,26 @@
       </p>
     </section>
 
-    <section class="chat-inputs">
-      <b-form-group id="person2-form">
-        <div class="row">
-          <div class="col-9">
-            <b-form-input
-              v-model="youMessage"
-              id="person2-form"
-              placeholder="Type your message"
-              type="text"
-            ></b-form-input>
-          </div>
-          <div class="col-2">
+    <div class="row">
+      <div class="col">
+        <b-input-group style="background-color: white">
+          <b-form-input
+            v-model="youMessage"
+            id="person2-form"
+            placeholder="Type your message"
+            type="text"
+          ></b-form-input>
+          <b-input-group-append>
             <b-button
               @click.prevent="sendMessage('out')"
-              variant="outline-light"
+              variant="outline-dark"
               class=""
-              >Save</b-button
+              >Send</b-button
             >
-          </div>
-        </div>
-      </b-form-group>
-    </section>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -127,13 +124,11 @@ export default {
 .chat-inputs {
   position: absolute;
   bottom: 0;
-  width: 90%;
+  width: 100%;
   /* display: flex; */
 }
-#person1-input {
-  padding: 0.5em;
-}
+
 #person2-input {
-  padding: 0.5em;
+  /* padding: 0.5em; */
 }
 </style>

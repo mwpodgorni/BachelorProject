@@ -14,6 +14,7 @@ import SquareShip from "@/components/games/9-square_ship/SquareShip";
 import SquareSlingshot from "@/components/games/10-square_slingshot/SquareSlingshot";
 import DrawRoad from "@/components/games/11-draw_road/DrawRoad";
 import SquareSnake from "@/components/games/12-square_snake/SquareSnake";
+import Games from "@/views/Games";
 export default {
   components: {
     SquarePlatformer,
@@ -27,13 +28,14 @@ export default {
     SquareShip,
     SquareSlingshot,
     DrawRoad,
-    SquareSnake
+    SquareSnake,
+    Games,
   },
   data() {
     return {
-      component: this.$route.params.game
+      component: this.$route.params.game,
     };
-  }
+  },
 };
 </script>
 <style></style>
