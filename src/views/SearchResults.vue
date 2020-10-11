@@ -13,12 +13,19 @@
             role="tabpanel"
           >
             <b-card-body class="bg-dark p-0">
-              <div class="row text-center text-light align-items-center mx-0" v-if="!usersResults.length || (usersResults.length==1 && usersResults[0].userId==loggedUser.userId)">
+              <div
+                class="row text-center text-light align-items-center mx-0"
+                v-if="
+                  !usersResults.length ||
+                    (usersResults.length == 1 &&
+                      usersResults[0].userId == loggedUser.userId)
+                "
+              >
                 <div class="col px-0">
                   <h4 class="my-5 py-auto">No users for searched keyword</h4>
                 </div>
               </div>
-              <div id="search-users" >
+              <div id="search-users">
                 <b-list-group v-if="usersResults.length" class="my-1 px-1">
                   <b-list-group-item
                     variant="dark"
@@ -26,7 +33,7 @@
                     v-for="item in usersResults"
                     :key="item.username"
                     v-on:click="chooseUser(item.userId)"
-                    v-if="item.userId!=loggedUser.userId"
+                    v-if="item.userId != loggedUser.userId"
                   >
                     {{ item.username }}
                   </b-list-group-item>
@@ -48,31 +55,34 @@
             role="tabpanel"
           >
             <b-card-body class="bg-dark p-0">
-              <div class="row text-center text-light align-items-center mx-0" v-if="!gamesResults.length">
+              <div
+                class="row text-center text-light align-items-center mx-0"
+                v-if="!gamesResults.length"
+              >
                 <div class="col px-0">
-                  <h4 class="my-5 py-auto" v-on:click="check">No games for search keyword</h4>
+                  <h4 class="my-5 py-auto" v-on:click="check">
+                    No games for search keyword
+                  </h4>
                 </div>
               </div>
               <div id="search-games" v-if="gamesResults.length">
-                <div
-                  class="row text-center align-items-center my-1 mx-1"
-                >
+                <div class="row text-center align-items-center my-1 mx-1">
                   <div
-                   
                     class="col-md-6 my-1 px-1"
                     v-for="game in gamesResults"
                     :key="game.title"
                     v-on:click="chooseGame(game.title.replace(/\s/g, ''))"
                   >
-                  <div >    <img
-                      :src="game.downloadURL"
-                      class="img-fluid list-item"
-                    />
+                    <div>
+                      <img
+                        :src="game.downloadURL"
+                        class="img-fluid list-item"
+                      />
 
-                    <div class="carousel-caption">
-                      <h5>{{ game.title }}</h5>
-                    </div></div>
-                
+                      <div class="carousel-caption">
+                        <h5>{{ game.title }}</h5>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -151,13 +161,13 @@ export default {
       ],
     };
   },
-    // created () {
-    //     this.initializeSearch();
-    // },
+  // created () {
+  //     this.initializeSearch();
+  // },
   watch: {
-      '$route' (to, from) {
-        this.initializeSearch(this);
-      }
+    $route(to, from) {
+      this.initializeSearch(this);
+    },
   },
   computed: {
     // map `this.user` to `this.$store.getters.user`
@@ -166,92 +176,93 @@ export default {
     }),
   },
   beforeRouteEnter(to, from, next) {
-    next((vm)=>{
+    next((vm) => {
       vm.initializeSearch(vm);
-    })
-  //   console.log("route en")
-  //   console.log(to.params);
-  //   var keyword = to.params.keyword;
-  //   db.collection("users")
-  //   .where("username", "==", keyword)
-  //   .get()
-  //   .then(function (querySnapshot){
-  //     console.log("l",querySnapshot.length)
-  //     querySnapshot.forEach(function(doc){
-  //             console.log("in")
-  //     next((vm)=>vm.setUsers(doc.data()));
-  //     })
-  //         next();
-  //     console.log("out")
-  //   })
-  //   .catch(function (error){
-  //     console.log("Error getting documents: ", error);
-  //   });
-  //   db.collection("games")
-  //     .where("title", "==", keyword)
-  //     .get()
-  //     .then(function (querySnapshot) {
-  //       querySnapshot.forEach(function (doc) {
-  //         next((vm)=>vm.setGames(doc.data()));
-  //         // doc.data() is never undefined for query doc snapshots
-  //         // console.log(doc.id, " <=> ", doc.data());
-          
-  //       });
-  //           next();
-  //       console.log("out2")
-  //     })
-  //     .catch(function (error) {
-  //       console.log("Error getting documents: ", error);
-  //     });
+    });
+    //   console.log("route en")
+    //   console.log(to.params);
+    //   var keyword = to.params.keyword;
+    //   db.collection("users")
+    //   .where("username", "==", keyword)
+    //   .get()
+    //   .then(function (querySnapshot){
+    //     console.log("l",querySnapshot.length)
+    //     querySnapshot.forEach(function(doc){
+    //             console.log("in")
+    //     next((vm)=>vm.setUsers(doc.data()));
+    //     })
+    //         next();
+    //     console.log("out")
+    //   })
+    //   .catch(function (error){
+    //     console.log("Error getting documents: ", error);
+    //   });
+    //   db.collection("games")
+    //     .where("title", "==", keyword)
+    //     .get()
+    //     .then(function (querySnapshot) {
+    //       querySnapshot.forEach(function (doc) {
+    //         next((vm)=>vm.setGames(doc.data()));
+    //         // doc.data() is never undefined for query doc snapshots
+    //         // console.log(doc.id, " <=> ", doc.data());
+
+    //       });
+    //           next();
+    //       console.log("out2")
+    //     })
+    //     .catch(function (error) {
+    //       console.log("Error getting documents: ", error);
+    //     });
   },
   methods: {
-    check(){
+    check() {
       console.log(this.usersResults[0].userId);
-      console.log(this.loggedUser.userId)
+      console.log(this.loggedUser.userId);
     },
-    setUsers(data){    
+    setUsers(data) {
       this.usersResults.push(data);
     },
-    setGames(data){
-       this.gamesResults.push(data);
+    setGames(data) {
+      this.gamesResults.push(data);
     },
+    test() {},
     chooseGame(event) {
       // this.$router.push({name:"games", params:{game:event}});
-       this.$router.push("../../games/" + event);
+      this.$router.push("../../games/" + event);
       this.$emit("chooseGame", event);
     },
     chooseUser(userId) {
       this.$router.push("../../user-profile/" + userId);
     },
-    initializeSearch(vm){
-      vm.usersResults=[];
-      vm.gamesResults=[];
+    initializeSearch(vm) {
+      vm.usersResults = [];
+      vm.gamesResults = [];
       var keyword = vm.$route.params.keyword;
       db.collection("users")
-      .where("username", "==", keyword)
-      .get()
-      .then(function (querySnapshot){
-        querySnapshot.forEach(function(doc){
-        vm.setUsers(doc.data());
+        .where("username", "==", keyword)
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            vm.setUsers(doc.data());
+          });
         })
-      })
-      .catch(function (error){
-        console.log("Error getting documents: ", error);
-      });
+        .catch(function(error) {
+          console.log("Error getting documents: ", error);
+        });
       db.collection("games")
         .where("title", "==", keyword)
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             vm.setGames(doc.data());
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " <=> ", doc.data());
           });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log("Error getting documents: ", error);
         });
-    }
+    },
   },
 };
 </script>
@@ -277,7 +288,7 @@ export default {
   max-height: 600px;
   width: 100%;
 }
-.list-item:hover{
+.list-item:hover {
   cursor: pointer;
 }
 .game-tile {

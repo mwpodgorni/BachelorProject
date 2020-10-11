@@ -26,6 +26,7 @@ export default new Vuex.Store({
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
     },
+    //test
     SET_USER(state, data) {
       state.user.userId = data.uid;
       state.user.data.displayName = data.displayName;
@@ -34,7 +35,7 @@ export default new Vuex.Store({
     SET_USER_DATA(state, user) {
       db.collection("users")
         .doc(user.uid)
-        .onSnapshot(function(doc) {
+        .onSnapshot(function (doc) {
           // console.log("Current data: ", doc.data());
           state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
           state.user.data.suggestions = doc.data().suggestions;
@@ -57,7 +58,7 @@ export default new Vuex.Store({
       commit("SET_LOGGED_IN", user != null);
       if (user) {
         commit("SET_USER", {
-          uid:user.uid,
+          uid: user.uid,
           displayName: user.displayName,
           email: user.email,
         });
