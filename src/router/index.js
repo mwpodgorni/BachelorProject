@@ -8,6 +8,7 @@ import Games from "../views/Games";
 import Game from "../views/Game";
 import Profile from "../views/Profile";
 import EditProfile from "../views/EditProfile";
+import UserProfile from "../views/UserProfile";
 import Chat from "../views/Chat";
 import store from "../store";
 Vue.use(Router);
@@ -31,9 +32,14 @@ const router = new Router({
       component: Game,
     },
     {
-      path: "/search",
+      path: "/search/:keyword",
       name: "search",
       component: SearchResults,
+    },
+    {
+      path: "/user-profile/:username",
+      name: "user-profile",
+      component: UserProfile,
     },
     {
       path: "/profile",
@@ -95,15 +101,14 @@ router.beforeEach((to, from, next) => {
     next(); // does not require auth, make sure to always call next()!
   }
   if (to.meta.disableIfLoggedIn) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
     if (store.getters.user.loggedIn) {
       next({ name: "profile" });
     } else {
       next(); // go to wherever I'm going
     }
-  } else {
-    next(); // does not require auth, make sure to always call next()!
   }
+  // else {
+  //   next(); // does not require auth, make sure to always call next()!
+  // }
 });
 export default router;

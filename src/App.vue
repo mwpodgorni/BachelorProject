@@ -28,7 +28,7 @@
               placeholder="Search"
             ></b-form-input>
             <b-button
-              to="../search"
+              v-model="keyword"
               @click.prevent="search"
               variant="outline-light"
               size="sm"
@@ -64,9 +64,7 @@
             </template>
             <b-dropdown-item to="../profile">Profile</b-dropdown-item>
             <b-dropdown-item to="../chat">Messages</b-dropdown-item>
-            <b-dropdown-item @click.prevent="signOut" class="account-link"
-              >Sign Out</b-dropdown-item
-            >
+            <b-dropdown-item @click.prevent="signOut">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
             <b-icon
@@ -148,6 +146,7 @@ export default {
       dismissSecs: 5,
       dismissCountDown: 0,
       keyword: "",
+      keywordCheck:"",
     };
   },
   computed: {
@@ -182,13 +181,15 @@ export default {
         // Math.floor(Math.random() * 3)
       }
       this.component = "Games";
-      this.$router.push("../");
-    },
-    openEditProfile: function () {
-      this.$router.push("../edit-profile");
+      this.$router.push("../games");
     },
     search() {
-      console.log("search");
+      if(this.keyword!=this.$route.params.keyword){
+        console.log("search");
+      this.keywordCheck=this.keyword;
+      this.$router.push({ name: 'search', params: { keyword: this.keyword }});
+      }
+      // this.$router.push("search/" + this.keyword);
     },
   },
   // mounted: function () {

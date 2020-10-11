@@ -1,151 +1,219 @@
 <template>
-  <div class="grid px-0 mx-0">
-    <figure class="effect-julia" v-on:click="chooseGame('SquareSnake')">
-      <img src="../assets/games/12-square_snake/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Snake</span>
-        </h2>
-        <p></p>
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SquarePlatformer')">
-      <img src="../assets/games/1-square_platformer/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Platformer</span>
-        </h2>
-        <p>
-          Basic platformer with 5 levels.Collect all yellow squares.Avoid red
-          squares.Move white square with arrows.
-        </p>
+  <div>
+    <div v-if="error" class="error">
+      {{ error }}
+    </div>
+    <div v-if="gamesData" class="grid px-0 mx-0">
+      <!-- <h1>{{ gamesData.length }}</h1> -->
+      <figure
+        v-for="game in gamesData"
+        :key="game.title"
+        class="effect-julia"
+        v-on:click="chooseGame(game.title.replace(/\s/g, ''))"
+      >
+        <img :src="game.downloadURL" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>{{ game.title }}</span>
+          </h2>
+          <p>{{ game.description }}</p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <!-- <figure class="effect-julia" v-on:click="chooseGame('SquareSnake')">
+        <img src="../assets/games/12-square_snake/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Snake</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SquarePlatformer')">
+        <img src="../assets/games/1-square_platformer/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Platformer</span>
+          </h2>
+          <p>
+            Basic platformer with 5 levels.Collect all yellow squares.Avoid red
+            squares.Move white square with arrows.
+          </p>
 
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SameSquare')">
-      <img src="../assets/games/2-same_square/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Same Square</span>
-        </h2>
-        <p>Remove all matching squares</p>
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SquareTower')">
-      <img src="../assets/games/3-square_tower/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Tower</span>
-        </h2>
-        <p>Build the highest tower from squares</p>
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('PerfectSquare')">
-      <img src="../assets/games/4-perfect_square/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Perfect Square</span>
-        </h2>
-        <p>Click and grow a square big enough to fit between two walls</p>
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('FlyingSquare')">
-      <img src="../assets/games/5-flying_square/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Flying Square</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SquareRide')">
-      <img src="../assets/games/6-square_ride/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Ride</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SpinningSquares')">
-      <img src="../assets/games/7-spinning_squares/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <!-- <span>Spinning Squares</span> -->
-          <span>Spinning Circles</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('BouncingSquare')">
-      <img src="../assets/games/8-bouncing_square/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <!-- <span>Bouncing Square</span> -->
-          <span>Bouncing Ball</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SquareShip')">
-      <img src="../assets/games/9-square_ship/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Ship</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('SquareSlingshot')">
-      <img src="../assets/games/10-square_slingshot/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Square Slingshot</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
-    <figure class="effect-julia" v-on:click="chooseGame('DrawRoad')">
-      <img src="../assets/games/11-draw_road/cover.jpg" alt="cover" />
-      <figcaption>
-        <h2>
-          <span>Draw Road</span>
-        </h2>
-        <!-- <p></p> -->
-        <a>View more</a>
-      </figcaption>
-    </figure>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SameSquare')">
+        <img src="../assets/games/2-same_square/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Same Square</span>
+          </h2>
+          <p>Remove all matching squares</p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SquareTower')">
+        <img src="../assets/games/3-square_tower/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Tower</span>
+          </h2>
+          <p>Build the highest tower from squares</p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('PerfectSquare')">
+        <img src="../assets/games/4-perfect_square/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Perfect Square</span>
+          </h2>
+          <p>Click and grow a square big enough to fit between two walls</p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('FlyingSquare')">
+        <img src="../assets/games/5-flying_square/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Flying Square</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SquareRide')">
+        <img src="../assets/games/6-square_ride/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Ride</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SpinningSquares')">
+        <img src="../assets/games/7-spinning_squares/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Spinning Circles</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('BouncingSquare')">
+        <img src="../assets/games/8-bouncing_square/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Bouncing Ball</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SquareShip')">
+        <img src="../assets/games/9-square_ship/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Ship</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('SquareSlingshot')">
+        <img src="../assets/games/10-square_slingshot/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Square Slingshot</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure>
+      <figure class="effect-julia" v-on:click="chooseGame('DrawRoad')">
+        <img src="../assets/games/11-draw_road/cover.jpg" alt="cover" />
+        <figcaption>
+          <h2>
+            <span>Draw Road</span>
+          </h2>
+          <p></p>
+          <a>View more</a>
+        </figcaption>
+      </figure> -->
+    </div>
   </div>
 </template>
 
 <script>
+import firebase from "firebase";
 export default {
   name: "Games",
-
   data() {
-    return {};
+    return { gamesData: [], error: null };
+  },
+  beforeRouteEnter(to, from, next) {
+    // getPost(to.params.id, (err, post) => {});
+    // console.log("to", to);
+    var docRef = db.collection("games").doc("games");
+    docRef
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          // self.gamesData = doc.data();
+          next((vm) => vm.setData(doc.data()));
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+          this.error = "No such document!";
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+    // var storage = firebase.storage();
+    // var storageRef = storage.ref();
+    // storageRef
+    //   .child("square_tower_cover.jpg")
+    //   .getDownloadURL()
+    //   .then(function (url) {
+    //     // `url` is the download URL for 'images/stars.jpg'
+    //     // This can be downloaded directly:
+    //     // var xhr = new XMLHttpRequest();
+    //     // xhr.responseType = "blob";
+    //     // xhr.onload = function (event) {
+    //     //   var blob = xhr.response;
+    //     // };
+    //     // xhr.open("GET", url);
+    //     // xhr.send();
+    //     // Or inserted into an <img> element:
+    //     // var img = document.getElementById("myimg");
+    //     // img.src = url;
+    //     console.log("u", url);
+    //   })
+    //   .catch(function (error) {
+    //     // Handle any errors
+    //   });
   },
   methods: {
     chooseGame(event) {
-      console.log(event);
       this.$router.push("games/" + event);
       // this.$router.replace({
       //   name: "dashboard"
       // });
       this.$emit("chooseGame", event);
     },
+    setData(data) {
+      this.gamesData = data;
+    },
   },
+  // created() {
+  //   this.fetchData();
+  // },
 };
 </script>
 

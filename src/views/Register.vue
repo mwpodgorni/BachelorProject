@@ -107,6 +107,7 @@ export default {
               })
               .then(() => {
                 db.collection("users").doc(res.user.uid).set({
+                  userId:res.user.uid,
                   recentlyPlayed: [],
                   suggestions: [],
                   friends: [],

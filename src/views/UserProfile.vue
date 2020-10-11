@@ -1,8 +1,8 @@
 <template>
-  <div class="container" id="profile">
+  <div class="container" id="profile" v-if="viewedUser">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-3">test</h1>
+        <h1 class="my-3">{{viewedUser.username}}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
         <b-icon class="icon mr-3" icon="person-plus"></b-icon>
@@ -18,17 +18,17 @@
         <div
           class="row text-center align-items-center mx-0"
           id="no-activity"
-          v-if="false"
+          v-if="!viewedUser.recentlyPlayed.length"
         >
           <div class="col px-0">
             <h4 class="my-auto py-auto">No recent activity</h4>
           </div>
         </div>
-        <b-list-group id="recentlyPlayedUser-list" v-if="true">
+        <b-list-group id="recentlyPlayedUser-list" v-if="viewedUser.recentlyPlayed.length">
           <b-list-group-item
             variant="dark"
             class="px-1"
-            v-for="item in recentlyPlayed"
+            v-for="item in viewedUser.recentlyPlayed"
             :key="item.title"
           >
             <div class="row mx-0" id="recentlyPlayedUser-item">
@@ -60,6 +60,7 @@ export default {
   name: "UserProfile",
   data() {
     return {
+      viewedUser:null,
       recentlyPlayed: [
         {
           title: "Game Title 1",
@@ -99,6 +100,42 @@ export default {
         },
       ],
     };
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm)=>{
+      vm.initializeSearch(vm);
+    })
+  },
+  methods:{
+    chooseUser: function (user) {
+      console.log("user profile", user);
+    },
+    setViewedUser(data){
+      this.viewedUser=data;
+    },
+    initializeSearch(vm){
+       var keyword = vm.$route.params.username;
+      db.collection("users").doc(keyword)
+      .get()
+      .then(function (doc){
+        if(doc.exists){
+          vm.setViewedUser(doc.data());
+        }else{
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+         console.log("Error getting document:", error);
+      });
+      // .get(vm.user.userId)
+      // .then(function (querySnapshot){
+      //   querySnapshot.forEach(function(doc){
+      //   console.log("used", doc())
+      //   })
+      // })
+      // .catch(function (error){
+      //   console.log("Error getting documents: ", error);
+      // });
+    }
   },
 };
 </script>
