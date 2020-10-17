@@ -14,6 +14,7 @@ export default new Vuex.Store({
         recentlyPlayed: [],
         suggestions: [],
         friends: [],
+        invitations:[]
       },
     },
   },
@@ -26,7 +27,7 @@ export default new Vuex.Store({
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
     },
-    //test
+
     SET_USER(state, data) {
       state.user.userId = data.uid;
       state.user.data.displayName = data.displayName;
@@ -40,6 +41,7 @@ export default new Vuex.Store({
           state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
           state.user.data.suggestions = doc.data().suggestions;
           state.user.data.friends = doc.data().friends;
+          state.user.data.invitations = doc.data().invitations;
         });
     },
     CLEAR_USER(state) {

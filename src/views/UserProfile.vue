@@ -2,14 +2,27 @@
   <div class="container" id="profile" v-if="viewedUser">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-3">{{viewedUser.username}}</h1>
+        <h1 class="my-3">{{ viewedUser.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
-        <b-icon class="icon mr-3" icon="person-plus"></b-icon>
-
-        <router-link to="messages">
-          <b-icon class="icon mr-1" icon="chat-left-text"></b-icon>
-        </router-link>
+        <b-icon
+          v-if="displayInviteIcon"
+          v-on:click="sendInvite()"
+          class="icon mr-3"
+          icon="person-plus"
+        ></b-icon>
+        <b-icon
+          v-if="!displayInviteIcon"
+          v-on:click="removeFromFriends()"
+          class="icon mr-3"
+          icon="person-dash"
+        ></b-icon>
+        <b-icon
+          v-if="displayMessageIcon"
+          v-on:click="openConversation()"
+          class="icon mr-1"
+          icon="chat-left-text"
+        ></b-icon>
       </div>
     </div>
     <div class="row" id="recentlyPlayedUser-row">
@@ -24,7 +37,10 @@
             <h4 class="my-auto py-auto">No recent activity</h4>
           </div>
         </div>
-        <b-list-group id="recentlyPlayedUser-list" v-if="viewedUser.recentlyPlayed.length">
+        <b-list-group
+          id="recentlyPlayedUser-list"
+          v-if="viewedUser.recentlyPlayed.length"
+        >
           <b-list-group-item
             variant="dark"
             class="px-1"
@@ -45,7 +61,11 @@
               </div>
               <div class="col-3 my-auto">
                 <p class="h5">
-                  <b-icon class="float-right" icon="arrow-up"></b-icon>
+                  <b-icon
+                    v-on:click="chooseGame(item.title.replace(/\s/g, ''))"
+                    class="icon float-right"
+                    icon="arrow-up"
+                  ></b-icon>
                 </p>
               </div>
             </div>
@@ -56,11 +76,15 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
+import firebase from "firebase";
 export default {
   name: "UserProfile",
   data() {
     return {
-      viewedUser:null,
+      viewedUser: null,
+      displayInviteIcon: false,
+      displayMessageIcon: false,
       recentlyPlayed: [
         {
           title: "Game Title 1",
@@ -102,40 +126,162 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
-    next((vm)=>{
+    next((vm) => {
       vm.initializeSearch(vm);
-    })
+    });
   },
-  methods:{
+  computed: {
+    // map `this.user` to `this.$store.getters.user`
+    ...mapGetters({
+      user: "user",
+    }),
+  },
+  methods: {
     chooseUser: function (user) {
       console.log("user profile", user);
     },
-    setViewedUser(data){
-      this.viewedUser=data;
+    setViewedUser(data) {
+      this.viewedUser = data;
+      this.checkUsers();
     },
-    initializeSearch(vm){
-       var keyword = vm.$route.params.username;
-      db.collection("users").doc(keyword)
-      .get()
-      .then(function (doc){
-        if(doc.exists){
-          vm.setViewedUser(doc.data());
-        }else{
-          console.log("No such document!");
-        }
-      }).catch(function(error) {
-         console.log("Error getting document:", error);
+    checkUsers() {
+      var invitations = [];
+      var friends = [];
+      this.viewedUser.invitations.forEach((element) => {
+        invitations.push(element.userId);
       });
-      // .get(vm.user.userId)
-      // .then(function (querySnapshot){
-      //   querySnapshot.forEach(function(doc){
-      //   console.log("used", doc())
-      //   })
-      // })
-      // .catch(function (error){
-      //   console.log("Error getting documents: ", error);
-      // });
-    }
+      this.viewedUser.friends.forEach((element) => {
+        friends.push(element.userId);
+      });
+      if (friends.includes(this.user.userId)) {
+        this.displayInviteIcon = false;
+        this.displayMessageIcon = true;
+      } else {
+        if (invitations.includes(this.user.userId)) {
+          this.displayInviteIcon = false;
+        } else {
+          this.displayInviteIcon = true;
+        }
+        this.displayMessageIcon = false;
+      }
+    },
+    chooseGame(event) {
+      // this.$router.push({name:"games", params:{game:event}});
+      this.$router.push("../../games/" + event);
+      this.$emit("chooseGame", event);
+    },
+    initializeSearch(vm) {
+      var keyword = vm.$route.params.username;
+      db.collection("users")
+        .doc(keyword)
+        .get()
+        .then(function (doc) {
+          if (doc.exists) {
+            vm.setViewedUser(doc.data());
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+    },
+    sendInvite() {
+      var keyword = this.$route.params.username;
+      db.collection("users")
+        .doc(keyword)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayUnion({
+            userId: this.user.userId,
+            displayName: this.user.data.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Document successfully updated!");
+          this.viewedUser.invitations.push({
+            userId: this.user.userId,
+            displayName: this.user.data.displayName,
+          });
+          this.checkUsers();
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+    },
+    removeFromFriends() {
+      var keyword = this.$route.params.username;
+      var friends = [];
+      this.viewedUser.friends.forEach((element) => {
+        friends.push(element.userId);
+      });
+      if (friends.includes(this.user.userId)) {
+        db.collection("users")
+          .doc(this.user.userId)
+          .update({
+            friends: firebase.firestore.FieldValue.arrayRemove({
+              userId: this.viewedUser.userId,
+              displayName: this.viewedUser.displayName,
+            }),
+          })
+          .then(() => {
+            this.user.data.friends = this.user.data.friends.filter(
+              (element) => element.userId != this.viewedUser.userId
+            );
+            console.log("Removed from user friends.");
+          })
+          .catch(function (error) {
+            // The document probably doesn't exist.
+            console.error("Error removing from user friends: ", error);
+          });
+        db.collection("users")
+          .doc(this.viewedUser.userId)
+          .update({
+            friends: firebase.firestore.FieldValue.arrayRemove({
+              userId: this.user.userId,
+              displayName: this.user.data.displayName,
+            }),
+          })
+          .then(() => {
+            this.viewedUser.friends = this.viewedUser.friends.filter(
+              (element) => element.userId != this.user.userId
+            );
+            console.log("removed from friends.");
+          })
+          .catch(function (error) {
+            // The document probably doesn't exist.
+            console.error("Error removing from friends: ", error);
+          });
+        this.checkUsers();
+      } else {
+        this.removeInvitation();
+      }
+    },
+    removeInvitation() {
+      var keyword = this.$route.params.username;
+      db.collection("users")
+        .doc(keyword)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayRemove({
+            userId: this.user.userId,
+            username: this.user.data.displayName,
+          }),
+        })
+        .then(() => {
+          this.viewedUser.invitations = this.viewedUser.invitations.filter(
+            (element) => element.userId != this.user.userId
+          );
+          this.checkUsers();
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error removing invitation: ", error);
+        });
+    },
+    openConversation() {
+      var keyword = this.$route.params.username;
+      this.$router.push("../../chat/" + keyword);
+    },
   },
 };
 </script>
@@ -163,5 +309,8 @@ export default {
   overflow-y: auto;
   flex-grow: 1;
   height: 550px;
+}
+.icon {
+  cursor: pointer;
 }
 </style>

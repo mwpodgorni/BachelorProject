@@ -107,10 +107,12 @@ export default {
               })
               .then(() => {
                 db.collection("users").doc(res.user.uid).set({
-                  userId:res.user.uid,
+                  userId: res.user.uid,
+                  displayName: this.user.username,
                   recentlyPlayed: [],
                   suggestions: [],
                   friends: [],
+                  invitations: [],
                 });
                 this.$store.dispatch("fetchUser", res.user);
                 this.$router.push("/profile");

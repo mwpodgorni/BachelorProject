@@ -58,7 +58,7 @@
               <b-icon
                 class="ml-2"
                 id="icon"
-                style="width: 27px; height: 27px"
+                style="width: 27px; height: 27px;"
                 icon="person-circle"
               ></b-icon>
             </template>
@@ -70,14 +70,14 @@
             <b-icon
               v-b-toggle.sidebar-variant
               id="icon"
-              style="width: 27px; height: 27px"
+              style="width: 27px; height: 27px;"
               icon="people"
             ></b-icon>
           </b-nav-item>
           <b-nav-item v-if="component != 'Games'">
             <b-icon
               id="icon"
-              style="width: 27px; height: 27px"
+              style="width: 27px; height: 27px;"
               icon="arrow-left"
               v-on:click="openGames"
             ></b-icon
@@ -146,7 +146,7 @@ export default {
       dismissSecs: 5,
       dismissCountDown: 0,
       keyword: "",
-      keywordCheck:"",
+      keywordCheck: "",
     };
   },
   computed: {
@@ -181,13 +181,17 @@ export default {
         // Math.floor(Math.random() * 3)
       }
       this.component = "Games";
-      this.$router.push("../games");
+      // this.$router.push("../games");
+      this.$router.go(-1);
     },
     search() {
-      if(this.keyword!=this.$route.params.keyword){
+      if (this.keyword != this.$route.params.keyword) {
         console.log("search");
-      this.keywordCheck=this.keyword;
-      this.$router.push({ name: 'search', params: { keyword: this.keyword }});
+        this.keywordCheck = this.keyword;
+        this.$router.push({
+          name: "search",
+          params: { keyword: this.keyword },
+        });
       }
       // this.$router.push("search/" + this.keyword);
     },

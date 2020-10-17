@@ -17,8 +17,8 @@
                 class="row text-center text-light align-items-center mx-0"
                 v-if="
                   !usersResults.length ||
-                    (usersResults.length == 1 &&
-                      usersResults[0].userId == loggedUser.userId)
+                  (usersResults.length == 1 &&
+                    usersResults[0].userId == loggedUser.userId)
                 "
               >
                 <div class="col px-0">
@@ -31,11 +31,11 @@
                     variant="dark"
                     class="px-1 text-center my-1 list-item"
                     v-for="item in usersResults"
-                    :key="item.username"
+                    :key="item.userId"
                     v-on:click="chooseUser(item.userId)"
                     v-if="item.userId != loggedUser.userId"
                   >
-                    {{ item.username }}
+                    {{ item.displayName }}
                   </b-list-group-item>
                 </b-list-group>
               </div>
@@ -239,27 +239,27 @@ export default {
       vm.gamesResults = [];
       var keyword = vm.$route.params.keyword;
       db.collection("users")
-        .where("username", "==", keyword)
+        .where("displayName", "==", keyword)
         .get()
-        .then(function(querySnapshot) {
-          querySnapshot.forEach(function(doc) {
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
             vm.setUsers(doc.data());
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
       db.collection("games")
         .where("title", "==", keyword)
         .get()
-        .then(function(querySnapshot) {
-          querySnapshot.forEach(function(doc) {
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
             vm.setGames(doc.data());
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, " <=> ", doc.data());
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
     },

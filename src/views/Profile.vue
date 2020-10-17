@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="row" id="recentlyPlayed-row">
-      <div class="col-sm-12 col-md-8 px-2">
+      <div class="col-sm-12 col-md-6 px-2">
         <h3 class="mx-auto my-2 text-center">Recently Played</h3>
         <div
           class="row text-center align-items-center mx-0"
@@ -46,7 +46,11 @@
               </div>
               <div class="col-3 my-auto">
                 <p class="h5">
-                  <b-icon class="float-right" icon="arrow-up"></b-icon>
+                  <b-icon
+                    v-on:click="chooseGame(item.title.replace(/\s/g, ''))"
+                    class="icon float-right"
+                    icon="arrow-up"
+                  ></b-icon>
                 </p>
               </div>
             </div>
@@ -54,7 +58,7 @@
         </b-list-group>
       </div>
 
-      <div class="col-sm-12 col-md-4 px-2">
+      <div class="col-sm-12 col-md-3 px-2">
         <h3 class="mx-auto my-2 text-center">Friends</h3>
         <div
           class="row text-center align-items-center mx-0"
@@ -73,14 +77,63 @@
             :key="item.userId"
           >
             <div class="row mx-0" id="recentlyPlayed-item">
-              <div class="col-9">
-                <div class="row m-0 p-0">
-                  <div class="col m-0 p-0">{{ item.displayName }}</div>
-                </div>
+              <div class="col-9 my-auto">
+                <h5 class="my-auto">{{ item.displayName }}</h5>
               </div>
               <div class="col-3 my-auto">
+                <p class="h4">
+                  <b-icon
+                    v-on:click="chooseUser(item.userId)"
+                    class="icon float-right py-1"
+                    icon="arrow-up"
+                  ></b-icon>
+                </p>
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+      <div class="col-sm-12 col-md-3 px-2">
+        <h3 class="mx-auto my-2 text-center">Invitations</h3>
+        <div
+          class="row text-center align-items-center mx-0"
+          id="no-activity"
+          v-if="!user.data.invitations.length"
+        >
+          <div class="col px-0">
+            <h4 class="my-auto py-auto">No Invitations</h4>
+          </div>
+        </div>
+        <b-list-group
+          id="recentlyPlayed-list"
+          v-if="user.data.invitations.length"
+        >
+          <b-list-group-item
+            variant="dark"
+            class="px-1"
+            v-for="item in user.data.invitations"
+            :key="item.userId"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-8 my-auto">
+                <h5 class="my-auto">{{ item.displayName }}</h5>
+              </div>
+              <div class="col-2 my-auto">
                 <p class="h5">
-                  <b-icon class="float-right" icon="arrow-up"></b-icon>
+                  <b-icon
+                    v-on:click="acceptInvitation(item)"
+                    class="icon float-right"
+                    icon="check2"
+                  ></b-icon>
+                </p>
+              </div>
+              <div class="col-2 my-auto">
+                <p class="h5">
+                  <b-icon
+                    v-on:click="rejectInvitation(item)"
+                    class="icon float-right"
+                    icon="x"
+                  ></b-icon>
                 </p>
               </div>
             </div>
@@ -93,11 +146,11 @@
         <h3 class="mx-auto mb-3 pb-1 text-center">Suggestions</h3>
         <div>
           <div
-            class="text-center w-100 h-100 py-5"
+            class="py-5"
             id="no-suggestions"
             v-if="!user.data.suggestions.length"
           >
-            <h4>No suggestions</h4>
+            <h4 class="text-center">No suggestions</h4>
           </div>
           <div
             v-if="user.data.suggestions.length"
@@ -124,9 +177,10 @@
                 ]"
               >
                 <img
-                  style="height: 220px"
-                  class="d-block mx-auto img-fluid"
-                  src="./../assets/jsq.png"
+                  v-on:click="chooseGame(suggestion.title.replace(/\s/g, ''))"
+                  :src="suggestion.downloadURL"
+                  style="height: 220px;"
+                  class="d-block mx-auto img-fluid suggestion-image"
                   alt="First slide"
                 />
                 <div class="carousel-caption d-md-block">
@@ -185,7 +239,80 @@ export default {
         console.log("index:", element.index);
       });
     },
+    chooseGame(event) {
+      // this.$router.push({name:"games", params:{game:event}});
+      this.$router.push("../../games/" + event);
+      this.$emit("chooseGame", event);
+    },
+    chooseUser(userId) {
+      this.$router.push("../../user-profile/" + userId);
+    },
+    acceptInvitation(userInvite) {
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          friends: firebase.firestore.FieldValue.arrayUnion({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Added to friends.");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error adding to friends: ", error);
+        });
+      db.collection("users")
+        .doc(userInvite.userId)
+        .update({
+          friends: firebase.firestore.FieldValue.arrayUnion({
+            userId: this.user.userId,
+            displayName: this.user.data.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Added to user friends.");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error adding to user friends: ", error);
+        });
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayRemove({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Removed invitation");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error removing invitation: ", error);
+        });
+    },
+    rejectInvitation(userInvite) {
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayRemove({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Removed invitation");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error removing invitation: ", error);
+        });
+    },
   },
+
   computed: {
     // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
@@ -222,5 +349,8 @@ export default {
 }
 #suggestions-row {
   flex-grow: 1;
+}
+.suggestion-image {
+  cursor: pointer;
 }
 </style>

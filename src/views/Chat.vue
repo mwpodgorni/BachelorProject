@@ -1,9 +1,10 @@
 <template>
   <div class="container mt-2">
     <div>
-      <b-button variant="dark" block> Username</b-button>
+      <!-- <b-button variant="dark" block> Username</b-button> -->
+      <b-badge pill variant="dark">Username</b-badge>
       <b-sidebar
-        class="mt-5 pt-5"
+        class="mt-5"
         id="sidebar-variant"
         bg-variant="dark"
         text-variant="light"
@@ -39,7 +40,7 @@
 
     <div class="row">
       <div class="col">
-        <b-input-group style="background-color: white">
+        <b-input-group style="background-color: white;">
           <b-form-input
             v-model="youMessage"
             id="person2-form"

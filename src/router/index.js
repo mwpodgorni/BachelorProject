@@ -58,6 +58,14 @@ const router = new Router({
       },
     },
     {
+      path: "/chat/:userId",
+      name: "chat",
+      component: Chat,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: "/chat",
       name: "chat",
       component: Chat,
