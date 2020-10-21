@@ -1,15 +1,14 @@
 <template>
-  <div>
+  <div class="my-2">
     <div v-if="error" class="error">
       {{ error }}
     </div>
     <div v-if="gamesData" class="grid px-0 mx-0">
-      <!-- <h1>{{ gamesData.length }}</h1> -->
       <figure
         v-for="game in gamesData"
         :key="game.title"
         class="effect-julia"
-        v-on:click="chooseGame(game.title.replace(/\s/g, ''))"
+        v-on:click="chooseGame(game)"
       >
         <img :src="game.downloadURL" alt="cover" />
         <figcaption>
@@ -156,8 +155,6 @@ export default {
     return { gamesData: [], error: null };
   },
   beforeRouteEnter(to, from, next) {
-    // getPost(to.params.id, (err, post) => {});
-    // console.log("to", to);
     var docRef = db.collection("games").doc("games");
     docRef
       .get()
@@ -175,33 +172,11 @@ export default {
       .catch(function (error) {
         console.log("Error getting document:", error);
       });
-    // var storage = firebase.storage();
-    // var storageRef = storage.ref();
-    // storageRef
-    //   .child("square_tower_cover.jpg")
-    //   .getDownloadURL()
-    //   .then(function (url) {
-    //     // `url` is the download URL for 'images/stars.jpg'
-    //     // This can be downloaded directly:
-    //     // var xhr = new XMLHttpRequest();
-    //     // xhr.responseType = "blob";
-    //     // xhr.onload = function (event) {
-    //     //   var blob = xhr.response;
-    //     // };
-    //     // xhr.open("GET", url);
-    //     // xhr.send();
-    //     // Or inserted into an <img> element:
-    //     // var img = document.getElementById("myimg");
-    //     // img.src = url;
-    //     console.log("u", url);
-    //   })
-    //   .catch(function (error) {
-    //     // Handle any errors
-    //   });
   },
   methods: {
     chooseGame(event) {
-      this.$router.push("games/" + event);
+      console.log(event);
+      this.$router.push("games/" + event.title.replace(/\s/g, ""));
       // this.$router.replace({
       //   name: "dashboard"
       // });

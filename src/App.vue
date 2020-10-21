@@ -1,90 +1,92 @@
 <template>
   <div id="app">
-    <b-navbar
-      id="navbar"
-      toggleable="md"
-      type="dark"
-      variant="dark"
-      class="py-0"
-      sticky
-    >
-      <b-navbar-brand>JugSquare</b-navbar-brand>
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <div id="navbar-wrapper">
+      <b-navbar
+        id="navbar"
+        toggleable="sm"
+        type="dark"
+        variant="dark"
+        class="py-0"
+        sticky
+      >
+        <b-navbar-brand>JugSquare</b-navbar-brand>
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item>
-            <router-link to="../games" class="nav-link py-0 my-0"
-              >Games</router-link
-            >
-          </b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-form>
-            <b-form-input
-              v-model="keyword"
-              size="sm"
-              class="mr-sm-2"
-              placeholder="Search"
-            ></b-form-input>
-            <b-button
-              v-model="keyword"
-              @click.prevent="search"
-              variant="outline-light"
-              size="sm"
-              class="my-2 my-sm-0"
-              >Search</b-button
-            >
-          </b-nav-form>
+        <b-collapse id="nav-collapse" is-nav class="align-items-center">
+          <b-navbar-nav>
+            <b-nav-item>
+              <router-link to="../games" class="nav-link py-0 my-0"
+                >Games</router-link
+              >
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-form class="row m-0 pr-2 py-2">
+              <b-form-input
+                v-model="keyword"
+                size="sm"
+                class="col-9"
+                placeholder="Search"
+              ></b-form-input>
+              <b-button
+                v-model="keyword"
+                @click.prevent="search"
+                variant="outline-light"
+                size="sm"
+                class="col-3"
+                >Search</b-button
+              >
+            </b-nav-form>
 
-          <b-nav-item v-if="!user.loggedIn">
-            <router-link to="../login" class="nav-link p-0 ml-2 m-0"
-              >Login</router-link
-            >
-          </b-nav-item>
-          <b-nav-item v-if="!user.loggedIn">
-            <router-link to="../register" class="nav-link p-0 m-0"
-              >Register</router-link
-            >
-          </b-nav-item>
-          <b-nav-item-dropdown right v-if="user.loggedIn">
-            <template v-slot:button-content>
-              <!-- <b-icon
-                class="ml-2"
-                id="icon"
-                icon="person-square"
-                style="width: 27px; height: 27px"
-              ></b-icon> -->
+            <b-nav-item v-if="!user.loggedIn">
+              <router-link to="../login" class="nav-link p-0 m-0"
+                >Login</router-link
+              >
+            </b-nav-item>
+            <b-nav-item v-if="!user.loggedIn">
+              <router-link to="../register" class="nav-link p-0 m-0"
+                >Register</router-link
+              >
+            </b-nav-item>
+            <b-nav-item-dropdown right v-if="user.loggedIn">
+              <template v-slot:button-content>
+                <b-icon
+                  class="my-auto"
+                  id="icon"
+                  style="width: 27px; height: 27px;"
+                  icon="person-circle"
+                ></b-icon>
+              </template>
+              <b-dropdown-item to="../profile">Profile</b-dropdown-item>
+              <b-dropdown-item v-on:click="openChat()"
+                >Messages</b-dropdown-item
+              >
+              <b-dropdown-item @click.prevent="signOut"
+                >Sign Out</b-dropdown-item
+              >
+            </b-nav-item-dropdown>
+            <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
               <b-icon
-                class="ml-2"
+                class="my-auto"
+                v-b-toggle.sidebar-variant
                 id="icon"
                 style="width: 27px; height: 27px;"
-                icon="person-circle"
+                icon="people"
               ></b-icon>
-            </template>
-            <b-dropdown-item to="../profile">Profile</b-dropdown-item>
-            <b-dropdown-item to="../chat">Messages</b-dropdown-item>
-            <b-dropdown-item @click.prevent="signOut">Sign Out</b-dropdown-item>
-          </b-nav-item-dropdown>
-          <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
-            <b-icon
-              v-b-toggle.sidebar-variant
-              id="icon"
-              style="width: 27px; height: 27px;"
-              icon="people"
-            ></b-icon>
-          </b-nav-item>
-          <b-nav-item v-if="component != 'Games'">
-            <b-icon
-              id="icon"
-              style="width: 27px; height: 27px;"
-              icon="arrow-left"
-              v-on:click="openGames"
-            ></b-icon
-          ></b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+            </b-nav-item>
+            <b-nav-item v-if="isGameOpen">
+              <b-icon
+                class="my-auto"
+                id="icon"
+                style="width: 27px; height: 27px;"
+                icon="arrow-left"
+                v-on:click="openGames"
+              ></b-icon
+            ></b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
+      </b-navbar>
+    </div>
 
     <div id="content">
       <transition name="component-fade" mode="out-in">
@@ -154,6 +156,9 @@ export default {
     ...mapGetters({
       user: "user",
     }),
+    isGameOpen() {
+      return this.$route.params.game;
+    },
   },
   methods: {
     signOut() {
@@ -169,10 +174,50 @@ export default {
           // });
         });
     },
+    openChat() {
+      var userId = this.$route.params.userId;
+      if (!userId) {
+        this.$router.push("../../chat");
+      }
+    },
     chooseGame: function (game) {
       console.log("game app", game);
-      this.component = game;
-      document.body.style.background = "#007267";
+      this.user.data.recentlyPlayed.forEach((element) => {
+        if (element.title == game.title) {
+          db.collection("users")
+            .doc(this.user.userId)
+            .update({
+              recentlyPlayed: firebase.firestore.FieldValue.arrayRemove({
+                gameId: element.gameId,
+                lastPlayed: element.lastPlayed,
+                title: element.title,
+              }),
+            })
+            .then(function (doc) {
+              console.log("added to recently Played");
+            })
+            .catch(function (error) {
+              console.log("Error getting document:", error);
+            });
+        }
+      });
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          recentlyPlayed: firebase.firestore.FieldValue.arrayUnion({
+            gameId: "",
+            lastPlayed: new Date(),
+            title: game.title,
+          }),
+        })
+        .then(function (doc) {
+          console.log("added to recently Played");
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+      this.component = game.title.replace(/\s/g, "");
+      // document.body.style.background = "#007267";
     },
     openGames: function () {
       if (this.component != "Games") {
@@ -196,6 +241,7 @@ export default {
       // this.$router.push("search/" + this.keyword);
     },
   },
+
   // mounted: function () {
   //   this.$nextTick(function () {
   //     // Code that will run only after the
@@ -244,29 +290,29 @@ export default {
 }
 
 html,
-body {
-  // overflow: hidden;
-  overflow-x: hidden;
+body,
+#app {
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   background: linear-gradient(to bottom, #09203f 0%, #537895 100%);
-  height: 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 #app {
   // height: 100vh;
   // width: 100vw;
-  display: flex;
-  flex-flow: column;
-  height: 100%;
+  // display: flex;
+  // flex-flow: column;
+  // height: 100%;
+  display: table;
 }
 
 #content {
   // height: 96%;
   // overflow-y: auto;
-  flex-grow: 1 1 auto;
-  width: 100%;
+  display: table-row;
 }
 .account-link,
 .account-link:hover {
@@ -277,34 +323,8 @@ body {
 #navbar {
   background-color: #32383e !important;
 }
-
-// #app {
-//   width: 100%;
-//   height: 100%;
-// }
-// #content {
-//   height: 100%;
-//   overflow-y: auto;
-// }
-// html {
-//   height: 100%;
-// }
-// body {
-//   overflow: hidden;
-//   border: 0;
-//   margin: 0;
-//   padding: 0;
-//   font-family: "Lato";
-//   height: 100%;
-//   justify-content: center;
-//   align-items: center;
-//   margin: 0;
-//   background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
-// background: linear-gradient(
-//   45deg,
-//   rgb(75, 96, 107) 0%,
-//   rgba(96, 125, 139, 1) 48%,
-//   rgb(155, 189, 206) 100%
-// );
-// }
+#navbar-wrapper {
+  height: 40px;
+  display: table-row;
+}
 </style>

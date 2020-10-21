@@ -38,10 +38,11 @@ export default new Vuex.Store({
         .doc(user.uid)
         .onSnapshot(function (doc) {
           // console.log("Current data: ", doc.data());
-          state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
-          state.user.data.suggestions = doc.data().suggestions;
-          state.user.data.friends = doc.data().friends;
-          state.user.data.invitations = doc.data().invitations;
+          state.user.data = doc.data()
+          // state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
+          // state.user.data.suggestions = doc.data().suggestions;
+          // state.user.data.friends = doc.data().friends;
+          // state.user.data.invitations = doc.data().invitations;
         });
     },
     CLEAR_USER(state) {

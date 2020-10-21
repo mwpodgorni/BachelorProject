@@ -9,11 +9,13 @@ import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import VueChatScroll from 'vue-chat-scroll';
+
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-
+Vue.use(VueChatScroll)
 defineIonPhaser(window);
 
 //required for side-effects

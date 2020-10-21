@@ -14,8 +14,7 @@
       <div class="col-sm-12 col-md-6 px-2">
         <h3 class="mx-auto my-2 text-center">Recently Played</h3>
         <div
-          class="row text-center align-items-center mx-0"
-          id="no-activity"
+          class="row text-center align-items-center mx-0 no-activity"
           v-if="!user.data.recentlyPlayed.length"
         >
           <div class="col px-0">
@@ -47,7 +46,7 @@
               <div class="col-3 my-auto">
                 <p class="h5">
                   <b-icon
-                    v-on:click="chooseGame(item.title.replace(/\s/g, ''))"
+                    v-on:click="chooseGame(item)"
                     class="icon float-right"
                     icon="arrow-up"
                   ></b-icon>
@@ -61,8 +60,7 @@
       <div class="col-sm-12 col-md-3 px-2">
         <h3 class="mx-auto my-2 text-center">Friends</h3>
         <div
-          class="row text-center align-items-center mx-0"
-          id="no-activity"
+          class="row text-center align-items-center mx-0 no-activity"
           v-if="!user.data.friends.length"
         >
           <div class="col px-0">
@@ -96,8 +94,7 @@
       <div class="col-sm-12 col-md-3 px-2">
         <h3 class="mx-auto my-2 text-center">Invitations</h3>
         <div
-          class="row text-center align-items-center mx-0"
-          id="no-activity"
+          class="row text-center align-items-center mx-0 no-activity"
           v-if="!user.data.invitations.length"
         >
           <div class="col px-0">
@@ -177,7 +174,7 @@
                 ]"
               >
                 <img
-                  v-on:click="chooseGame(suggestion.title.replace(/\s/g, ''))"
+                  v-on:click="chooseGame(suggestion)"
                   :src="suggestion.downloadURL"
                   style="height: 220px;"
                   class="d-block mx-auto img-fluid suggestion-image"
@@ -241,7 +238,7 @@ export default {
     },
     chooseGame(event) {
       // this.$router.push({name:"games", params:{game:event}});
-      this.$router.push("../../games/" + event);
+      this.$router.push("../../games/" + event.title.replace(/\s/g, ""));
       this.$emit("chooseGame", event);
     },
     chooseUser(userId) {
@@ -329,6 +326,7 @@ export default {
   display: flex;
   flex-flow: column;
   height: 100%;
+  background-color: #32383e;
 }
 #username-row,
 #recentlyPlayed-item {
@@ -338,18 +336,16 @@ export default {
 #suggestions-row {
   background-color: #32383e;
 }
-#no-activity {
-  height: 270px;
+.no-activity {
+  height: 265px;
   background-color: #636a70;
 }
 #recentlyPlayed-list {
   overflow: auto;
-  height: 270px;
+  max-height: 265px;
   /* height: 50%; */
 }
-#suggestions-row {
-  flex-grow: 1;
-}
+
 .suggestion-image {
   cursor: pointer;
 }

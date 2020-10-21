@@ -71,7 +71,7 @@
                     class="col-md-6 my-1 px-1"
                     v-for="game in gamesResults"
                     :key="game.title"
-                    v-on:click="chooseGame(game.title.replace(/\s/g, ''))"
+                    v-on:click="chooseGame(game)"
                   >
                     <div>
                       <img
@@ -228,7 +228,7 @@ export default {
     test() {},
     chooseGame(event) {
       // this.$router.push({name:"games", params:{game:event}});
-      this.$router.push("../../games/" + event);
+      this.$router.push("../../games/" + event.title.replace(/\s/g, ""));
       this.$emit("chooseGame", event);
     },
     chooseUser(userId) {
@@ -267,13 +267,6 @@ export default {
 };
 </script>
 <style>
-#search-results {
-  /* display: flex; */
-  /* flex-flow: column; */
-  height: 100%;
-  /* overflow-y: hidden; */
-  /* background-color: #32383e; */
-}
 #search-results * {
   /* color: white; */
 }
@@ -295,9 +288,5 @@ export default {
   height: 180px;
   width: 150px;
   background-color: #636a70;
-  /* background-image: url("../assets/games/3-square_tower/cover.jpg"); */
-  /* background-size: cover; */
-}
-#game-tile {
 }
 </style>

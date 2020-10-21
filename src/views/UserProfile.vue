@@ -55,14 +55,14 @@
                 <div class="row m-0 p-0">
                   <div class="col m-0 p-0">
                     Last played on:
-                    {{ item.lastPlayed }}
+                    {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
                   </div>
                 </div>
               </div>
               <div class="col-3 my-auto">
                 <p class="h5">
                   <b-icon
-                    v-on:click="chooseGame(item.title.replace(/\s/g, ''))"
+                    v-on:click="chooseGame(item)"
                     class="icon float-right"
                     icon="arrow-up"
                   ></b-icon>
@@ -85,50 +85,7 @@ export default {
       viewedUser: null,
       displayInviteIcon: false,
       displayMessageIcon: false,
-      recentlyPlayed: [
-        {
-          title: "Game Title 1",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 2",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 3",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 4",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 5",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 6",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 7",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 8",
-          lastPlayed: "16.04.2020",
-        },
-        {
-          title: "Game Title 9",
-          lastPlayed: "16.04.2020",
-        },
-      ],
     };
-  },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.initializeSearch(vm);
-    });
   },
   computed: {
     // map `this.user` to `this.$store.getters.user`
@@ -136,78 +93,125 @@ export default {
       user: "user",
     }),
   },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.initializeUserProfile(vm);
+      vm.listenForUpdates(vm);
+    });
+  },
   methods: {
-    chooseUser: function (user) {
-      console.log("user profile", user);
-    },
-    setViewedUser(data) {
-      this.viewedUser = data;
-      this.checkUsers();
-    },
-    checkUsers() {
-      var invitations = [];
-      var friends = [];
-      this.viewedUser.invitations.forEach((element) => {
-        invitations.push(element.userId);
-      });
-      this.viewedUser.friends.forEach((element) => {
-        friends.push(element.userId);
-      });
-      if (friends.includes(this.user.userId)) {
-        this.displayInviteIcon = false;
-        this.displayMessageIcon = true;
-      } else {
-        if (invitations.includes(this.user.userId)) {
-          this.displayInviteIcon = false;
-        } else {
-          this.displayInviteIcon = true;
-        }
-        this.displayMessageIcon = false;
-      }
-    },
-    chooseGame(event) {
-      // this.$router.push({name:"games", params:{game:event}});
-      this.$router.push("../../games/" + event);
-      this.$emit("chooseGame", event);
-    },
-    initializeSearch(vm) {
+    initializeUserProfile(vm) {
       var keyword = vm.$route.params.username;
       db.collection("users")
         .doc(keyword)
-        .get()
-        .then(function (doc) {
-          if (doc.exists) {
-            vm.setViewedUser(doc.data());
-          } else {
-            console.log("No such document!");
-          }
-        })
-        .catch(function (error) {
-          console.log("Error getting document:", error);
+        .onSnapshot(function (doc) {
+          vm.viewedUser = doc.data();
         });
+    },
+    listenForUpdates(vm) {
+      var keyword = vm.$route.params.username;
+      db.collection("users")
+        .doc(keyword)
+        .onSnapshot(function (doc) {
+          var invitations = [];
+          var friends = [];
+          if (vm.viewedUser) {
+            vm.viewedUser.invitations.forEach((element) => {
+              invitations.push(element.userId);
+            });
+            vm.viewedUser.friends.forEach((element) => {
+              friends.push(element.userId);
+            });
+            if (friends.includes(vm.user.userId) && vm.user.loggedIn) {
+              vm.displayInviteIcon = false;
+              vm.displayMessageIcon = true;
+            } else {
+              if (invitations.includes(vm.user.userId) && vm.user.loggedIn) {
+                vm.displayInviteIcon = false;
+              } else {
+                vm.displayInviteIcon = true;
+              }
+              vm.displayMessageIcon = false;
+            }
+          }
+        });
+    },
+    chooseGame(event) {
+      // this.$router.push({name:"games", params:{game:event}});
+      this.$router.push("../../games/" + event.title.replace(/\s/g, ""));
+      this.$emit("chooseGame", event);
     },
     sendInvite() {
       var keyword = this.$route.params.username;
-      db.collection("users")
-        .doc(keyword)
-        .update({
-          invitations: firebase.firestore.FieldValue.arrayUnion({
-            userId: this.user.userId,
-            displayName: this.user.data.displayName,
-          }),
-        })
-        .then(() => {
-          console.log("Document successfully updated!");
-          this.viewedUser.invitations.push({
-            userId: this.user.userId,
-            displayName: this.user.data.displayName,
+      var invitations = [];
+      this.user.data.invitations.forEach((element) => {
+        invitations.push(element.userId);
+      });
+      if (invitations.includes(this.viewedUser.userId)) {
+        db.collection("users")
+          .doc(this.user.userId)
+          .update({
+            friends: firebase.firestore.FieldValue.arrayUnion({
+              userId: this.viewedUser.userId,
+              displayName: this.viewedUser.displayName,
+            }),
+          })
+          .then(() => {
+            console.log("Added to friends.");
+          })
+          .catch(function (error) {
+            console.error("Error adding to friends: ", error);
           });
-          this.checkUsers();
-        })
-        .catch(function (error) {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
+        db.collection("users")
+          .doc(this.viewedUser.userId)
+          .update({
+            friends: firebase.firestore.FieldValue.arrayUnion({
+              userId: this.user.userId,
+              displayName: this.user.data.displayName,
+            }),
+          })
+          .then(() => {
+            console.log("Added to user friends.");
+          })
+          .catch(function (error) {
+            console.error("Error adding to user friends: ", error);
+          });
+        var invitations = [];
+        this.user.data.invitations.forEach((element) => {
+          invitations.push(element.userId);
         });
+        if (invitations.includes(this.viewedUser.userId)) {
+          db.collection("users")
+            .doc(this.user.userId)
+            .update({
+              invitations: firebase.firestore.FieldValue.arrayRemove({
+                userId: this.viewedUser.userId,
+                displayName: this.viewedUser.displayName,
+              }),
+            })
+            .then(() => {
+              console.log("removed invitation from user account");
+            })
+            .catch(function (error) {
+              console.error("Error removing invitation: ", error);
+            });
+        }
+      } else {
+        db.collection("users")
+          .doc(keyword)
+          .update({
+            invitations: firebase.firestore.FieldValue.arrayUnion({
+              userId: this.user.userId,
+              displayName: this.user.data.displayName,
+            }),
+          })
+          .then(() => {
+            console.log("Document successfully updated!");
+          })
+          .catch(function (error) {
+            console.error("Error updating document: ", error);
+          });
+      }
     },
     removeFromFriends() {
       var keyword = this.$route.params.username;
@@ -225,13 +229,9 @@ export default {
             }),
           })
           .then(() => {
-            this.user.data.friends = this.user.data.friends.filter(
-              (element) => element.userId != this.viewedUser.userId
-            );
             console.log("Removed from user friends.");
           })
           .catch(function (error) {
-            // The document probably doesn't exist.
             console.error("Error removing from user friends: ", error);
           });
         db.collection("users")
@@ -249,10 +249,8 @@ export default {
             console.log("removed from friends.");
           })
           .catch(function (error) {
-            // The document probably doesn't exist.
             console.error("Error removing from friends: ", error);
           });
-        this.checkUsers();
       } else {
         this.removeInvitation();
       }
@@ -264,23 +262,58 @@ export default {
         .update({
           invitations: firebase.firestore.FieldValue.arrayRemove({
             userId: this.user.userId,
-            username: this.user.data.displayName,
+            displayName: this.user.data.displayName,
           }),
         })
         .then(() => {
-          this.viewedUser.invitations = this.viewedUser.invitations.filter(
-            (element) => element.userId != this.user.userId
-          );
-          this.checkUsers();
+          console.log("removed invitation from viewed user account");
         })
         .catch(function (error) {
-          // The document probably doesn't exist.
           console.error("Error removing invitation: ", error);
         });
     },
     openConversation() {
+      var createConversation = true;
+      var vueInstance = this;
+      db.collection("conversations")
+        .where("participants", "array-contains", this.user.userId)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(function (doc) {
+            if (
+              doc.data().participants.includes(vueInstance.viewedUser.userId)
+            ) {
+              createConversation = false;
+            } else {
+            }
+          });
+          if (createConversation) {
+            let docId = db.collection("conversations").doc().id;
+            db.collection("conversations")
+              .doc(docId)
+              .set({
+                conversationId: docId,
+                createdAt: new Date(),
+                creatorId: this.user.userId,
+                messages: [],
+                usernames: [
+                  this.user.data.displayName,
+                  this.viewedUser.displayName,
+                ],
+                participants: [this.user.userId, this.viewedUser.userId],
+              })
+              .then(function () {
+                console.log("Document successfully written!");
+              })
+              .catch(function (error) {
+                console.error("Error writing document: ", error);
+              });
+          }
+        });
       var keyword = this.$route.params.username;
-      this.$router.push("../../chat/" + keyword);
+      const path = `/chat/${keyword}`;
+      if (this.$route.path !== path) this.$router.push(path);
+      // this.$router.push("../../chat/" + keyword);
     },
   },
 };
