@@ -176,7 +176,7 @@ export default {
   methods: {
     chooseGame(event) {
       console.log(event);
-      this.$router.push("games/" + event.title.replace(/\s/g, ""));
+      this.$router.push("games/" + event.title);
       // this.$router.replace({
       //   name: "dashboard"
       // });

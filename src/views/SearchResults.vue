@@ -228,7 +228,7 @@ export default {
     test() {},
     chooseGame(event) {
       // this.$router.push({name:"games", params:{game:event}});
-      this.$router.push("../../games/" + event.title.replace(/\s/g, ""));
+      this.$router.push("../../games/" + event.title);
       this.$emit("chooseGame", event);
     },
     chooseUser(userId) {

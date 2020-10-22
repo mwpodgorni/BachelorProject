@@ -38,12 +38,12 @@
               >
             </b-nav-form>
 
-            <b-nav-item v-if="!user.loggedIn">
+            <b-nav-item v-if="!user.loggedIn" class="my-auto">
               <router-link to="../login" class="nav-link p-0 m-0"
                 >Login</router-link
               >
             </b-nav-item>
-            <b-nav-item v-if="!user.loggedIn">
+            <b-nav-item v-if="!user.loggedIn" class="my-auto">
               <router-link to="../register" class="nav-link p-0 m-0"
                 >Register</router-link
               >
@@ -103,18 +103,6 @@
 </template>
 
 <script>
-import SquarePlatformer from "@/components/games/1-square_platformer/SquarePlatformer";
-import SameSquare from "@/components/games/2-same_square/SameSquare";
-import SquareTower from "@/components/games/3-square_tower/SquareTower";
-import PerfectSquare from "@/components/games/4-perfect_square/PerfectSquare";
-import FlyingSquare from "@/components/games/5-flying_square/FlyingSquare";
-import SquareRide from "@/components/games/6-square_ride/SquareRide";
-import SpinningSquares from "@/components/games/7-spinning_squares/SpinningSquares";
-import BouncingSquare from "@/components/games/8-bouncing_square/BouncingSquare";
-import SquareShip from "@/components/games/9-square_ship/SquareShip";
-import SquareSlingshot from "@/components/games/10-square_slingshot/SquareSlingshot";
-import DrawRoad from "@/components/games/11-draw_road/DrawRoad";
-import SquareSnake from "@/components/games/12-square_snake/SquareSnake";
 import Games from "@/views/Games";
 // import { store, mutations } from "@/store.js";
 import { mapGetters } from "vuex";
@@ -122,18 +110,6 @@ import firebase from "firebase";
 export default {
   name: "App",
   components: {
-    SquarePlatformer,
-    SameSquare,
-    SquareTower,
-    PerfectSquare,
-    FlyingSquare,
-    SquareRide,
-    SpinningSquares,
-    BouncingSquare,
-    SquareShip,
-    SquareSlingshot,
-    DrawRoad,
-    SquareSnake,
     Games,
   },
   data() {
@@ -182,40 +158,43 @@ export default {
     },
     chooseGame: function (game) {
       console.log("game app", game);
-      this.user.data.recentlyPlayed.forEach((element) => {
-        if (element.title == game.title) {
-          db.collection("users")
-            .doc(this.user.userId)
-            .update({
-              recentlyPlayed: firebase.firestore.FieldValue.arrayRemove({
-                gameId: element.gameId,
-                lastPlayed: element.lastPlayed,
-                title: element.title,
-              }),
-            })
-            .then(function (doc) {
-              console.log("added to recently Played");
-            })
-            .catch(function (error) {
-              console.log("Error getting document:", error);
-            });
-        }
-      });
-      db.collection("users")
-        .doc(this.user.userId)
-        .update({
-          recentlyPlayed: firebase.firestore.FieldValue.arrayUnion({
-            gameId: "",
-            lastPlayed: new Date(),
-            title: game.title,
-          }),
-        })
-        .then(function (doc) {
-          console.log("added to recently Played");
-        })
-        .catch(function (error) {
-          console.log("Error getting document:", error);
+      if (this.user.loggedIn) {
+        this.user.data.recentlyPlayed.forEach((element) => {
+          if (element.title == game.title) {
+            db.collection("users")
+              .doc(this.user.userId)
+              .update({
+                recentlyPlayed: firebase.firestore.FieldValue.arrayRemove({
+                  gameId: element.gameId,
+                  lastPlayed: element.lastPlayed,
+                  title: element.title,
+                }),
+              })
+              .then(function (doc) {
+                console.log("added to recently Played");
+              })
+              .catch(function (error) {
+                console.log("Error getting document:", error);
+              });
+          }
         });
+        db.collection("users")
+          .doc(this.user.userId)
+          .update({
+            recentlyPlayed: firebase.firestore.FieldValue.arrayUnion({
+              gameId: "",
+              lastPlayed: new Date(),
+              title: game.title,
+            }),
+          })
+          .then(function (doc) {
+            console.log("added to recently Played");
+          })
+          .catch(function (error) {
+            console.log("Error getting document:", error);
+          });
+      }
+
       this.component = game.title.replace(/\s/g, "");
       // document.body.style.background = "#007267";
     },

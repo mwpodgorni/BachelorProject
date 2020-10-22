@@ -161,24 +161,6 @@ export default {
                 vueInstance.openConversation(doc.data());
               }
             }
-
-            // console.log("foreach");
-            // console.log(doc.data());
-            // console.log(vueInstance.activeConversation);
-            // if (vueInstance.activeConversation) {
-            //   console.log("if 1");
-            //   if (
-            //     vueInstance.activeConversation.conversationId ==
-            //     doc.data().conversationId
-            //   ) {
-            //     console.log("if 2");
-            //     vueInstance.openConversation(doc.data());
-            //   }
-            // }
-            // if (userId && doc.data().participants.includes(userId)) {
-            //   console.log("if 3");
-            //   vueInstance.openConversation(doc.data());
-            // }
           });
           if (!userId) {
             this.openLatestConversation();
@@ -234,33 +216,6 @@ export default {
       } else {
         this.displayName = this.activeConversation.usernames[0];
       }
-
-      // var param = this.$route.params.userId;
-      // if (!param) {
-      //   this.$router.push({
-      //     name: "chat",
-      //     params: { userId: uid },
-      //   });
-      // } else if (param != uid) {
-      //   this.$router.push({
-      //     name: "chat",
-      //     params: { userId: uid },
-      //   });
-      // }
-
-      // if (!data.participants.includes(uid)) {
-      //   if (data.participantId == this.user.userId) {
-      //     this.$router.push({
-      //       name: "chat",
-      //       params: { userId: data.creatorId },
-      //     });
-      //   } else {
-      //     this.$router.push({
-      //       name: "chat",
-      //       params: { userId: data.participantId },
-      //     });
-      //   }
-      // }
       this.initializeConversation();
     },
     initializeConversation() {

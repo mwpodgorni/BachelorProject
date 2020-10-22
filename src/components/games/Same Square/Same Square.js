@@ -1,20 +1,19 @@
 import Phaser from "phaser";
 import Start from "./scenes/start";
-import One from "./scenes/levels/one";
+import Main from "./scenes/main";
 import End from "./scenes/end";
-function launch(containerId) {
+function launch(containerId, height, width) {
   return new Phaser.Game({
-    type: Phaser.AUTWEBGL,
+    type: Phaser.AUTO,
     parent: containerId,
     transparent: true,
-    backgroundColor: "#00574e",
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: 640,
-      height: 960
+      width: width,
+      height: height
     },
-    scene: [Start, One, End]
+    scene: [Start, Main, End]
   });
 }
 
