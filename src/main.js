@@ -33,16 +33,14 @@ firebase.initializeApp({
 });
 //Initialize Cloud Firestore trhough Firebase
 var db = firebase.firestore();
-//Disable deprecated features
+
 window.db = db;
-// firebase.analytics();
+firebase.analytics();
+
 let app;
 firebase.auth().onAuthStateChanged((user) => {
   console.log("authentication");
   if (user) {
-    // console.log("user", user);
-    // console.log("nme", user.displayName);
-    // console.log("email", user.email);
     store.dispatch("fetchUser", user);
     store.dispatch("fetchUserData", user);
   } else {

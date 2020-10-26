@@ -1,8 +1,8 @@
 <template>
-  <div class="container h-100" id="register">
+  <div class="container h-100" id="login">
     <div class="row justify-content-center h-100">
       <div class="col-md-8">
-        <div class="card text-white bg-dark mt-5">
+        <div class="card text-white mt-5">
           <div class="card-header">Login</div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
@@ -63,7 +63,6 @@
 
 <script>
 import firebase from "firebase";
-
 export default {
   name: "Login",
   data() {
@@ -83,7 +82,7 @@ export default {
         .then((user) => {
           this.$store.dispatch("fetchUser", user.user);
           this.$store.dispatch("fetchUserData", user.user);
-          this.$router.replace({ name: "profile" });
+          this.$router.push({ name: "profile" });
         })
         .catch((error) => {
           this.error = error.message;
@@ -92,11 +91,4 @@ export default {
   },
 };
 </script>
-<style>
-#register {
-  display: flex;
-  flex-flow: column;
-  height: 100vh;
-  flex-grow: 1;
-}
-</style>
+<style></style>

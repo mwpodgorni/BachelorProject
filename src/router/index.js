@@ -65,14 +65,6 @@ const router = new Router({
         requiresAuth: true,
       },
     },
-    // {
-    //   path: "/chat",
-    //   name: "chat",
-    //   component: Chat,
-    //   meta: {
-    //     requiresAuth: true,
-    //   },
-    // },
     {
       path: "/login",
       name: "login",
@@ -115,8 +107,5 @@ router.beforeEach((to, from, next) => {
       next(); // go to wherever I'm going
     }
   }
-  // else {
-  //   next(); // does not require auth, make sure to always call next()!
-  // }
 });
 export default router;

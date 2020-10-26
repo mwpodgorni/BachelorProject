@@ -1,41 +1,39 @@
 <template>
-  <div class="container py-2" id="chat-wrapper">
+  <div class="container px-0" id="chat-wrapper">
     <div>
       <b-sidebar
         width="180px"
         visible
         z-index="5"
         id="sidebar-variant"
-        bg-variant="dark"
         text-variant="light"
+        class="color2"
         no-header
         right
         shadow
       >
         <template #footer="{ hide }">
-          <div class="d-flex px-1 bg-dark text-light align-items-center py-2">
+          <div class="d-flex px-1 text-light align-items-center py-2 color2">
             <b-button variant="outline-light" block @click="hide"
               >Close</b-button
             >
           </div>
         </template>
-        <div class="py-2 text-center">
+        <div class="py-3 text-center color2">
           <h4>Conversations</h4>
           <b-button
             size="lg"
-            class="m-0"
+            class="m-0 sidebar-user"
             block
             v-for="item in conversations"
             :key="item.conversationId"
-            variant="dark"
             v-on:click="switchConversation(item)"
             >{{ item.otherUser }}</b-button
           >
         </div>
       </b-sidebar>
     </div>
-
-    <div v-if="activeConversation">
+    <div v-if="activeConversation" class="color1">
       <b-button
         class="my-1"
         v-on:click="openUserProfile()"
@@ -57,26 +55,20 @@
           {{ message.content }}
         </p>
       </section>
-      <div class="row">
-        <div class="col">
-          <b-input-group style="background-color: white;">
-            <b-form-input
-              v-model="youMessage"
-              id="person2-form"
-              placeholder="Type your message"
-              type="text"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button
-                @click.prevent="sendMessage()"
-                variant="outline-dark"
-                class=""
-                >Send</b-button
-              >
-            </b-input-group-append>
-          </b-input-group>
-        </div>
-      </div>
+      <b-input-group style="background-color: white;">
+        <b-form-input
+          v-model="youMessage"
+          id="input-form"
+          placeholder="Type your message"
+          type="text"
+          @keyup.enter="sendMessage"
+        ></b-form-input>
+        <b-input-group-append>
+          <b-button @click.prevent="sendMessage()" class="send-button"
+            >Send</b-button
+          >
+        </b-input-group-append>
+      </b-input-group>
     </div>
   </div>
 </template>
@@ -98,14 +90,12 @@ export default {
     this.initializeChat();
   },
   computed: {
-    // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
       user: "user",
     }),
   },
   methods: {
     openUserProfile() {
-      console.log("active", this.activeConversation);
       var username;
       this.activeConversation.participants.forEach((p) => {
         if (p != this.user.userId) {
@@ -116,7 +106,6 @@ export default {
     },
     sendMessage() {
       if (this.youMessage) {
-        console.log("active", this.activeConversation);
         db.collection("conversations")
           .doc(this.activeConversation.conversationId)
           .update({
@@ -151,7 +140,6 @@ export default {
       db.collection("conversations")
         .where("participants", "array-contains", this.user.userId)
         .onSnapshot((querySnapshot) => {
-          console.log("query");
           userId = this.$route.params.userId;
           this.conversations = [];
           querySnapshot.forEach(function (doc) {
@@ -165,7 +153,6 @@ export default {
           if (!userId) {
             this.openLatestConversation();
           }
-          //open latest conversation
         });
     },
     openLatestConversation() {
@@ -209,7 +196,6 @@ export default {
     },
     openConversation(data) {
       this.messages = [];
-      // this.displayName = "";
       this.activeConversation = data;
       if (this.activeConversation.usernames[0] == this.user.data.displayName) {
         this.displayName = this.activeConversation.usernames[1];
@@ -236,20 +222,16 @@ export default {
   display: flex;
   flex-flow: column;
   height: 100%;
-  background-color: #32383e;
+  background-color: #133b5c;
 }
 .chat-area {
-  /*   border: 1px solid #ccc; */
-  background: white;
-  /* height: 50vh; */
-  /* height: 550px; */
-  height: 78vh;
+  background: #fcdab7;
+  height: 80vh;
   border-radius: 5px;
   bottom: 0;
   top: 0;
   padding: 1em;
   overflow-y: auto;
-  /* max-width: 350px; */
   margin: 0s auto 2em auto;
   box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3);
 }
@@ -257,21 +239,32 @@ export default {
   width: 45%;
   border-radius: 10px;
   padding: 0.5em;
-  /*   margin-bottom: .5em; */
   font-size: 0.8em;
 }
 .message-out {
-  background: #407fff;
+  background: #133b5c;
   color: white;
   margin-left: 55%;
 }
 .message-in {
-  background: #f1f0f0;
-  color: black;
+  background: #1e5f74;
+  color: white;
 }
-.chat-inputs {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+.b-sidebar-body {
+  background-color: #133b5c;
+}
+.sidebar-user {
+  background-color: #133b5c !important;
+}
+.sidebar-user:hover {
+  background-color: #1e5f74 !important;
+}
+.send-button {
+  background-color: white !important;
+  color: black !important;
+}
+.send-button:hover {
+  background-color: #133b5c !important;
+  color: white !important;
 }
 </style>

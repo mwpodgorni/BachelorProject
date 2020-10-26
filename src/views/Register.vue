@@ -1,8 +1,8 @@
 <template>
-  <div class="container h-100">
+  <div class="container h-100 register">
     <div class="row justify-content-center h-100">
       <div class="col-md-8">
-        <div class="card text-white bg-dark mt-5">
+        <div class="card text-white mt-5">
           <div class="card-header">Register</div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
@@ -114,8 +114,7 @@ export default {
                   friends: [],
                   invitations: [],
                 });
-                this.$store.dispatch("fetchUser", res.user);
-                this.$router.push("/profile");
+                this.$router.push({ name: "profile" });
               });
           })
           .catch((error) => {

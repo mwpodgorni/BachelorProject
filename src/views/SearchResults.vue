@@ -2,17 +2,20 @@
   <div class="container-fluid mt-2" id="search-results">
     <div class="row">
       <div class="col-sm-12 col-md-6 px-1">
-        <b-card no-body class="mb-1" bg-variant="dark">
+        <b-card no-body class="mb-1 card">
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.users variant="dark">Users</b-button>
+            <b-button block v-b-toggle.users class="accordion-button"
+              >Users</b-button
+            >
           </b-card-header>
           <b-collapse
             id="users"
             visible
             accordion="users-accordion"
             role="tabpanel"
+            class="color2"
           >
-            <b-card-body class="bg-dark p-0">
+            <b-card-body class="p-0">
               <div
                 class="row text-center text-light align-items-center mx-0"
                 v-if="
@@ -21,14 +24,14 @@
                     usersResults[0].userId == loggedUser.userId)
                 "
               >
-                <div class="col px-0">
+                <div class="col px-0 color3">
                   <h4 class="my-5 py-auto">No users for searched keyword</h4>
                 </div>
               </div>
               <div id="search-users">
                 <b-list-group v-if="usersResults.length" class="my-1 px-1">
                   <b-list-group-item
-                    variant="dark"
+                    id="user-item"
                     class="px-1 text-center my-1 list-item"
                     v-for="item in usersResults"
                     :key="item.userId"
@@ -44,9 +47,11 @@
         </b-card>
       </div>
       <div class="col-sm-12 col-md-6 px-1">
-        <b-card no-body class="mb-1" bg-variant="dark">
+        <b-card no-body class="mb-1 card">
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.games variant="dark">Games</b-button>
+            <b-button block v-b-toggle.games class="accordion-button"
+              >Games</b-button
+            >
           </b-card-header>
           <b-collapse
             id="games"
@@ -54,13 +59,13 @@
             accordion="games-accordion"
             role="tabpanel"
           >
-            <b-card-body class="bg-dark p-0">
+            <b-card-body class="p-0">
               <div
                 class="row text-center text-light align-items-center mx-0"
                 v-if="!gamesResults.length"
               >
-                <div class="col px-0">
-                  <h4 class="my-5 py-auto" v-on:click="check">
+                <div class="col px-0 color3">
+                  <h4 class="my-5 py-auto">
                     No games for search keyword
                   </h4>
                 </div>
@@ -103,74 +108,14 @@ export default {
       keyword: null,
       usersResults: [],
       gamesResults: [],
-      searchGames: [
-        {
-          title: "Game Title1",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title2",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title3",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title4",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title5",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title6",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title7",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-        {
-          title: "Game Title8",
-          source: require("../assets/games/3-square_tower/cover.jpg"),
-        },
-      ],
-      searchUsers: [
-        { username: "User1" },
-        { username: "User2" },
-        { username: "User3" },
-        { username: "User4" },
-        { username: "User5" },
-        { username: "User6" },
-        { username: "User7" },
-        { username: "User8" },
-        { username: "User9" },
-        { username: "User10" },
-        { username: "User11" },
-        { username: "User12" },
-        { username: "User13" },
-        { username: "User14" },
-        { username: "User15" },
-        { username: "User16" },
-        { username: "User17" },
-        { username: "User18" },
-        { username: "User19" },
-        { username: "User20" },
-      ],
     };
   },
-  // created () {
-  //     this.initializeSearch();
-  // },
   watch: {
     $route(to, from) {
       this.initializeSearch(this);
     },
   },
   computed: {
-    // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
       loggedUser: "user",
     }),
@@ -179,46 +124,8 @@ export default {
     next((vm) => {
       vm.initializeSearch(vm);
     });
-    //   console.log("route en")
-    //   console.log(to.params);
-    //   var keyword = to.params.keyword;
-    //   db.collection("users")
-    //   .where("username", "==", keyword)
-    //   .get()
-    //   .then(function (querySnapshot){
-    //     console.log("l",querySnapshot.length)
-    //     querySnapshot.forEach(function(doc){
-    //             console.log("in")
-    //     next((vm)=>vm.setUsers(doc.data()));
-    //     })
-    //         next();
-    //     console.log("out")
-    //   })
-    //   .catch(function (error){
-    //     console.log("Error getting documents: ", error);
-    //   });
-    //   db.collection("games")
-    //     .where("title", "==", keyword)
-    //     .get()
-    //     .then(function (querySnapshot) {
-    //       querySnapshot.forEach(function (doc) {
-    //         next((vm)=>vm.setGames(doc.data()));
-    //         // doc.data() is never undefined for query doc snapshots
-    //         // console.log(doc.id, " <=> ", doc.data());
-
-    //       });
-    //           next();
-    //       console.log("out2")
-    //     })
-    //     .catch(function (error) {
-    //       console.log("Error getting documents: ", error);
-    //     });
   },
   methods: {
-    check() {
-      console.log(this.usersResults[0].userId);
-      console.log(this.loggedUser.userId);
-    },
     setUsers(data) {
       this.usersResults.push(data);
     },
@@ -227,7 +134,6 @@ export default {
     },
     test() {},
     chooseGame(event) {
-      // this.$router.push({name:"games", params:{game:event}});
       this.$router.push("../../games/" + event.title);
       this.$emit("chooseGame", event);
     },
@@ -255,8 +161,6 @@ export default {
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
             vm.setGames(doc.data());
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " <=> ", doc.data());
           });
         })
         .catch(function (error) {
@@ -267,13 +171,13 @@ export default {
 };
 </script>
 <style>
-#search-results * {
-  /* color: white; */
-}
 #search-users {
-  /* overflow-x: hidden; */
   overflow-y: auto;
   max-height: 600px;
+  background-color: transparent !important;
+}
+.list-group {
+  background-color: #133b5c !important;
 }
 #search-games {
   overflow-y: auto;
@@ -287,6 +191,15 @@ export default {
 .game-tile {
   height: 180px;
   width: 150px;
-  background-color: #636a70;
+}
+.card {
+  background-color: #133b5c !important;
+}
+#user-item {
+  background-color: #1e5f74 !important;
+  color: white;
+}
+.accordion-button {
+  background-color: #1d2d50 !important;
 }
 </style>

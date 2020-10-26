@@ -11,13 +11,13 @@
       </div>
     </div>
     <div class="row" id="recentlyPlayed-row">
-      <div class="col-sm-12 col-md-6 px-2">
+      <div class="col-sm-12 col-md-6 px-2 color2">
         <h3 class="mx-auto my-2 text-center">Recently Played</h3>
         <div
           class="row text-center align-items-center mx-0 no-activity"
           v-if="!user.data.recentlyPlayed.length"
         >
-          <div class="col px-0">
+          <div class="col px-0 color3">
             <h4 class="my-auto py-auto">No recent activity</h4>
           </div>
         </div>
@@ -26,8 +26,7 @@
           v-if="user.data.recentlyPlayed.length"
         >
           <b-list-group-item
-            variant="dark"
-            class="px-1"
+            class="p-1 list-item"
             v-for="item in user.data.recentlyPlayed"
             :key="item.title"
           >
@@ -56,21 +55,19 @@
           </b-list-group-item>
         </b-list-group>
       </div>
-
-      <div class="col-sm-12 col-md-3 px-2">
+      <div class="col-sm-12 col-md-3 px-2 color2">
         <h3 class="mx-auto my-2 text-center">Friends</h3>
         <div
           class="row text-center align-items-center mx-0 no-activity"
           v-if="!user.data.friends.length"
         >
-          <div class="col px-0">
+          <div class="col px-0 color3">
             <h4 class="my-auto py-auto">No friends</h4>
           </div>
         </div>
-        <b-list-group id="recentlyPlayed-list" v-if="user.data.friends.length">
+        <b-list-group v-if="user.data.friends.length">
           <b-list-group-item
-            variant="dark"
-            class="px-1"
+            class="p-1 list-item"
             v-for="item in user.data.friends"
             :key="item.userId"
           >
@@ -91,7 +88,7 @@
           </b-list-group-item>
         </b-list-group>
       </div>
-      <div class="col-sm-12 col-md-3 px-2">
+      <div class="col-sm-12 col-md-3 px-2 color2">
         <h3 class="mx-auto my-2 text-center">Invitations</h3>
         <div
           class="row text-center align-items-center mx-0 no-activity"
@@ -106,8 +103,7 @@
           v-if="user.data.invitations.length"
         >
           <b-list-group-item
-            variant="dark"
-            class="px-1"
+            class="p-1 list-item"
             v-for="item in user.data.invitations"
             :key="item.userId"
           >
@@ -140,10 +136,10 @@
     </div>
     <div class="row" id="suggestions-row">
       <div class="col px-0 py-2">
-        <h3 class="mx-auto mb-3 pb-1 text-center">Suggestions</h3>
+        <h3 class="mx-auto mb-3 py-2 text-center">Suggestions</h3>
         <div>
           <div
-            class="py-5"
+            class="py-5 color3"
             id="no-suggestions"
             v-if="!user.data.suggestions.length"
           >
@@ -229,15 +225,14 @@ export default {
       carouselActiveClass: "active",
     };
   },
+  computed: {
+    // map `this.user` to `this.$store.getters.user`
+    ...mapGetters({
+      user: "user",
+    }),
+  },
   methods: {
-    check() {
-      // @click.prevent="check"
-      this.user.data.suggestions.forEach((element) => {
-        console.log("index:", element.index);
-      });
-    },
     chooseGame(event) {
-      // this.$router.push({name:"games", params:{game:event}});
       this.$router.push("../../games/" + event.title);
       this.$emit("chooseGame", event);
     },
@@ -309,13 +304,6 @@ export default {
         });
     },
   },
-
-  computed: {
-    // map `this.user` to `this.$store.getters.user`
-    ...mapGetters({
-      user: "user",
-    }),
-  },
 };
 </script>
 <style>
@@ -326,26 +314,27 @@ export default {
   display: flex;
   flex-flow: column;
   height: 100%;
-  background-color: #32383e;
+  background-color: #133b5c;
 }
-#username-row,
+#username-row {
+  background-color: #1d2d50;
+}
 #recentlyPlayed-item {
-  background-color: #636a70;
+  background-color: #1d2d50;
 }
 #recentlyPlayed-row,
 #suggestions-row {
-  background-color: #32383e;
+  background-color: #133b5c;
 }
 .no-activity {
   height: 265px;
-  background-color: #636a70;
+  background-color: #1e5f74;
 }
 #recentlyPlayed-list {
   overflow: auto;
   max-height: 265px;
-  /* height: 50%; */
+  background-color: #1e5f74;
 }
-
 .suggestion-image {
   cursor: pointer;
 }

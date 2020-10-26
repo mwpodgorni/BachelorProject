@@ -12,7 +12,7 @@
           icon="person-plus"
         ></b-icon>
         <b-icon
-          v-if="!displayInviteIcon"
+          v-if="displayRemoveIcon"
           v-on:click="removeFromFriends()"
           class="icon mr-3"
           icon="person-dash"
@@ -25,7 +25,7 @@
         ></b-icon>
       </div>
     </div>
-    <div class="row" id="recentlyPlayedUser-row">
+    <div class="row color2">
       <div class="col px-0">
         <h3 class="mx-auto my-2 text-center">Recently Played</h3>
         <div
@@ -42,12 +42,11 @@
           v-if="viewedUser.recentlyPlayed.length"
         >
           <b-list-group-item
-            variant="dark"
-            class="px-1"
+            class="px-1 py-1 list-item"
             v-for="item in viewedUser.recentlyPlayed"
             :key="item.title"
           >
-            <div class="row mx-0" id="recentlyPlayedUser-item">
+            <div class="row mx-0 color1">
               <div class="col-9">
                 <div class="row m-0 p-0">
                   <div class="col m-0 p-0">{{ item.title }}</div>
@@ -84,11 +83,11 @@ export default {
     return {
       viewedUser: null,
       displayInviteIcon: false,
+      displayRemoveIcon: false,
       displayMessageIcon: false,
     };
   },
   computed: {
-    // map `this.user` to `this.$store.getters.user`
     ...mapGetters({
       user: "user",
     }),
@@ -115,29 +114,37 @@ export default {
         .onSnapshot(function (doc) {
           var invitations = [];
           var friends = [];
-          if (vm.viewedUser) {
-            vm.viewedUser.invitations.forEach((element) => {
-              invitations.push(element.userId);
-            });
-            vm.viewedUser.friends.forEach((element) => {
-              friends.push(element.userId);
-            });
-            if (friends.includes(vm.user.userId) && vm.user.loggedIn) {
-              vm.displayInviteIcon = false;
-              vm.displayMessageIcon = true;
-            } else {
-              if (invitations.includes(vm.user.userId) && vm.user.loggedIn) {
+          if (vm.user.loggedIn) {
+            if (vm.viewedUser) {
+              vm.viewedUser.invitations.forEach((element) => {
+                invitations.push(element.userId);
+              });
+              vm.viewedUser.friends.forEach((element) => {
+                friends.push(element.userId);
+              });
+              if (friends.includes(vm.user.userId)) {
                 vm.displayInviteIcon = false;
+                vm.displayRemoveIcon = true;
+                vm.displayMessageIcon = true;
               } else {
-                vm.displayInviteIcon = true;
+                if (invitations.includes(vm.user.userId)) {
+                  vm.displayInviteIcon = false;
+                  vm.displayRemoveIcon = true;
+                } else {
+                  vm.displayInviteIcon = true;
+                  vm.displayRemoveIcon = false;
+                }
+                vm.displayMessageIcon = false;
               }
-              vm.displayMessageIcon = false;
             }
+          } else {
+            this.displayInviteIcon = false;
+            this.displayRemoveIcon = false;
+            this.displayMessageIcon = false;
           }
         });
     },
     chooseGame(event) {
-      // this.$router.push({name:"games", params:{game:event}});
       this.$router.push("../../games/" + event.title);
       this.$emit("chooseGame", event);
     },
@@ -313,7 +320,6 @@ export default {
       var keyword = this.$route.params.username;
       const path = `/chat/${keyword}`;
       if (this.$route.path !== path) this.$router.push(path);
-      // this.$router.push("../../chat/" + keyword);
     },
   },
 };
@@ -329,14 +335,11 @@ export default {
 }
 #username-row,
 #recentlyPlayedUser-item {
-  background-color: #636a70;
-}
-#recentlyPlayedUser-row {
-  background-color: #32383e;
+  background-color: #1e5f74;
 }
 #no-activity {
   height: 270px;
-  background-color: #636a70;
+  background-color: #1e5f74;
 }
 #recentlyPlayedUser-list {
   overflow-y: auto;
@@ -345,5 +348,8 @@ export default {
 }
 .icon {
   cursor: pointer;
+}
+.list-item {
+  background-color: #1e5f74 !important;
 }
 </style>

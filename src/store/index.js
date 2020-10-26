@@ -8,9 +8,9 @@ export default new Vuex.Store({
     user: {
       userId: null,
       loggedIn: false,
+      email: null,
       data: {
         displayName: null,
-        email: null,
         recentlyPlayed: [],
         suggestions: [],
         friends: [],
@@ -27,29 +27,22 @@ export default new Vuex.Store({
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
     },
-
     SET_USER(state, data) {
       state.user.userId = data.uid;
-      state.user.data.displayName = data.displayName;
-      state.user.data.email = data.email;
+      state.user.email = data.email;
     },
     SET_USER_DATA(state, user) {
       db.collection("users")
         .doc(user.uid)
         .onSnapshot(function (doc) {
-          // console.log("Current data: ", doc.data());
           state.user.data = doc.data()
-          // state.user.data.recentlyPlayed = doc.data().recentlyPlayed;
-          // state.user.data.suggestions = doc.data().suggestions;
-          // state.user.data.friends = doc.data().friends;
-          // state.user.data.invitations = doc.data().invitations;
         });
     },
     CLEAR_USER(state) {
       state.user.userId = null;
       state.user.loggedIn = false;
       state.user.data.displayName = null;
-      state.user.data.email = null;
+      state.user.email = null;
       state.user.data.recentlyPlayed = [];
       state.user.data.suggestions = [];
       state.user.data.friends = [];
@@ -57,7 +50,6 @@ export default new Vuex.Store({
   },
   actions: {
     fetchUser({ commit }, user) {
-      // console.log("namestore", user.displayName);
       commit("SET_LOGGED_IN", user != null);
       if (user) {
         commit("SET_USER", {
@@ -75,9 +67,6 @@ export default new Vuex.Store({
       } else {
         commit("CLEAR_USER");
       }
-    },
-    check() {
-      console.log(this.state.user);
     },
     logout({ commit }) {
       commit("SET_LOGGED_IN", false);

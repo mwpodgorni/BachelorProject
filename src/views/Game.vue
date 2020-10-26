@@ -1,7 +1,5 @@
 <template>
-  <!-- <component v-bind:is="component"></component> -->
   <div :id="containerId" v-if="downloaded" />
-  <!-- <div :id="containerId" /> -->
   <div class="placeholder" v-else>
     <div class="m-auto placeholderIn">Downloading ...</div>
   </div>

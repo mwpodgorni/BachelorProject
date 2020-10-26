@@ -30,7 +30,7 @@
         </b-alert>
         <b-alert
           class="mb-1"
-          :show="dismissCountDownEmail"
+          :show="dismissCountDownPassword"
           variant="success"
           @dismissed="dismissCountDownPassword = 0"
         >
@@ -71,7 +71,6 @@
             id="username"
           ></b-form-input>
         </b-form-group>
-
         <b-form-group
           class="label"
           label-cols-sm="3"
@@ -79,9 +78,8 @@
           label-align-sm="right"
           label-for="email"
         >
-          <b-form-input v-model="userData.data.email" id="email"></b-form-input>
+          <b-form-input v-model="userData.email" id="email"></b-form-input>
         </b-form-group>
-
         <b-form-group
           class="label"
           label-cols-sm="3"
@@ -95,7 +93,6 @@
             id="new-password"
           ></b-form-input>
         </b-form-group>
-
         <b-form-group
           class="label"
           label-cols-sm="3"
@@ -182,10 +179,6 @@ export default {
     showErrorAlert() {
       this.dismissCountDownError = this.dismissSecs;
     },
-    check() {
-      // @click.prevent="check"
-      console.log(this.userUpdate);
-    },
     update() {
       var user = firebase.auth().currentUser;
       var credential = firebase.auth.EmailAuthProvider.credential(
@@ -197,7 +190,6 @@ export default {
         .reauthenticateWithCredential(credential)
         .then(() => {
           // User re-authenticated.
-          // console.log(authenticatedUser);
           if (this.userData.data.displayName != user.displayName) {
             console.log("username", this.usernameSuccess);
             user
@@ -212,10 +204,10 @@ export default {
                 this.showErrorAlert();
               });
           }
-          if (this.userData.data.email != user.email) {
-            console.log("email");
+          if (this.userData.email != user.email) {
+            console.log("email", this.userData);
             user
-              .updateEmail(this.userData.data.email)
+              .updateEmail(this.userData.email)
               .then(() => {
                 this.showEmailAlert();
               })
@@ -228,12 +220,15 @@ export default {
             if (this.newPassword == this.confirmNewPassword) {
               console.log("password");
               if (this.password != this.newPassword) {
+                console.log("password2");
                 user
                   .updatePassword(this.newPassword)
                   .then(() => {
+                    console.log("showPasswordAlert");
                     this.showPasswordAlert();
                   })
                   .catch((error) => {
+                    console.log("catcherrors");
                     this.error = error.message;
                     this.showErrorAlert();
                   });
@@ -267,7 +262,7 @@ export default {
             .then(() => {
               this.$store.dispatch("fetchUser", null);
               this.$store.dispatch("fetchUserData", null);
-              this.$router.replace({ name: "games" });
+              this.$router.push({ name: "games" });
             })
             .catch((error) => {
               this.error = error.message;
@@ -293,14 +288,12 @@ export default {
   display: flex;
   flex-flow: column;
   height: 100%;
-  background-color: #32383e;
+  background-color: #133b5c;
 }
-
 .label {
   color: white;
 }
-
 #current-password {
-  background-color: #949292;
+  background-color: #1e5f74;
 }
 </style>

@@ -1,18 +1,20 @@
 <template>
-  <div id="app">
+  <div id="app" class="color1">
     <div id="navbar-wrapper">
       <b-navbar
         id="navbar"
         toggleable="sm"
         type="dark"
-        variant="dark"
-        class="py-0"
+        class="py-0 color2"
         sticky
       >
         <b-navbar-brand>JugSquare</b-navbar-brand>
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-navbar-toggle
+          class="ml-auto mr-2"
+          target="nav-collapse"
+        ></b-navbar-toggle>
 
-        <b-collapse id="nav-collapse" is-nav class="align-items-center">
+        <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item>
               <router-link to="../games" class="nav-link py-0 my-0"
@@ -37,7 +39,6 @@
                 >Search</b-button
               >
             </b-nav-form>
-
             <b-nav-item v-if="!user.loggedIn" class="my-auto">
               <router-link to="../login" class="nav-link p-0 m-0"
                 >Login</router-link
@@ -65,38 +66,32 @@
                 >Sign Out</b-dropdown-item
               >
             </b-nav-item-dropdown>
-            <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
-              <b-icon
-                class="my-auto"
-                v-b-toggle.sidebar-variant
-                id="icon"
-                style="width: 27px; height: 27px;"
-                icon="people"
-              ></b-icon>
-            </b-nav-item>
-            <b-nav-item v-if="isGameOpen">
-              <b-icon
-                class="my-auto"
-                id="icon"
-                style="width: 27px; height: 27px;"
-                icon="arrow-left"
-                v-on:click="openGames"
-              ></b-icon
-            ></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
+        <b-navbar-nav>
+          <b-nav-item v-if="['chat'].indexOf($route.name) > -1">
+            <b-icon
+              class="my-auto"
+              v-b-toggle.sidebar-variant
+              id="icon"
+              style="width: 27px; height: 27px;"
+              icon="people"
+            ></b-icon>
+          </b-nav-item>
+          <b-nav-item v-if="isGameOpen">
+            <b-icon
+              class="my-auto"
+              id="icon"
+              style="width: 27px; height: 27px;"
+              icon="arrow-left"
+              v-on:click="openGames"
+            ></b-icon></b-nav-item
+        ></b-navbar-nav>
       </b-navbar>
     </div>
-
     <div id="content">
       <transition name="component-fade" mode="out-in">
         <router-view v-on:chooseGame="chooseGame($event)"></router-view>
-        <!-- <router-view v-on:chooseGame="chooseGame($event)"></router-view> -->
-        <!-- <component
-        v-bind:is="component"
-        v-on:chooseGame="chooseGame($event)"
-        style="margin-top:-33px;"
-        ></component>-->
       </transition>
     </div>
   </div>
@@ -104,7 +99,6 @@
 
 <script>
 import Games from "@/views/Games";
-// import { store, mutations } from "@/store.js";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
 export default {
@@ -145,9 +139,6 @@ export default {
           this.dismissCountDown = this.dismissSecs;
           this.$store.dispatch("logout");
           this.openGames();
-          // this.$router.replace({
-          //   name: "dashboard",
-          // });
         });
     },
     openChat() {
@@ -194,7 +185,6 @@ export default {
             console.log("Error getting document:", error);
           });
       }
-
       this.component = game.title.replace(/\s/g, "");
       // document.body.style.background = "#007267";
     },
@@ -205,11 +195,11 @@ export default {
         // Math.floor(Math.random() * 3)
       }
       this.component = "Games";
-      // this.$router.push("../games");
-      this.$router.go(-1);
+      this.$router.push("../../games");
+      // this.$router.go(-1);
     },
     search() {
-      if (this.keyword != this.$route.params.keyword) {
+      if (this.keyword != this.$route.params.keyword && this.keyword) {
         console.log("search");
         this.keywordCheck = this.keyword;
         this.$router.push({
@@ -217,10 +207,8 @@ export default {
           params: { keyword: this.keyword },
         });
       }
-      // this.$router.push("search/" + this.keyword);
     },
   },
-
   // mounted: function () {
   //   this.$nextTick(function () {
   //     // Code that will run only after the
@@ -241,15 +229,15 @@ export default {
 }
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #fcdab7;
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #1e5f74;
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #133b5c;
 }
 .component-fade-enter-active,
 .component-fade-leave-active {
@@ -260,6 +248,18 @@ export default {
   opacity: 0;
 }
 
+.color1 {
+  background-color: #1d2d50;
+}
+.color2 {
+  background-color: #133b5c;
+}
+.color3 {
+  background-color: #1e5f74;
+}
+.color4 {
+  background-color: #fcdab7;
+}
 .icon {
   color: white;
   width: 32px;
@@ -267,7 +267,6 @@ export default {
   cursor: pointer;
   z-index: 999;
 }
-
 html,
 body,
 #app {
@@ -275,32 +274,15 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom, #09203f 0%, #537895 100%);
+  // background: linear-gradient(to bottom, #09203f 0%, #537895 100%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 #app {
-  // height: 100vh;
-  // width: 100vw;
-  // display: flex;
-  // flex-flow: column;
-  // height: 100%;
   display: table;
 }
-
 #content {
-  // height: 96%;
-  // overflow-y: auto;
   display: table-row;
-}
-.account-link,
-.account-link:hover {
-  text-decoration: none;
-  color: #272a2b !important;
-  // background-color: #272a2b !important;
-}
-#navbar {
-  background-color: #32383e !important;
 }
 #navbar-wrapper {
   height: 40px;
