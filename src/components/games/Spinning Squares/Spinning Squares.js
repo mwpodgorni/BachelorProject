@@ -11,8 +11,8 @@ function launch(containerId, height, width) {
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: width,
-      height: height
+      width: 500,
+      height: 800
     },
     scene: [Start, Main, End]
   });

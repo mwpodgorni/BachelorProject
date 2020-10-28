@@ -2,26 +2,39 @@ import food from "@/assets/games/12-square_snake/food.png";
 import body from "@/assets/games/12-square_snake/body.png";
 import Snake from "../../snake";
 import Food from "../../food";
-
-export default class One extends Phaser.Scene {
+import wallV from "@/assets/games/12-square_snake/wall-vertical.png";
+import wallH from "@/assets/games/12-square_snake/wall-horizontal.png";
+export default class Two extends Phaser.Scene {
   snake;
   food;
   cursors;
   pointer;
   pointerX = 0;
   pointerY = 0;
+  level;
   constructor() {
-    super({ key: "One" });
+    super({ key: "Two" });
   }
   preload() {
     this.load.image("food", food);
     this.load.image("body", body);
+    this.load.image("wallV", wallV);
+    this.load.image("wallH", wallH);
   }
   create() {
     this.food = new Food(this, 3, 4, "food");
     this.snake = new Snake(this, 16, 16, "body");
-
+    this.level = this.physics.add.staticGroup();
     this.pointer = this.input.activePointer;
+
+    this.buildLevel();
+    this.physics.add.collider(
+      this.snake.head,
+      this.level,
+      this.hitWall,
+      null,
+      this
+    );
 
     this.cursors = this.input.keyboard.createCursorKeys();
     var downX,
@@ -79,6 +92,23 @@ export default class One extends Phaser.Scene {
     }
   }
 
+  buildLevel() {
+    for (var i = 0; i < this.cameras.main.width + 100; i += 100) {
+      this.level.create(i, 5, "wallH");
+    }
+    for (var i = 0; i < this.cameras.main.width + 100; i += 100) {
+      this.level.create(i, this.cameras.main.height - 5, "wallH");
+    }
+    for (var i = 0; i < this.cameras.main.height + 100; i += 100) {
+      this.level.create(3, i, "wallV");
+    }
+    for (var i = 0; i < this.cameras.main.height + 100; i += 100) {
+      this.level.create(this.cameras.main.width - 3, i, "wallV");
+    }
+  }
+  hitWall() {
+    this.snake.alive = false;
+  }
   repositionFood() {
     var testGrid = [];
 
@@ -93,11 +123,12 @@ export default class One extends Phaser.Scene {
         testGrid[y][x] = true;
       }
     }
+
     testGrid = this.snake.updateGrid(testGrid);
 
     var validLocations = [];
-    for (var y = 0; y < h; y++) {
-      for (var x = 0; x < w; x++) {
+    for (var y = 2; y < h - 2; y++) {
+      for (var x = 2; x < w - 2; x++) {
         if (testGrid[y][x] === true) {
           validLocations.push({ x: x, y: y });
         }

@@ -57,7 +57,7 @@
       </section>
       <b-input-group style="background-color: white;">
         <b-form-input
-          v-model="youMessage"
+          v-model="message"
           id="input-form"
           placeholder="Type your message"
           type="text"
@@ -79,7 +79,7 @@ export default {
   name: "Chat",
   data() {
     return {
-      youMessage: "",
+      message: "",
       displayName: "",
       conversations: [],
       messages: [],
@@ -95,45 +95,6 @@ export default {
     }),
   },
   methods: {
-    openUserProfile() {
-      var username;
-      this.activeConversation.participants.forEach((p) => {
-        if (p != this.user.userId) {
-          username = p;
-        }
-      });
-      this.$router.push("../../user-profile/" + username);
-    },
-    sendMessage() {
-      if (this.youMessage) {
-        db.collection("conversations")
-          .doc(this.activeConversation.conversationId)
-          .update({
-            messages: firebase.firestore.FieldValue.arrayUnion({
-              createdAt: new Date(),
-              creatorId: this.user.userId,
-              content: this.youMessage,
-            }),
-          })
-          .then(() => {
-            console.log("message saved");
-            this.youMessage = "";
-          })
-          .catch(function (error) {
-            console.log("Error getting documents: ", error);
-          });
-      }
-    },
-    pushConversation(data) {
-      var otherUser;
-      var dataCopy = data;
-      dataCopy.usernames.forEach((element) => {
-        if (element != this.user.data.displayName) {
-          dataCopy.otherUser = element;
-        }
-      });
-      this.conversations.push(dataCopy);
-    },
     initializeChat() {
       var vueInstance = this;
       var userId = null;
@@ -155,6 +116,46 @@ export default {
           }
         });
     },
+    openUserProfile() {
+      var username;
+      this.activeConversation.participants.forEach((p) => {
+        if (p != this.user.userId) {
+          username = p;
+        }
+      });
+      this.$router.push("../../user-profile/" + username);
+    },
+    sendMessage() {
+      if (this.message) {
+        db.collection("conversations")
+          .doc(this.activeConversation.conversationId)
+          .update({
+            messages: firebase.firestore.FieldValue.arrayUnion({
+              createdAt: new Date(),
+              creatorId: this.user.userId,
+              content: this.message,
+            }),
+          })
+          .then(() => {
+            console.log("message saved");
+            this.message = "";
+          })
+          .catch(function (error) {
+            console.log("Error getting documents: ", error);
+          });
+      }
+    },
+    pushConversation(data) {
+      var otherUser;
+      var dataCopy = data;
+      dataCopy.usernames.forEach((element) => {
+        if (element != this.user.data.displayName) {
+          dataCopy.otherUser = element;
+        }
+      });
+      this.conversations.push(dataCopy);
+    },
+
     openLatestConversation() {
       var latestConversation = { id: null, timestamp: null };
       this.conversations.forEach((conversation) => {

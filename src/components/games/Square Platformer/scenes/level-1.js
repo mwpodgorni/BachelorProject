@@ -123,7 +123,7 @@ class LevelOne extends Phaser.Scene {
       "x          xxx       x       x",
       "x                    x       x",
       "x                    x       x",
-      "x~~~~~~xxxxxxxxxxxxxxxxxxxxxxx"
+      "x~~~~~~xxxxxxxxxxxxxxxxxxxxxxx",
     ];
     for (var i = 0; i < levelArchitecture.length; i++) {
       for (var j = 0; j < levelArchitecture[i].length; j++) {

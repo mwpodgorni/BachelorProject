@@ -132,7 +132,6 @@ export default {
     setGames(data) {
       this.gamesResults.push(data);
     },
-    test() {},
     chooseGame(event) {
       this.$router.push("../../games/" + event.title);
       this.$emit("chooseGame", event);

@@ -5,89 +5,95 @@ const DOWN = 1;
 const LEFT = 2;
 const RIGHT = 3;
 export default class Snake {
-  headPosition;
   scene;
+  headPosition;
+  body;
+  head;
+  tail;
+  alive;
+  speed;
+  moveTime;
+  heading;
+  direction;
+  gridWidth;
+  gridHeight;
   constructor(scene, x, y, texture) {
-    // obj.scene.load.image("body", body);
     this.scene = scene;
     this.headPosition = new Phaser.Geom.Point(x, y);
-
-    this.body = scene.add.group();
+    this.body = scene.physics.add.group();
 
     this.head = this.body.create(x * 16, y * 16, texture);
     this.head.setOrigin(0);
-
     this.alive = true;
-
     this.speed = 100;
-
     this.moveTime = 0;
-
     this.tail = new Phaser.Geom.Point(x, y);
-
     this.heading = RIGHT;
     this.direction = RIGHT;
-  }
 
+    this.gridWidth = this.scene.cameras.main.width;
+    this.gridHeight = this.scene.cameras.main.height;
+    this.gridWidth = (this.gridWidth - (this.gridWidth % 16)) / 16;
+    this.gridHeight = (this.gridHeight - (this.gridHeight % 16)) / 16;
+  }
   update(time) {
-    if (time >= this.moveTime) {
+    if (time >= this.moveTime && this.alive) {
       return this.move(time);
     }
   }
-
-  faceLeft() {
+  left() {
     if (this.direction === UP || this.direction === DOWN) {
       this.heading = LEFT;
     }
   }
-
-  faceRight() {
+  right() {
     if (this.direction === UP || this.direction === DOWN) {
       this.heading = RIGHT;
     }
   }
-
-  faceUp() {
+  up() {
     if (this.direction === LEFT || this.direction === RIGHT) {
       this.heading = UP;
     }
   }
-
-  faceDown() {
+  down() {
     if (this.direction === LEFT || this.direction === RIGHT) {
       this.heading = DOWN;
     }
   }
-
   move(time) {
-    /**
-     * Based on the heading property (which is the direction the pgroup pressed)
-     * we update the headPosition value accordingly.
-     *
-     * The Math.wrap call allow the snake to wrap around the screen, so when
-     * it goes off any of the sides it re-appears on the other.
-     */
     switch (this.heading) {
       case LEFT:
-        this.headPosition.x = Phaser.Math.Wrap(this.headPosition.x - 1, 0, 40);
+        this.headPosition.x = Phaser.Math.Wrap(
+          this.headPosition.x - 1,
+          0,
+          this.gridWidth + 1
+        );
         break;
-
       case RIGHT:
-        this.headPosition.x = Phaser.Math.Wrap(this.headPosition.x + 1, 0, 40);
+        this.headPosition.x = Phaser.Math.Wrap(
+          this.headPosition.x + 1,
+          0,
+          this.gridWidth + 1
+        );
         break;
-
       case UP:
-        this.headPosition.y = Phaser.Math.Wrap(this.headPosition.y - 1, 0, 60);
+        this.headPosition.y = Phaser.Math.Wrap(
+          this.headPosition.y - 1,
+          0,
+          this.gridHeight + 1
+        );
         break;
-
       case DOWN:
-        this.headPosition.y = Phaser.Math.Wrap(this.headPosition.y + 1, 0, 60);
+        this.headPosition.y = Phaser.Math.Wrap(
+          this.headPosition.y + 1,
+          0,
+          this.gridHeight + 1
+        );
         break;
     }
-
     this.direction = this.heading;
 
-    //  Update the body segments and place the last coordinate into this.tail
     Phaser.Actions.ShiftPosition(
       this.body.getChildren(),
       this.headPosition.x * 16,
@@ -96,41 +102,28 @@ export default class Snake {
       this.tail
     );
 
-    //  Check to see if any of the body pieces have the same x/y as the head
-    //  If they do, the head ran into the body
-
     var hitBody = Phaser.Actions.GetFirst(
       this.body.getChildren(),
       { x: this.head.x, y: this.head.y },
       1
     );
-
     if (hitBody) {
-      console.log("dead");
       this.alive = false;
-
       return false;
     } else {
-      //  Update the timer ready for the next movement
       this.moveTime = time + this.speed;
-
       return true;
     }
   }
-
   grow() {
     var newPart = this.body.create(this.tail.x, this.tail.y, "body");
-
     newPart.setOrigin(0);
   }
-
   collideWithFood(food) {
     if (this.head.x === food.x && this.head.y === food.y) {
       this.grow();
-
       food.eat();
 
-      //  For every 5 items of food eaten we'll increase the snake speed a little
       if (this.speed > 20 && food.total % 5 === 0) {
         this.speed -= 5;
       }
@@ -140,16 +133,12 @@ export default class Snake {
       return false;
     }
   }
-
   updateGrid(grid) {
-    //  Remove all body pieces from valid positions list
-    this.body.children.each(function(segment) {
+    this.body.children.each(function (segment) {
       var bx = segment.x / 16;
       var by = segment.y / 16;
-
       grid[by][bx] = false;
     });
-
     return grid;
   }
 }

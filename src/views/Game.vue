@@ -15,15 +15,14 @@ export default {
   data() {
     return {
       component: this.$route.params.game,
-      downloaded: true,
+      downloaded: false,
       gameInstance: null,
       containerId: "game-container",
     };
   },
   async mounted() {
     // // $(window).on("resize", this.changeSize);
-    var height = document.getElementById("game-container").clientHeight;
-    var width = document.getElementById("game-container").clientWidth;
+
     const game = await import(
       /* webpackChunkName: "game" */ "@/components/games/" +
         this.component +
@@ -31,7 +30,10 @@ export default {
         this.component
     );
     this.downloaded = true;
+
     this.$nextTick(() => {
+      var height = document.getElementById("game-container").clientHeight;
+      var width = document.getElementById("game-container").clientWidth;
       this.gameInstance = game.launch(this.containerId, height, width);
     });
   },

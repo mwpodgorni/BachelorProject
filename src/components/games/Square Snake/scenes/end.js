@@ -1,21 +1,36 @@
 class End extends Phaser.Scene {
-  text;
+  text1;
+  text2;
   enter;
   style = {
-    fontSize: "20px"
+    fontSize: "20px",
+    color: "#ffffff",
+    letterSpacing: 400,
+    fontFamily: "Impact",
   };
   constructor() {
     super({ key: "End" });
   }
   preload() {}
   create() {
-    this.text = this.add.text(
-      50,
-      290,
-      "The game is over. \nClick enter to go back to start screen.",
-      this.style
-    );
-
+    const endTextPositionX = this.cameras.main.centerX;
+    const endTextPositionY = this.cameras.main.centerY / 1.3;
+    this.text1 = this.add
+      .text(
+        endTextPositionX,
+        endTextPositionY,
+        "T h e   g a m e   i s   o v e r",
+        this.style
+      )
+      .setOrigin(0.5);
+    this.text2 = this.add
+      .text(
+        endTextPositionX,
+        endTextPositionY + 40,
+        "C l i c k   t o   g o   b a c k   t o   s t a r t   s c r e e n",
+        this.style
+      )
+      .setOrigin(0.5);
     this.enter = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.ENTER
     );

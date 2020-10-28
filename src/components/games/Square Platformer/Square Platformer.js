@@ -11,22 +11,21 @@ function launch(containerId) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: containerId,
-
     transparent: true,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       height: 580,
-      width: 600
+      width: 600,
     },
     physics: {
       default: "arcade",
       arcade: {
         gravity: { y: 400 },
-        debug: false
-      }
+        debug: false,
+      },
     },
-    scene: [Start, LevelOne, LevelTwo, LevelThree, LevelFour, LevelFive, End]
+    scene: [Start, LevelOne, LevelTwo, LevelThree, LevelFour, LevelFive, End],
   });
 }
 

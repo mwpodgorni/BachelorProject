@@ -114,9 +114,6 @@ export default {
         "linear-gradient(to right, #434343 0%, black 100%)",
         "linear-gradient(to bottom, #09203f 0%, #537895 100%)",
       ],
-      changeIconColor: false,
-      dismissSecs: 5,
-      dismissCountDown: 0,
       keyword: "",
       keywordCheck: "",
     };
@@ -136,7 +133,6 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.dismissCountDown = this.dismissSecs;
           this.$store.dispatch("logout");
           this.openGames();
         });

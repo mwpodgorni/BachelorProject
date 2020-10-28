@@ -215,12 +215,10 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
-import userData from "@/assets/json-data/user-data.json";
 export default {
   components: {},
   data() {
     return {
-      userData: userData,
       carouselClass: "carousel-item",
       carouselActiveClass: "active",
     };
