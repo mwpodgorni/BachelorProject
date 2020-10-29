@@ -8,23 +8,23 @@ function launch(containerId, height, width) {
     type: Phaser.AUTO,
     parent: containerId,
     transparent: true,
-    backgroundColor: 0x87ceeb,
+    backgroundColor: 0x7c8487,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       width: width,
-      height: height
+      height: height,
     },
     pixelArt: true,
     physics: {
       default: "arcade",
       arcade: {
         gravity: {
-          y: 0
-        }
-      }
+          y: 0,
+        },
+      },
     },
-    scene: [Start, Main, End]
+    scene: [Start, Main, End],
   });
 }
 

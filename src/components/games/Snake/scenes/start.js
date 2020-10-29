@@ -24,7 +24,6 @@ export default class Start extends Phaser.Scene {
   create() {
     const welcomeTextPositionX = this.cameras.main.centerX;
     const welcomeTextPositionY = this.cameras.main.centerY / 4;
-    console.log(welcomeTextPositionX / 19);
     this.style.fontSize = Math.round(welcomeTextPositionX / 10) + "px";
     this.text = this.add
       .text(

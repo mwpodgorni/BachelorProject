@@ -37,7 +37,7 @@ export default {
         if (doc.exists) {
           console.log("Document data:", doc.data());
 
-          next((vm) => vm.setData(doc.data()));
+          next((vm) => vm.setData(doc.data(), vm.gamesData));
         } else {
           console.log("No such document!");
           this.error = "No such document!";
@@ -53,21 +53,16 @@ export default {
       this.$router.push("games/" + event.title);
       this.$emit("chooseGame", event);
     },
-    setData(data) {
+    setData(data, gamesData) {
       var keys = Object.keys(data);
-
-      keys.sort((a, b) => data[a].title - data[b].title);
-      this.gamesData = keys.map((key) => data[key]);
-      console.log(this.gamesData);
-      // data.array.forEach((element) => {
-      //   this.gamesData.push(element);
-      // });
-      // console.log(data);
-      // this.gamesData.sort(this.compare);
+      keys.forEach(function (key) {
+        gamesData.push(data[key]);
+      });
+      gamesData.sort(this.compare);
     },
     compare(a, b) {
       const itemA = a.title.toUpperCase();
-      const itemB = b.tile.toUpperCase();
+      const itemB = b.title.toUpperCase();
       let comparison = 0;
       if (itemA > itemB) {
         comparison = 1;
