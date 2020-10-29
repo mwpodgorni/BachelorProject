@@ -15,6 +15,7 @@ class End extends Phaser.Scene {
   create() {
     const endTextPositionX = this.cameras.main.centerX;
     const endTextPositionY = this.cameras.main.centerY / 1.3;
+    this.style.fontSize = Math.round(endTextPositionX / 10) + "px";
     this.text1 = this.add
       .text(
         endTextPositionX,
@@ -26,8 +27,8 @@ class End extends Phaser.Scene {
     this.text2 = this.add
       .text(
         endTextPositionX,
-        endTextPositionY + 40,
-        "C l i c k   t o   g o   b a c k   t o   s t a r t   s c r e e n",
+        endTextPositionY + 80,
+        "C l i c k   t o   g o   b a c k",
         this.style
       )
       .setOrigin(0.5);

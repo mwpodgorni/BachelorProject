@@ -1,4 +1,4 @@
-import level from "@/assets/games/12-square_snake/level.png";
+import level from "@/assets/games/12-snake/level.png";
 export default class Start extends Phaser.Scene {
   gameOptions = {
     columns: 2,
@@ -9,7 +9,7 @@ export default class Start extends Phaser.Scene {
   levelGroup;
 
   style = {
-    fontSize: "30px",
+    fontSize: "40px",
     color: "#ffffff",
     letterSpacing: 400,
     fontFamily: "Impact",
@@ -24,6 +24,8 @@ export default class Start extends Phaser.Scene {
   create() {
     const welcomeTextPositionX = this.cameras.main.centerX;
     const welcomeTextPositionY = this.cameras.main.centerY / 4;
+    console.log(welcomeTextPositionX / 19);
+    this.style.fontSize = Math.round(welcomeTextPositionX / 10) + "px";
     this.text = this.add
       .text(
         welcomeTextPositionX,

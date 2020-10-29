@@ -1,9 +1,9 @@
-import food from "@/assets/games/12-square_snake/food.png";
-import body from "@/assets/games/12-square_snake/body.png";
-import Snake from "../../snake";
+import food from "@/assets/games/12-snake/food.png";
+import body from "@/assets/games/12-snake/body.png";
+import Snake from "../../snakeClass";
 import Food from "../../food";
-import wallV from "@/assets/games/12-square_snake/wall-vertical.png";
-import wallH from "@/assets/games/12-square_snake/wall-horizontal.png";
+import wallV from "@/assets/games/12-snake/wall-vertical.png";
+import wallH from "@/assets/games/12-snake/wall-horizontal.png";
 export default class Four extends Phaser.Scene {
   snake;
   food;
@@ -24,7 +24,7 @@ export default class Four extends Phaser.Scene {
   }
   create() {
     this.food = new Food(this, 3, 4, "food");
-    this.snake = new Snake(this, 16, 16, "body");
+    this.snake = new Snake(this, 4, 14, "body");
     this.level = this.physics.add.staticGroup();
     this.pointer = this.input.activePointer;
 
@@ -38,34 +38,34 @@ export default class Four extends Phaser.Scene {
     );
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    var downX,
-      upX,
-      downY,
-      upY,
-      threshold = 10;
-    var sInstance = this.snake;
-    this.input.on("pointerdown", function (pointer) {
-      downX = pointer.x;
-      downY = pointer.y;
-    });
+    // var downX,
+    //   upX,
+    //   downY,
+    //   upY,
+    //   threshold = 10;
+    // var sInstance = this.snake;
+    // this.input.on("pointerdown", function (pointer) {
+    //   downX = pointer.x;
+    //   downY = pointer.y;
+    // });
 
-    this.input.on("pointerup", function (pointer) {
-      upX = pointer.x;
-      upY = pointer.y;
-      if (upX < downX - threshold) {
-        console.log("swipeleft");
-        sInstance.left();
-      } else if (upX > downX + threshold) {
-        console.log("swiperight");
-        sInstance.right();
-      } else if (upY < downY - threshold) {
-        console.log("swipeup");
-        sInstance.up();
-      } else if (upY > downY + threshold) {
-        console.log("swipedown");
-        sInstance.down();
-      }
-    });
+    // this.input.on("pointerup", function (pointer) {
+    //   upX = pointer.x;
+    //   upY = pointer.y;
+    //   if (upX < downX - threshold) {
+    //     console.log("swipeleft");
+    //     sInstance.left();
+    //   } else if (upX > downX + threshold) {
+    //     console.log("swiperight");
+    //     sInstance.right();
+    //   } else if (upY < downY - threshold) {
+    //     console.log("swipeup");
+    //     sInstance.up();
+    //   } else if (upY > downY + threshold) {
+    //     console.log("swipedown");
+    //     sInstance.down();
+    //   }
+    // });
   }
 
   update(time) {
@@ -105,27 +105,32 @@ export default class Four extends Phaser.Scene {
       }
     }
     // console.log("g", this.levelGrid);
-
-    for (var i = 600; i < this.cameras.main.height + 100; i += 100) {
+    for (var i = h * 12; i < this.cameras.main.height + 100; i += 100) {
       this.level.create(w * 12 - 4, i, "wallV");
       for (var j = 34; j < h; j++) {
+        this.levelGrid[j][18] = false;
         this.levelGrid[j][19] = false;
+        this.levelGrid[j][20] = false;
       }
     }
 
     var w2 = this.cameras.main.width - 200;
     w2 = (w2 - (w2 % 16)) / 16;
-    for (var i = 0; i < this.cameras.main.width - 200; i += 100) {
+    for (var i = 0; i < this.cameras.main.width - w * 8; i += 100) {
       this.level.create(i, h * 8 - 8, "wallH");
       for (var j = 0; j < w2; j++) {
+        this.levelGrid[19][j] = false;
         this.levelGrid[20][j] = false;
+        this.levelGrid[21][j] = false;
       }
     }
 
-    for (var i = 0; i < this.cameras.main.height - 500; i += 100) {
+    for (var i = 0; i < this.cameras.main.height - h * 12; i += 100) {
       this.level.create(w * 12 - 4, i, "wallV");
       for (var j = 0; j < 10; j++) {
+        this.levelGrid[j][18] = false;
         this.levelGrid[j][19] = false;
+        this.levelGrid[j][20] = false;
       }
     }
   }
@@ -139,9 +144,9 @@ export default class Four extends Phaser.Scene {
     var h = this.cameras.main.height;
     w = (w - (w % 16)) / 16;
     h = (h - (h % 16)) / 16;
-    for (var y = 1; y < h - 1; y++) {
+    for (var y = 0; y <= h; y++) {
       testGrid[y] = [];
-      for (var x = 1; x < w - 1; x++) {
+      for (var x = 0; x <= w; x++) {
         testGrid[y][x] = true;
       }
     }
@@ -158,7 +163,7 @@ export default class Four extends Phaser.Scene {
 
     if (validLocations.length > 0) {
       var pos = Phaser.Math.RND.pick(validLocations);
-      //   console.log(pos);
+      // console.log(pos);
       this.food.setPosition(pos.x * 16, pos.y * 16);
 
       return true;

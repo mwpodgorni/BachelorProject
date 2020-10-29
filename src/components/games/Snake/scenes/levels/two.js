@@ -1,9 +1,9 @@
-import food from "@/assets/games/12-square_snake/food.png";
-import body from "@/assets/games/12-square_snake/body.png";
-import Snake from "../../snake";
+import food from "@/assets/games/12-snake/food.png";
+import body from "@/assets/games/12-snake/body.png";
+import Snake from "../../snakeClass";
 import Food from "../../food";
-import wallV from "@/assets/games/12-square_snake/wall-vertical.png";
-import wallH from "@/assets/games/12-square_snake/wall-horizontal.png";
+import wallV from "@/assets/games/12-snake/wall-vertical.png";
+import wallH from "@/assets/games/12-snake/wall-horizontal.png";
 export default class Two extends Phaser.Scene {
   snake;
   food;
@@ -23,7 +23,7 @@ export default class Two extends Phaser.Scene {
   }
   create() {
     this.food = new Food(this, 3, 4, "food");
-    this.snake = new Snake(this, 16, 16, "body");
+    this.snake = new Snake(this, 4, 16, "body");
     this.level = this.physics.add.staticGroup();
     this.pointer = this.input.activePointer;
 
@@ -37,34 +37,34 @@ export default class Two extends Phaser.Scene {
     );
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    var downX,
-      upX,
-      downY,
-      upY,
-      threshold = 10;
-    var sInstance = this.snake;
-    this.input.on("pointerdown", function (pointer) {
-      downX = pointer.x;
-      downY = pointer.y;
-    });
+    // var downX,
+    //   upX,
+    //   downY,
+    //   upY,
+    //   threshold = 10;
+    // var sInstance = this.snake;
+    // this.input.on("pointerdown", function (pointer) {
+    //   downX = pointer.x;
+    //   downY = pointer.y;
+    // });
 
-    this.input.on("pointerup", function (pointer) {
-      upX = pointer.x;
-      upY = pointer.y;
-      if (upX < downX - threshold) {
-        console.log("swipeleft");
-        sInstance.left();
-      } else if (upX > downX + threshold) {
-        console.log("swiperight");
-        sInstance.right();
-      } else if (upY < downY - threshold) {
-        console.log("swipeup");
-        sInstance.up();
-      } else if (upY > downY + threshold) {
-        console.log("swipedown");
-        sInstance.down();
-      }
-    });
+    // this.input.on("pointerup", function (pointer) {
+    //   upX = pointer.x;
+    //   upY = pointer.y;
+    //   if (upX < downX - threshold) {
+    //     console.log("swipeleft");
+    //     sInstance.left();
+    //   } else if (upX > downX + threshold) {
+    //     console.log("swiperight");
+    //     sInstance.right();
+    //   } else if (upY < downY - threshold) {
+    //     console.log("swipeup");
+    //     sInstance.up();
+    //   } else if (upY > downY + threshold) {
+    //     console.log("swipedown");
+    //     sInstance.down();
+    //   }
+    // });
   }
 
   update(time) {
