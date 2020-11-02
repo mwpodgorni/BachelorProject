@@ -1,48 +1,53 @@
-import ground from "@/assets/games/8-bouncing_square/ground.png";
-import ball from "@/assets/games/8-bouncing_square/ball.png";
+import platform from "@/assets/games/8-bouncing_square/platform.png";
+import square from "@/assets/games/8-bouncing_square/square.png";
 class Main extends Phaser.Scene {
   saveData;
-  gameOptions = {
-    bounceHeight: 300,
-    ballGravity: 1200,
-    ballPower: 1200,
-    ballPosition: 0.2,
-    platformSpeed: 250,
-    platformDistanceRange: [150, 250],
-    platformHeightRange: [-50, 50],
-    platformLengthRange: [40, 60],
-    localStorageName: "bouncingsquare"
+  degree = 90;
+  style2 = {
+    color: "#000000",
+    fontFamily: "Impact",
   };
-
+  gameOptions = {
+    bounceHeight: 250,
+    squareGravity: 1400,
+    squarePower: 800,
+    squarePosition: 0.4,
+    platformSpeed: 250,
+    platformDistanceRange: [100, 300],
+    platformHeightRange: [-50, 100],
+    platformLengthRange: [30, 150],
+    localStorageName: "bouncingSquareScore",
+  };
+  square;
   style = {
-    fontSize: "30px"
+    fontSize: "30px",
   };
   constructor() {
     super({ key: "Main" });
   }
   preload() {
-    this.load.image("ball", ball);
-    this.load.image("ground", ground);
+    this.load.image("square", square);
+    this.load.image("ground", platform);
   }
   create() {
     this.platformGroup = this.physics.add.group();
     this.firstBounce = 0;
     this.gameStart = false;
-    this.ball = this.physics.add.sprite(
-      this.game.config.width * this.gameOptions.ballPosition,
+    this.square = this.physics.add.sprite(
+      this.game.config.width * this.gameOptions.squarePosition,
       (this.game.config.height / 4) * 3 - this.gameOptions.bounceHeight,
-      "ball"
+      "square"
     );
-    this.ball.body.gravity.y = this.gameOptions.ballGravity;
-    this.ball.setBounce(1);
-    this.ball.body.checkCollision.down = true;
-    this.ball.body.checkCollision.up = false;
-    this.ball.body.checkCollision.left = false;
-    this.ball.body.checkCollision.right = false;
-    this.ball.setSize(30, 50, true);
+    this.square.body.gravity.y = this.gameOptions.squareGravity;
+    this.square.setBounce(1);
+    this.square.body.checkCollision.down = true;
+    this.square.body.checkCollision.up = false;
+    this.square.body.checkCollision.left = false;
+    this.square.body.checkCollision.right = false;
+    this.square.setSize(50, 50, true);
 
-    let platformX = this.ball.x;
-    for (let i = 0; i < 10; i++) {
+    let platformX = this.square.x;
+    for (let i = 0; i < 12; i++) {
       let platform = this.platformGroup.create(
         platformX,
         (this.game.config.height / 4) * 3 +
@@ -69,10 +74,9 @@ class Main extends Phaser.Scene {
       localStorage.getItem(this.gameOptions.localStorageName) == null
         ? 0
         : localStorage.getItem(this.gameOptions.localStorageName);
-    this.scoreText = this.add.text(10, 10, "");
+    this.scoreText = this.add.text(10, 10, "", this.style2);
     this.updateScore(this.score);
   }
-
   updateScore(inc) {
     this.score += inc;
     this.scoreText.text = "Score: " + this.score + "\nBest: " + this.topScore;
@@ -80,12 +84,12 @@ class Main extends Phaser.Scene {
   boost() {
     if (this.firstBounce != 0) {
       this.gameStart = true;
-      this.ball.body.velocity.y = this.gameOptions.ballPower;
+      this.square.body.velocity.y = this.gameOptions.squarePower;
     }
   }
   getRightmostPlatform() {
     let rightmostPlatform = 0;
-    this.platformGroup.getChildren().forEach(function(platform) {
+    this.platformGroup.getChildren().forEach(function (platform) {
       rightmostPlatform = Math.max(rightmostPlatform, platform.x);
     });
     return rightmostPlatform;
@@ -93,12 +97,18 @@ class Main extends Phaser.Scene {
   update() {
     this.physics.world.collide(
       this.platformGroup,
-      this.ball,
-      function() {
+      this.square,
+      function () {
         if (this.firstBounce == 0) {
-          this.firstBounce = this.ball.body.velocity.y;
+          this.firstBounce = this.square.body.velocity.y;
+          if (this.square.angle % 90 == 0) {
+            this.degree = 0;
+          }
         } else {
-          this.ball.body.velocity.y = this.firstBounce;
+          this.square.body.velocity.y = this.firstBounce;
+          if (this.square.angle % 90 == 0) {
+            this.degree = 0;
+          }
           if (this.gameStart) {
             this.platformGroup.setVelocityX(-this.gameOptions.platformSpeed);
           }
@@ -107,7 +117,11 @@ class Main extends Phaser.Scene {
       null,
       this
     );
-    this.platformGroup.getChildren().forEach(function(platform) {
+    if (this.degree != 90) {
+      this.square.angle += 5;
+      this.degree += 5;
+    }
+    this.platformGroup.getChildren().forEach(function (platform) {
       if (platform.getBounds().right < 0) {
         this.updateScore(1);
         platform.x =
@@ -122,7 +136,7 @@ class Main extends Phaser.Scene {
         );
       }
     }, this);
-    if (this.ball.y > this.game.config.height) {
+    if (this.square.y > this.game.config.height) {
       localStorage.setItem(
         this.gameOptions.localStorageName,
         Math.max(this.score, this.topScore) + ""

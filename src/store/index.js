@@ -14,15 +14,11 @@ export default new Vuex.Store({
         recentlyPlayed: [],
         suggestions: [],
         friends: [],
-        invitations:[]
+        invitations: [],
       },
     },
   },
-  getters: {
-    user(state) {
-      return state.user;
-    },
-  },
+
   mutations: {
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
@@ -35,7 +31,7 @@ export default new Vuex.Store({
       db.collection("users")
         .doc(user.uid)
         .onSnapshot(function (doc) {
-          state.user.data = doc.data()
+          state.user.data = doc.data();
         });
     },
     CLEAR_USER(state) {
@@ -70,6 +66,11 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("SET_LOGGED_IN", false);
+    },
+  },
+  getters: {
+    user(state) {
+      return state.user;
     },
   },
 });

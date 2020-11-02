@@ -7,23 +7,22 @@ function launch(containerId, height, width) {
     type: Phaser.AUTO,
     parent: containerId,
     transparent: true,
-    // backgroundColor: 0x87ceeb,
-    backgroundColor: 0x222222,
+    backgroundColor: 0xe0dede,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       width: width,
-      height: height
+      height: height,
     },
     physics: {
       default: "arcade",
       arcade: {
         gravity: {
-          y: 0
-        }
-      }
+          y: 0,
+        },
+      },
     },
-    scene: [Start, Main, End]
+    scene: [Start, Main, End],
   });
 }
 

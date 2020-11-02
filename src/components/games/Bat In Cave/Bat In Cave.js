@@ -7,7 +7,6 @@ function launch(containerId, height, width) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: containerId,
-    transparent: true,
     backgroundColor: 0x7c8487,
     scale: {
       mode: Phaser.Scale.FIT,
@@ -15,7 +14,7 @@ function launch(containerId, height, width) {
       width: width,
       height: height,
     },
-    pixelArt: true,
+    // pixelArt: true,
     physics: {
       default: "arcade",
       arcade: {

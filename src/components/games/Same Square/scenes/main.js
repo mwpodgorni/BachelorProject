@@ -1,4 +1,5 @@
 import tiles from "@/assets/games/2-same_square/sprites/tiles.png";
+import SameGame from "../same-game";
 class Main extends Phaser.Scene {
   gameOptions;
   sameSquare;
@@ -9,7 +10,7 @@ class Main extends Phaser.Scene {
   gameText;
   poolArray;
   style = {
-    fontSize: "40px"
+    fontSize: "40px",
   };
   constructor() {
     super({ key: "Main" });
@@ -17,25 +18,25 @@ class Main extends Phaser.Scene {
       gemSize: 90,
       boardOffset: {
         x: 10,
-        y: 10
+        y: 10,
       },
       destroySpeed: 100,
       fallSpeed: 90,
       slideSpeed: 300,
-      localStorageName: "samesquare"
+      localStorageName: "samesquare",
     };
   }
   preload() {
     this.load.spritesheet("tiles", tiles, {
       frameWidth: this.gameOptions.gemSize,
-      frameHeight: this.gameOptions.gemSize
+      frameHeight: this.gameOptions.gemSize,
     });
   }
   create() {
     this.sameGame = new SameGame({
       rows: 9,
       columns: 9,
-      items: 4
+      items: 4,
     });
     this.score = 0;
     this.sameGame.generateBoard();
@@ -47,7 +48,7 @@ class Main extends Phaser.Scene {
     this.savedData =
       localStorage.getItem(this.gameOptions.localStorageName) == null
         ? {
-            score: 0
+            score: 0,
           }
         : JSON.parse(localStorage.getItem(this.gameOptions.localStorageName));
     let bestScoreText = this.add.text(
@@ -110,7 +111,7 @@ class Main extends Phaser.Scene {
           let gemsToRemove = this.sameGame.listConnectedItems(row, col);
           let destroyed = 0;
           gemsToRemove.forEach(
-            function(gem) {
+            function (gem) {
               destroyed++;
               this.poolArray.push(
                 this.sameGame.getCustomDataAt(gem.row, gem.column)
@@ -120,13 +121,13 @@ class Main extends Phaser.Scene {
                 alpha: 0,
                 duration: this.gameOptions.destroySpeed,
                 callbackScope: this,
-                onComplete: function() {
+                onComplete: function () {
                   destroyed--;
                   if (destroyed == 0) {
                     this.sameGame.removeConnectedItems(row, col);
                     this.makeGemsFall();
                   }
-                }
+                },
               });
             }.bind(this)
           );
@@ -141,7 +142,7 @@ class Main extends Phaser.Scene {
     } else {
       let fallingGems = 0;
       movements.forEach(
-        function(movement) {
+        function (movement) {
           fallingGems++;
           this.tweens.add({
             targets: this.sameGame.getCustomDataAt(
@@ -153,12 +154,12 @@ class Main extends Phaser.Scene {
               this.gameOptions.gemSize * movement.deltaRow,
             duration: this.gameOptions.fallSpeed * movement.deltaRow,
             callbackScope: this,
-            onComplete: function() {
+            onComplete: function () {
               fallingGems--;
               if (fallingGems == 0) {
                 this.makeGemsSlide();
               }
-            }
+            },
           });
         }.bind(this)
       );
@@ -171,7 +172,7 @@ class Main extends Phaser.Scene {
     } else {
       let movingGems = 0;
       slideMovements.forEach(
-        function(movement) {
+        function (movement) {
           movingGems++;
           this.tweens.add({
             targets: this.sameGame.getCustomDataAt(
@@ -186,12 +187,12 @@ class Main extends Phaser.Scene {
             ),
             ease: "Bounce.easeOut",
             callbackScope: this,
-            onComplete: function() {
+            onComplete: function () {
               movingGems--;
               if (movingGems == 0) {
                 this.endOfMove();
               }
-            }
+            },
           });
         }.bind(this)
       );
@@ -205,15 +206,15 @@ class Main extends Phaser.Scene {
       localStorage.setItem(
         this.gameOptions.localStorageName,
         JSON.stringify({
-          score: bestScore
+          score: bestScore,
         })
       );
       let timedEvent = this.time.addEvent({
         delay: 4000,
         callbackScope: this,
-        callback: function() {
+        callback: function () {
           this.scene.start("End");
-        }
+        },
       });
       if (this.sameGame.nonEmptyItems() == 0) {
         this.gameText.text = "Congratulations!!";

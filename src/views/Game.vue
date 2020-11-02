@@ -62,4 +62,15 @@ export default {
   height: 100%;
   background-color: #32383e;
 }
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.placeholderIn {
+  font-size: 30px;
+  font-family: "Courier New", Courier, monospace;
+  color: white;
+}
 </style>

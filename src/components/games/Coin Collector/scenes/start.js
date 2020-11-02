@@ -1,13 +1,13 @@
 import { Scene } from "phaser";
 export default class Start extends Scene {
   text;
+  enter;
   style = {
     fontSize: "40px",
     color: "#ffffff",
     letterSpacing: 400,
     fontFamily: "Impact",
   };
-  enter;
   constructor() {
     super({ key: "Start" });
   }
@@ -33,10 +33,10 @@ export default class Start extends Scene {
   }
   update() {
     if (this.enter.isDown) {
-      this.scene.start("Main");
+      this.scene.start("LevelOne");
     }
   }
   start() {
-    this.scene.start("Main");
+    this.scene.start("LevelOne");
   }
 }

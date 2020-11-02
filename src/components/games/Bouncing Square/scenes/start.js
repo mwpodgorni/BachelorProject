@@ -1,9 +1,11 @@
 import { Scene } from "phaser";
 export default class Start extends Scene {
   text;
-  enter;
   style = {
-    fontSize: "20px"
+    fontSize: "40px",
+    color: "#000000",
+    letterSpacing: 400,
+    fontFamily: "Impact",
   };
   constructor() {
     super({ key: "Start" });
@@ -12,7 +14,17 @@ export default class Start extends Scene {
   preload() {}
 
   create() {
-    this.text = this.add.text(40, 250, "Click enter to start", this.style);
+    const welcomeTextPositionX = this.cameras.main.centerX;
+    const welcomeTextPositionY = this.cameras.main.centerY;
+    this.style.fontSize = Math.round(welcomeTextPositionX / 6) + "px";
+    this.text = this.add
+      .text(
+        welcomeTextPositionX,
+        welcomeTextPositionY,
+        "C l i c k   t o   s t a r t",
+        this.style
+      )
+      .setOrigin(0.5);
     this.enter = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.ENTER
     );

@@ -1,4 +1,4 @@
-class SameGame {
+export default class SameGame {
   // constructor, simply turns obj information into class properties
   constructor(obj) {
     this.rows = obj.rows;
@@ -17,7 +17,7 @@ class SameGame {
           value: randomValue,
           isEmpty: false,
           row: i,
-          column: j
+          column: j,
         };
       }
     }
@@ -89,7 +89,7 @@ class SameGame {
   removeConnectedItems(row, column) {
     let items = this.listConnectedItems(row, column);
     items.forEach(
-      function(item) {
+      function (item) {
         this.gameArray[item.row][item.column].isEmpty = true;
       }.bind(this)
     );
@@ -132,7 +132,7 @@ class SameGame {
     ) {
       this.floodFillArray.push({
         row: row,
-        column: column
+        column: column,
       });
       this.floodFill(row + 1, column);
       this.floodFill(row - 1, column);
@@ -152,7 +152,7 @@ class SameGame {
           result.push({
             row: i + emptySpaces,
             column: j,
-            deltaRow: emptySpaces
+            deltaRow: emptySpaces,
           });
         }
       }
@@ -189,7 +189,7 @@ class SameGame {
               result.push({
                 row: j,
                 column: i - emptySpaces,
-                deltaColumn: -emptySpaces
+                deltaColumn: -emptySpaces,
               });
             }
           }
@@ -210,7 +210,7 @@ class SameGame {
           result.push({
             row: j,
             column: i,
-            deltaRow: emptySpaces
+            deltaRow: emptySpaces,
           });
           this.gameArray[j][i].value = randomValue;
           this.gameArray[j][i].isEmpty = false;
@@ -243,7 +243,7 @@ class SameGame {
   // returns true if (row, column) is already in floodFillArray array
   alreadyVisited(row, column) {
     let found = false;
-    this.floodFillArray.forEach(function(item) {
+    this.floodFillArray.forEach(function (item) {
       if (item.row == row && item.column == column) {
         found = true;
       }

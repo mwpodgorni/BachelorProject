@@ -3,6 +3,7 @@ import bat from "@/assets/games/5-bat_in_cave/bat-sprite.png";
 
 class Main extends Phaser.Scene {
   saveData;
+  style2 = { color: "#ffffff", fontFamily: "Impact" };
   gameOptions = {
     batGravity: 800,
     batSpeed: 125,
@@ -53,7 +54,7 @@ class Main extends Phaser.Scene {
       localStorage.getItem(this.gameOptions.localStorageName) == null
         ? 0
         : localStorage.getItem(this.gameOptions.localStorageName);
-    this.scoreText = this.add.text(10, 10, "");
+    this.scoreText = this.add.text(10, 10, "", this.style2);
     this.updateScore(this.score);
   }
   updateScore(inc) {

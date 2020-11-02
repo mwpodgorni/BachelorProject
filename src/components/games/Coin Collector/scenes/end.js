@@ -4,7 +4,7 @@ class End extends Phaser.Scene {
   enter;
   style = {
     fontSize: "20px",
-    color: "#000000",
+    color: "#ffffff",
     letterSpacing: 400,
     fontFamily: "Impact",
   };
@@ -20,7 +20,7 @@ class End extends Phaser.Scene {
       .text(
         endTextPositionX,
         endTextPositionY,
-        "T h e   g a m e   i s   o v e r",
+        "Y o u   f i n i s h e d   t h e   g a m e !",
         this.style
       )
       .setOrigin(0.5);

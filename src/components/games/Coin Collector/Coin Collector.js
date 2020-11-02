@@ -7,15 +7,18 @@ import LevelFour from "./scenes/level-4";
 import LevelFive from "./scenes/level-5";
 import End from "./scenes/end";
 
-function launch(containerId) {
+function launch(containerId, height, width) {
+  var div = document.getElementById("game-container");
+  div.style.backgroundColor = "#527d82";
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: containerId,
-    transparent: true,
+    // transparent: true,
+    backgroundColor: 0x527d82,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      height: 580,
+      height: 480,
       width: 600,
     },
     physics: {
