@@ -8,7 +8,7 @@ class Main extends Phaser.Scene {
     fontFamily: "Impact",
   };
   gameOptions = {
-    bounceHeight: 250,
+    bounceHeight: 300,
     squareGravity: 1400,
     squarePower: 800,
     squarePosition: 0.4,
@@ -79,7 +79,8 @@ class Main extends Phaser.Scene {
   }
   updateScore(inc) {
     this.score += inc;
-    this.scoreText.text = "Score: " + this.score + "\nBest: " + this.topScore;
+    this.scoreText.text =
+      "Score: " + this.score + "\nTop Score: " + this.topScore;
   }
   boost() {
     if (this.firstBounce != 0) {

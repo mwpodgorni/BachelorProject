@@ -59,7 +59,8 @@ class Main extends Phaser.Scene {
   }
   updateScore(inc) {
     this.score += inc;
-    this.scoreText.text = "Score: " + this.score + "\nBest: " + this.topScore;
+    this.scoreText.text =
+      "Score: " + this.score + "\nTop Score: " + this.topScore;
   }
   placeWalls(addScore) {
     let rightmost = this.getRightmostWall();
