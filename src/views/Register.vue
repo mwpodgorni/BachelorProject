@@ -1,9 +1,9 @@
 <template>
-  <div class="container">
+  <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
-          <div class="card-header">Register</div>
+          <div class="card-header"><h3>Register</h3></div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
             <div v-if="success" class="alert alert-success">Success</div>
@@ -80,8 +80,12 @@
               </div>
 
               <div class="form-group row mb-0">
-                <div class="col-md-8 offset-md-4">
-                  <button type="submit" class="btn btn-primary">
+                <div class="col-md-4 offset-md-4 mt-3">
+                  <button
+                    type="submit"
+                    class="btn"
+                    id="register-button"
+                  >
                     Register
                   </button>
                 </div>
@@ -133,3 +137,21 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.container {
+  background: transparent;
+}
+
+.card-header h3 {
+  color: black;
+}
+
+#register-button {
+  width: 100%;
+  background-image: linear-gradient(to right, #30cfd0 0%, #309bd0 51%, #330867 100%);
+  color: white;
+  border: 0px;
+}
+
+</style>
