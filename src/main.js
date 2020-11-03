@@ -3,36 +3,54 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
-import * as firebase from "firebase";
+import firebase from "firebase";
 import { defineCustomElements as defineIonPhaser } from "@ion-phaser/core/loader";
+import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import VueChatScroll from 'vue-chat-scroll';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-
+Vue.use(VueChatScroll)
 defineIonPhaser(window);
 
-const firebaseConfigOptions = {
-  apiKey: "AIzaSyBbguNA-JpLCNM1z9zZid3UYuvrbFoKAUY",
-  authDomain: "vue-firebase-auth-c1ff6.firebaseapp.com",
-  databaseURL: "https://vue-firebase-auth-c1ff6.firebaseio.com",
-  projectId: "vue-firebase-auth-c1ff6",
-  storageBucket: "vue-firebase-auth-c1ff6.appspot.com",
-  messagingSenderId: "589725106771",
-  appId: "1:589725106771:web:512498f0aa8fe68c94bca6",
-};
-firebase.initializeApp(firebaseConfigOptions);
+//required for side-effects
+require("firebase/firestore");
 
-firebase.auth().onAuthStateChanged((user) => {
-  store.dispatch("fetchUser", user);
+firebase.initializeApp({
+  apiKey: "AIzaSyBqPvdfLKfnm_-9K6t-cRwu_35jzova9fU",
+  authDomain: "jugsquare-1.firebaseapp.com",
+  databaseURL: "https://jugsquare-1.firebaseio.com",
+  projectId: "jugsquare-1",
+  storageBucket: "jugsquare-1.appspot.com",
+  messagingSenderId: "15561258022",
+  appId: "1:15561258022:web:7e864062a9d3324530e2e7",
+  measurementId: "G-YWP9QLLEGV",
 });
+//Initialize Cloud Firestore trhough Firebase
+var db = firebase.firestore();
 
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+window.db = db;
+firebase.analytics();
+
+let app;
+firebase.auth().onAuthStateChanged((user) => {
+  console.log("authentication");
+  if (user) {
+    store.dispatch("fetchUser", user);
+    store.dispatch("fetchUserData", user);
+  } else {
+    store.dispatch("logout");
+  }
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      render: (h) => h(App),
+    }).$mount("#app");
+  }
+});

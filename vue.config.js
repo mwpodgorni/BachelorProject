@@ -18,6 +18,9 @@ module.exports = {
           })
     })
   },
+  pwa: {
+    name: 'JugSquare', // <---- this is PWA name
+  },
   devServer: {
     open: true,
     hot: false

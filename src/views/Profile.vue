@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container" id="profile">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-3">{{ userData.username }}</h1>
+        <h1 class="my-3">{{ user.data.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
         <router-link to="edit-profile">
@@ -11,117 +11,217 @@
       </div>
     </div>
     <div class="row" id="recentlyPlayed-row">
-      <div class="col">
-        <div class="row">
-          <div class="col text-center">
-            <h3 class="mx-auto my-2">Recently Played</h3>
+      <div class="col-sm-12 col-md-6 px-2 color2">
+        <h3 class="mx-auto my-2 text-center">Recently Played</h3>
+        <div
+          class="row text-center align-items-center mx-0 no-activity"
+          v-if="!user.data.recentlyPlayed.length"
+        >
+          <div class="col px-0 color3">
+            <h4 class="my-auto py-auto">No recent activity</h4>
           </div>
         </div>
-        <div class="row">
-          <div class="col px-0">
-            <b-list-group id="recentlyPlayed-list">
-              <b-list-group-item
-                variant="dark"
-                class="px-1"
-                v-for="item in userData.recentlyPlayed"
-                :key="item.title"
-              >
-                <div class="row mx-0" id="recentlyPlayed-item">
-                  <div class="col-9">
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">{{ item.title }}</div>
-                    </div>
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">Last played on {{ item.lastPlayed }}</div>
-                    </div>
-                  </div>
-                  <div class="col-3 my-auto">
-                    <p class="h5">
-                      <b-icon class="float-right" icon="arrow-up"></b-icon>
-                    </p>
+        <b-list-group
+          id="recentlyPlayed-list"
+          v-if="user.data.recentlyPlayed.length"
+        >
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="item in user.data.recentlyPlayed"
+            :key="item.title"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-9">
+                <div class="row m-0 p-0">
+                  <div class="col m-0 p-0">{{ item.title }}</div>
+                </div>
+                <div class="row m-0 p-0">
+                  <div class="col m-0 p-0">
+                    Last played on:
+                    {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
                   </div>
                 </div>
-              </b-list-group-item>
-            </b-list-group>
+              </div>
+              <div class="col-3 my-auto">
+                <p class="h5">
+                  <b-icon
+                    v-on:click="chooseGame(item)"
+                    class="icon float-right"
+                    icon="arrow-up"
+                  ></b-icon>
+                </p>
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+      <div class="col-sm-12 col-md-3 px-2 color2">
+        <h3 class="mx-auto my-2 text-center">Friends</h3>
+        <div
+          class="row text-center align-items-center mx-0 no-activity"
+          v-if="!user.data.friends.length"
+        >
+          <div class="col px-0 color3">
+            <h4 class="my-auto py-auto">No friends</h4>
           </div>
         </div>
+        <b-list-group v-if="user.data.friends.length">
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="item in user.data.friends"
+            :key="item.userId"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-9 my-auto">
+                <h5 class="my-auto">{{ item.displayName }}</h5>
+              </div>
+              <div class="col-3 my-auto">
+                <p class="h4">
+                  <b-icon
+                    v-on:click="chooseUser(item.userId)"
+                    class="icon float-right py-1"
+                    icon="arrow-up"
+                  ></b-icon>
+                </p>
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+      <div class="col-sm-12 col-md-3 px-2 color2">
+        <h3 class="mx-auto my-2 text-center">Invitations</h3>
+        <div
+          class="row text-center align-items-center mx-0 no-activity"
+          v-if="!user.data.invitations.length"
+        >
+          <div class="col px-0">
+            <h4 class="my-auto py-auto">No Invitations</h4>
+          </div>
+        </div>
+        <b-list-group
+          id="recentlyPlayed-list"
+          v-if="user.data.invitations.length"
+        >
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="item in user.data.invitations"
+            :key="item.userId"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col-8 my-auto">
+                <h5 class="my-auto">{{ item.displayName }}</h5>
+              </div>
+              <div class="col-2 my-auto">
+                <p class="h5">
+                  <b-icon
+                    v-on:click="acceptInvitation(item)"
+                    class="icon float-right"
+                    icon="check2"
+                  ></b-icon>
+                </p>
+              </div>
+              <div class="col-2 my-auto">
+                <p class="h5">
+                  <b-icon
+                    v-on:click="rejectInvitation(item)"
+                    class="icon float-right"
+                    icon="x"
+                  ></b-icon>
+                </p>
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
       </div>
     </div>
     <div class="row" id="suggestions-row">
-      <div class="col">
-        <div class="row">
-          <div class="col text-center">
-            <h3 class="mx-auto my-2">Suggestions</h3>
+      <div class="col px-0 py-2">
+        <h3 class="mx-auto mb-3 py-2 text-center">Suggestions</h3>
+        <div>
+          <div
+            class="py-5 color3"
+            id="no-suggestions"
+            v-if="!user.data.suggestions.length"
+          >
+            <h4 class="text-center">No suggestions</h4>
           </div>
-        </div>
-        <div class="row">
-          <div class="col text-center px-0" style="height: 100%">
-            <div>
-              <ul class="hs full">
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-                <li class="item">test</li>
-              </ul>
+          <div
+            v-if="user.data.suggestions.length"
+            id="carouselIndicators"
+            class="carousel slide"
+            data-ride="carousel"
+          >
+            <ol class="carousel-indicators">
+              <li
+                v-for="(suggestionI, index) in user.data.suggestions"
+                :key="suggestionI.gameId"
+                data-target="#carouselIndicators"
+                data-slide-to="index"
+                v-bind:class="[index === 0 ? carouselActiveClass : '']"
+              ></li>
+            </ol>
+            <div class="carousel-inner">
+              <div
+                v-for="(suggestion, index) in user.data.suggestions"
+                :key="suggestion.gameId"
+                v-bind:class="[
+                  carouselClass,
+                  index === 0 ? carouselActiveClass : '',
+                ]"
+              >
+                <img
+                  v-on:click="chooseGame(suggestion)"
+                  :src="suggestion.downloadURL"
+                  style="height: 220px;"
+                  class="d-block mx-auto img-fluid suggestion-image"
+                  alt="First slide"
+                />
+                <div class="carousel-caption d-md-block">
+                  <h5>{{ suggestion.title }}</h5>
+                  <p>{{ suggestion.description }}</p>
+                </div>
+              </div>
             </div>
+            <a
+              class="carousel-control-prev"
+              href="#carouselIndicators"
+              role="button"
+              data-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a
+              class="carousel-control-next"
+              href="#carouselIndicators"
+              role="button"
+              data-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="sr-only">Next</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
-    <!-- <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">Dashboard</div>
-          <div class="card-body">
-            <div
-              v-if="!user.loggedIn"
-              class="alert alert-secondary"
-              role="alert"
-            >You are not logged in.</div>
-            <div
-              v-if="user.loggedIn"
-              class="alert alert-success"
-              role="alert"
-            >You are logged in {{ }}!</div>
-            <button
-              v-if="user.loggedIn"
-              type="button"
-              class="btn btn-secondary"
-              @click.prevent="signOut"
-            >Sign Out</button>
-            <router-link to="login" class="nav-link">
-              <button v-if="!user.loggedIn" type="button" class="btn btn-success">Log In</button>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>-->
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
-import userData from "@/assets/json-data/user-data.json";
 export default {
   components: {},
   data() {
     return {
-      userData: userData,
+      carouselClass: "carousel-item",
+      carouselActiveClass: "active",
     };
-  },
-  methods: {
-    signOut() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          // this.$router.replace({
-          //   name: "dashboard"
-          // });
-        });
-    },
   },
   computed: {
     // map `this.user` to `this.$store.getters.user`
@@ -129,67 +229,111 @@ export default {
       user: "user",
     }),
   },
+  methods: {
+    chooseGame(event) {
+      this.$router.push("../../games/" + event.title);
+      this.$emit("chooseGame", event);
+    },
+    chooseUser(userId) {
+      this.$router.push("../../user-profile/" + userId);
+    },
+    acceptInvitation(userInvite) {
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          friends: firebase.firestore.FieldValue.arrayUnion({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Added to friends.");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error adding to friends: ", error);
+        });
+      db.collection("users")
+        .doc(userInvite.userId)
+        .update({
+          friends: firebase.firestore.FieldValue.arrayUnion({
+            userId: this.user.userId,
+            displayName: this.user.data.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Added to user friends.");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error adding to user friends: ", error);
+        });
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayRemove({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Removed invitation");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error removing invitation: ", error);
+        });
+    },
+    rejectInvitation(userInvite) {
+      db.collection("users")
+        .doc(this.user.userId)
+        .update({
+          invitations: firebase.firestore.FieldValue.arrayRemove({
+            userId: userInvite.userId,
+            displayName: userInvite.displayName,
+          }),
+        })
+        .then(() => {
+          console.log("Removed invitation");
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error removing invitation: ", error);
+        });
+    },
+  },
 };
 </script>
 <style>
-.container {
-  height: 100%;
-}
-.container * {
+#profile * {
   color: white;
 }
-#username-row,
+#profile {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  background-color: #133b5c;
+}
+#username-row {
+  background-color: #1d2d50;
+}
 #recentlyPlayed-item {
-  background-color: #595858;
+  background-color: #1d2d50;
 }
 #recentlyPlayed-row,
 #suggestions-row {
-  background-color: #949292;
+  background-color: #133b5c;
+}
+.no-activity {
+  height: 265px;
+  background-color: #1e5f74;
 }
 #recentlyPlayed-list {
   overflow: auto;
-  height: 290px;
+  max-height: 265px;
+  background-color: #1e5f74;
 }
-
-:root {
-  --gutter: 20px;
-}
-
-.hs {
-  display: grid;
-  grid-gap: calc(var(--gutter) / 2);
-  grid-template-columns: 10px;
-  grid-template-rows: minmax(150px, 1fr);
-  grid-auto-flow: column;
-  grid-auto-columns: calc(50% - var(--gutter) * 2);
-
-  overflow-x: scroll;
-  scroll-snap-type: x proximity;
-  padding-bottom: calc(0.75 * var(--gutter));
-  margin-bottom: calc(-0.25 * var(--gutter));
-}
-
-.hs:before,
-.hs:after {
-  content: "";
-  width: 10px;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.hs > li,
-.item {
-  scroll-snap-align: center;
-  padding: calc(var(--gutter) / 2 * 1.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #fff;
-  border-radius: 8px;
-  height: 190px;
+.suggestion-image {
+  cursor: pointer;
 }
 </style>

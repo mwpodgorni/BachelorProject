@@ -6,50 +6,51 @@
           <div class="card-header"><h3>Login</h3></div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{ error }}</div>
-            <form>
-              <div class="form-group row">
-                <label for="email" class="col-md-4 col-form-label text-md-right"
-                  >Email</label
-                >
-
-                <div class="col-md-6">
+            <form @submit.prevent="login">
+              <div class="form-group row mt-2">
+                <div class="col">
                   <input
                     id="email"
                     type="email"
+                    placeholder="Email"
                     class="form-control"
                     name="email"
-                    value
                     required
-                    autofocus
-                    v-model="form.email"
+                    v-model="user.email"
                   />
                 </div>
               </div>
-
               <div class="form-group row">
-                <label
-                  for="password"
-                  class="col-md-4 col-form-label text-md-right"
-                  >Password</label
-                >
-
-                <div class="col-md-6">
+                <div class="col">
                   <input
                     id="password"
                     type="password"
+                    placeholder="Password"
                     class="form-control"
                     name="password"
                     required
-                    v-model="form.password"
+                    v-model="user.password"
                   />
                 </div>
               </div>
-
-              <div class="form-group row mb-0">
-                <div class="col-md-4 offset-md-4 mt-3">
-                  <button type="button" @click="login" class="btn" id="login-button">
-                    Login
-                  </button>
+              <div class="form-group row">
+                <div class="col">
+                  <button class="btn btn-outline-light btn-block">Login</button>
+                </div>
+              </div>
+              <div class="form-group row my-0 py-0">
+                <div class="col-6 text-center">
+                  <router-link to="register" class="my-0 py-0" id="login-link"
+                    >Create new account</router-link
+                  >
+                </div>
+                <div class="col-6 text-center">
+                  <router-link
+                    to="forgot-password"
+                    class="my-0 py-0"
+                    id="login-link"
+                    >Forgot password</router-link
+                  >
                 </div>
               </div>
             </form>
@@ -62,11 +63,11 @@
 
 <script>
 import firebase from "firebase";
-
 export default {
+  name: "Login",
   data() {
     return {
-      form: {
+      user: {
         email: "",
         password: "",
       },
@@ -77,13 +78,14 @@ export default {
     login() {
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.form.email, this.form.password)
-        .then((data) => {
-          this.$router.replace({ name: "profile" });
+        .signInWithEmailAndPassword(this.user.email, this.user.password)
+        .then((user) => {
+          this.$store.dispatch("fetchUser", user.user);
+          this.$store.dispatch("fetchUserData", user.user);
+          this.$router.push({ name: "profile" });
         })
-        .catch((err) => {
-          console.log("error" + err);
-          this.error = err.message;
+        .catch((error) => {
+          this.error = error.message;
         });
     },
   },
@@ -92,7 +94,7 @@ export default {
 <style>
 .card label,
 .card h3 {
-  color: black;
+  color: white;
 }
 
 #main-container {
@@ -101,7 +103,6 @@ export default {
 
 #login-button {
   width: 100%;
-  background-image: linear-gradient(to right, #30cfd0 0%, #309bd0 51%, #330867 100%);
   color: white;
   border: 0px;
 }
