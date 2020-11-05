@@ -6,6 +6,7 @@ import ForgotPassword from "../views/ForgotPassword";
 import SearchResults from "../views/SearchResults";
 import Games from "../views/Games";
 import Game from "../views/Game";
+import GameDetails from "../views/GameDetails";
 import Profile from "../views/Profile";
 import EditProfile from "../views/EditProfile";
 import UserProfile from "../views/UserProfile";
@@ -30,6 +31,11 @@ const router = new Router({
       path: "/games/:game",
       name: "game",
       component: Game,
+    },
+    {
+      path: "/details",
+      name: "details",
+      component: GameDetails,
     },
     {
       path: "/search/:keyword",
