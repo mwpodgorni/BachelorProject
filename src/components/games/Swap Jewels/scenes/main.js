@@ -6,7 +6,7 @@ import jewel4 from "@/assets/games/13-swap_jewels/jewel5.png";
 import jewel5 from "@/assets/games/13-swap_jewels/jewel6.png";
 const HORIZONTAL = 1;
 const VERTICAL = 2;
-const colorMap = ["Orange", "Green", "Gold", "Diamond", "Violet", "Red"];
+
 class Main extends Phaser.Scene {
   gameOptions = {
     fieldSize: 9,
@@ -33,7 +33,7 @@ class Main extends Phaser.Scene {
   levelText;
   level;
   goalText;
-  goal = { current: 0, number: 0, color: "", colorNumber: 0 };
+  goal = { current: 0, number: 0, color: null, colorNumber: 0 };
   constructor() {
     super({ key: "Main" });
   }
@@ -56,7 +56,7 @@ class Main extends Phaser.Scene {
     this.goal.number = 10;
     this.goal.current = 0;
     let n = Phaser.Math.Between(0, 5);
-    this.goal.color = colorMap[n];
+    // this.goal.color = colorMap[n];
     this.goal.colorNumber = n;
     this.levelText = this.add.text(
       20,
@@ -70,16 +70,16 @@ class Main extends Phaser.Scene {
       "Score: " + this.score,
       this.style
     );
-
+    this.goal.color = this.add.sprite(
+      320,
+      this.cameras.main.height - 13,
+      "jewel" + n
+    );
+    this.goal.color.setScale(0.7);
     this.goalText = this.add.text(
-      300,
+      360,
       this.cameras.main.height - 25,
-      "target: " +
-        this.goal.color +
-        " " +
-        this.goal.current +
-        "/" +
-        this.goal.number,
+      this.goal.current + "/" + this.goal.number,
       this.style
     );
   }
@@ -332,31 +332,17 @@ class Main extends Phaser.Scene {
               this.scoreText.text = "Score: " + this.score;
               if (this.gameMatrix[i][j].jewelColor == this.goal.colorNumber) {
                 this.goal.current++;
-                this.goalText.text =
-                  "target: " +
-                  this.goal.color +
-                  " " +
-                  this.goal.current +
-                  "/" +
-                  this.goal.number;
+                this.goalText.text = this.goal.current + "/" + this.goal.number;
               }
               if (this.goal.current >= this.goal.number) {
                 this.level++;
                 this.levelText.text = "Level: " + this.level;
                 let n = Phaser.Math.Between(0, 5);
-                this.goal = {
-                  current: 0,
-                  number: this.goal.number + 10,
-                  color: colorMap[n],
-                  colorNumber: n,
-                };
-                this.goalText.text =
-                  "target: " +
-                  this.goal.color +
-                  " " +
-                  this.goal.current +
-                  "/" +
-                  this.goal.number;
+                this.goal.current = 0;
+                this.goal.number += 10;
+                this.goal.color.setTexture("jewel" + n);
+                this.goal.colorNumber = n;
+                this.goalText.text = this.goal.current + "/" + this.goal.number;
               }
               destroyed--;
               this.gameMatrix[i][j].jewelSprite.visible = false;
