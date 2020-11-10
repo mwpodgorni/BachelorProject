@@ -88,6 +88,14 @@
             ></b-icon></b-nav-item
         ></b-navbar-nav>
       </b-navbar>
+      <b-alert
+        :show="dismissCountDown"
+        @dismissed="dismissCountDown = 0"
+        dismissible
+      >
+        If you are playing on a phone and you can't see the full game window,
+        try to zoom out.
+      </b-alert>
     </div>
     <div id="content">
       <transition name="component-fade" mode="out-in">
@@ -116,6 +124,8 @@ export default {
       ],
       keyword: "",
       keywordCheck: "",
+      dismissSecs: 6,
+      dismissCountDown: 0,
     };
   },
   computed: {
@@ -182,6 +192,7 @@ export default {
           });
       }
       this.component = game.title.replace(/\s/g, "");
+      this.showAlert();
       // document.body.style.background = "#007267";
     },
     openGames: function () {
@@ -203,6 +214,9 @@ export default {
           params: { keyword: this.keyword },
         });
       }
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
     },
   },
   // mounted: function () {

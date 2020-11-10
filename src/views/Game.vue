@@ -60,7 +60,7 @@ export default {
   display: flex;
   flex-flow: column;
   height: 100%;
-  background-color: #32383e;
+  background-color: #1d2d50;
 }
 .placeholder {
   display: flex;

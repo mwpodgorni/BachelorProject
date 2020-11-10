@@ -169,7 +169,7 @@ class Main extends Phaser.Scene {
         );
         targetSquare.displayWidth = spaceWidth + wallWidth;
         targetSquare.displayHeight = spaceWidth + wallWidth;
-        targetSquare.alpha = 0.5;
+        targetSquare.alpha = 0.2;
         targetSquare.setOrigin(0.5, 1);
         this.infoGroup.add(targetSquare);
         // }
