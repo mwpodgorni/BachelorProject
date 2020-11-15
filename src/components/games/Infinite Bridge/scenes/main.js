@@ -1,7 +1,7 @@
 import ground from "@/assets/games/15-infinite_bridge/ground.png";
 import player from "@/assets/games/15-infinite_bridge/player.png";
+import trap from "@/assets/games/15-infinite_bridge/trap.png";
 import obstacle from "@/assets/games/15-infinite_bridge/obstacle.png";
-import obstacle1 from "@/assets/games/15-infinite_bridge/obstacle1.png";
 class Main extends Phaser.Scene {
   saveData;
   style2 = { color: "#ffffff", fontFamily: "Impact" };
@@ -39,11 +39,11 @@ class Main extends Phaser.Scene {
       frameHeight: 70,
     });
 
-    this.load.spritesheet("obstacle", obstacle, {
+    this.load.spritesheet("trap", trap, {
       frameWidth: this.gameOptions.groundSize,
       frameHeight: this.gameOptions.groundSize,
     });
-    this.load.spritesheet("obstacle1", obstacle1, {
+    this.load.spritesheet("obstacle", obstacle, {
       frameWidth: this.gameOptions.groundSize,
       frameHeight: this.gameOptions.groundSize,
     });
@@ -106,7 +106,7 @@ class Main extends Phaser.Scene {
     });
     this.time.addEvent({
       delay: 1500,
-      callback: this.changeObstacle,
+      callback: this.changeTrap,
       callbackScope: this,
       repeat: -1,
     });
@@ -135,7 +135,7 @@ class Main extends Phaser.Scene {
         if (
           element.x == this.player.x &&
           element.y == this.player.y &&
-          element.name == "obstacle" &&
+          element.name == "trap" &&
           this.obstacleFrame == 1
         ) {
           return true;
@@ -162,9 +162,9 @@ class Main extends Phaser.Scene {
       this.removeTile();
     }
   }
-  changeObstacle() {
+  changeTrap() {
     this.groundGroup.getChildren().forEach((element) => {
-      if (element.name == "obstacle") {
+      if (element.name == "trap") {
         if (this.obstacleFrame == 0) {
           element.setFrame(1);
         } else {
@@ -277,7 +277,7 @@ class Main extends Phaser.Scene {
       }
     }
     if (next.x < this.player.x) {
-      if (next.name == "obstacle1" && this.obstacleStamina != 0) {
+      if (next.name == "obstacle" && this.obstacleStamina != 0) {
         this.tweens.add({
           targets: this.player,
           x: { from: this.player.x - 20, to: this.player.x },
@@ -309,7 +309,7 @@ class Main extends Phaser.Scene {
         });
       }
     } else if (next.x > this.player.x) {
-      if (next.name == "obstacle1" && this.obstacleStamina != 0) {
+      if (next.name == "obstacle" && this.obstacleStamina != 0) {
         this.tweens.add({
           targets: this.player,
           x: { from: this.player.x + 20, to: this.player.x },
@@ -341,7 +341,7 @@ class Main extends Phaser.Scene {
         });
       }
     } else {
-      if (next.name == "obstacle1" && this.obstacleStamina != 0) {
+      if (next.name == "obstacle" && this.obstacleStamina != 0) {
         this.tweens.add({
           targets: this.player,
           y: { from: this.player.y - 20, to: this.player.y },
@@ -397,13 +397,13 @@ class Main extends Phaser.Scene {
     let position = this.getNextPosition();
     let type = Phaser.Math.Between(1, 10);
     let nextTile;
-    //1:obstacle, 2:obstacle, 3-10 ground
-    if (type == 1) {
-      nextTile = this.add.sprite(position.x, position.y, "obstacle1", 0);
-      nextTile.setName("obstacle1");
-    } else if (type == 2) {
+    //1:obstacle, 2:trap, 3-10 ground
+    if (type == 1 && this.groundGroup.getLast(true).name != "trap") {
       nextTile = this.add.sprite(position.x, position.y, "obstacle", 0);
       nextTile.setName("obstacle");
+    } else if (type == 2) {
+      nextTile = this.add.sprite(position.x, position.y, "trap", 0);
+      nextTile.setName("trap");
     } else {
       nextTile = this.add.image(position.x, position.y, "ground");
     }
