@@ -88,14 +88,14 @@
             ></b-icon></b-nav-item
         ></b-navbar-nav>
       </b-navbar>
-      <b-alert
+      <!-- <b-alert
         :show="dismissCountDown"
         @dismissed="dismissCountDown = 0"
         dismissible
       >
         If you are playing on a phone and you can't see the full game window,
         try to zoom out.
-      </b-alert>
+      </b-alert> -->
     </div>
     <div id="content">
       <transition name="component-fade" mode="out-in">

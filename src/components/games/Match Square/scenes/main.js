@@ -204,41 +204,34 @@ class Main extends Phaser.Scene {
       this.gameMode = IDLE;
       this.growTween.stop();
       this.rotateTween.stop();
-      this.rotateTween -
-        this.tweens.add({
-          targets: [this.square, this.squareText],
-          angle: 0,
-          duration: 300,
-          ease: "Cubic.easeOut",
-          callbackScope: this,
-          onComplete: () => {
-            if (
-              this.square.displayWidth <=
-              this.rightBase.x - this.leftBase.x
-            ) {
-              this.tweens.add({
-                targets: [this.square, this.squareText],
-                y: this.cameras.main.height + this.square.displayWidth,
-                duration: 600,
-                ease: "Cubic.easeIn",
-                callbackScope: this,
-                onComplete: () => {
-                  this.levelText.text = "Too small!";
-                  this.gameOver();
-                },
-              });
+      this.rotateTween = this.tweens.add({
+        targets: [this.square, this.squareText],
+        angle: 0,
+        duration: 300,
+        ease: "Cubic.easeOut",
+        callbackScope: this,
+        onComplete: () => {
+          if (this.square.displayWidth <= this.rightBase.x - this.leftBase.x) {
+            this.tweens.add({
+              targets: [this.square, this.squareText],
+              y: this.cameras.main.height + this.square.displayWidth,
+              duration: 600,
+              ease: "Cubic.easeIn",
+              callbackScope: this,
+              onComplete: () => {
+                this.levelText.text = "Too small!";
+                this.gameOver();
+              },
+            });
+          } else {
+            if (this.square.displayWidth <= this.rightTop.x - this.leftTop.x) {
+              this.drop(true);
             } else {
-              if (
-                this.square.displayWidth <=
-                this.rightTop.x - this.leftTop.x
-              ) {
-                this.drop(true);
-              } else {
-                this.drop(false);
-              }
+              this.drop(false);
             }
-          },
-        });
+          }
+        },
+      });
     }
   }
   drop(success) {
