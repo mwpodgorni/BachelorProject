@@ -6,7 +6,7 @@
       <p class="card-text">
         {{ description }}
       </p>
-      <a @click="playGame(title)" class="btn btn-primary">Play</a>
+      <a @click.stop="playGame(title)" class="btn btn-primary">Play</a>
     </div>
   </div>
 </template>
@@ -18,8 +18,9 @@ export default {
     viewGameDetails(gameId) {
       this.$router.push(`${gameId}`);
     },
-    playGame(title) {
-      this.$router.push(`../${title}`);
+    playGame(game) {
+      console.log(game);
+      this.$router.push(`../../games/${game}`);
     },
   },
 };
