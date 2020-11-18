@@ -3,7 +3,7 @@
     <div v-if="error" class="error">
       {{ error }}
     </div>
-    <div v-if="gamesData" class="grid px-0 mx-0">
+    <div v-if="games" class="grid px-0 mx-0">
       <figure
         v-for="game in gamesData"
         :key="game.title"
@@ -15,37 +15,33 @@
           <h2>
             <span>{{ game.title }}</span>
           </h2>
-          <p>{{ game.description }}</p>
-          <a>View more</a>
+          <p>
+            <span>{{ game.description }}</span>
+            <br />
+            <br />
+            <br />
+            <a @click.stop="viewDetails(game)">View Details</a>
+          </p>
         </figcaption>
       </figure>
     </div>
   </div>
 </template>
 <script>
-import firebase from "firebase";
+import { mapGetters } from "vuex";
 export default {
   name: "Games",
   data() {
     return { gamesData: [], error: null };
   },
-  beforeRouteEnter(to, from, next) {
-    var docRef = db.collection("games").doc("games");
-    docRef
-      .get()
-      .then(function (doc) {
-        if (doc.exists) {
-          console.log("Document data:", doc.data());
-
-          next((vm) => vm.setData(doc.data(), vm.gamesData));
-        } else {
-          console.log("No such document!");
-          this.error = "No such document!";
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+  created() {
+    this.loadGames();
+    this.gamesData = this.$store.state.games;
+    this.gamesData.sort(this.compare);
+    console.log(this.gamesData);
+  },
+  computed: {
+    ...mapGetters(["games"]),
   },
   methods: {
     chooseGame(event) {
@@ -53,12 +49,18 @@ export default {
       this.$router.push("games/" + event.title);
       this.$emit("chooseGame", event);
     },
+    viewDetails(game) {
+      this.$router.push("games/details/" + game.gameId);
+    },
     setData(data, gamesData) {
       var keys = Object.keys(data);
-      keys.forEach(function (key) {
+      keys.forEach(function(key) {
         gamesData.push(data[key]);
       });
       gamesData.sort(this.compare);
+    },
+    loadGames() {
+      this.$store.dispatch("fetchGames");
     },
     compare(a, b) {
       const itemA = a.title.toUpperCase();
@@ -171,6 +173,15 @@ export default {
 figure.effect-julia {
   border: 3px solid #fcdab7;
   border-radius: 2px;
+  position: relative;
+}
+#actions {
+  position: absolute;
+  bottom: 0;
+  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+  transition: opacity 0.35s, transform 0.35s;
+  -webkit-transform: translate3d(-360px, 0, 0);
+  transform: translate3d(-360px, 0, 0);
 }
 figure.effect-julia img {
   -webkit-transition: opacity 1s, -webkit-transform 1s;

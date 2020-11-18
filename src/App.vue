@@ -17,7 +17,7 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item>
-              <router-link to="../games" class="nav-link py-0 my-0"
+              <router-link to="../../games" class="nav-link py-0 my-0"
                 >Games</router-link
               >
             </b-nav-item>
@@ -109,10 +109,12 @@
 import Games from "@/views/Games";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
+import GameDetails from "./views/GameDetails";
 export default {
   name: "App",
   components: {
     Games,
+    GameDetails,
   },
   data() {
     return {
@@ -153,7 +155,7 @@ export default {
         this.$router.push("../../chat");
       }
     },
-    chooseGame: function (game) {
+    chooseGame: function(game) {
       console.log("game app", game);
       if (this.user.loggedIn) {
         this.user.data.recentlyPlayed.forEach((element) => {
@@ -167,10 +169,10 @@ export default {
                   title: element.title,
                 }),
               })
-              .then(function (doc) {
+              .then(function(doc) {
                 console.log("added to recently Played");
               })
-              .catch(function (error) {
+              .catch(function(error) {
                 console.log("Error getting document:", error);
               });
           }
@@ -184,10 +186,10 @@ export default {
               title: game.title,
             }),
           })
-          .then(function (doc) {
+          .then(function(doc) {
             console.log("added to recently Played");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.log("Error getting document:", error);
           });
       }
@@ -195,7 +197,7 @@ export default {
       this.showAlert();
       // document.body.style.background = "#007267";
     },
-    openGames: function () {
+    openGames: function() {
       if (this.component != "Games") {
         document.body.style.background =
           "linear-gradient(to bottom, #09203f 0%, #537895 100%)";

@@ -6,12 +6,13 @@ import ForgotPassword from "../views/ForgotPassword";
 import SearchResults from "../views/SearchResults";
 import Games from "../views/Games";
 import Game from "../views/Game";
-import GameDetails from "../views/GameDetails";
+import GameDetails from "../views/GameDetails.vue";
 import Profile from "../views/Profile";
 import EditProfile from "../views/EditProfile";
 import UserProfile from "../views/UserProfile";
 import Chat from "../views/Chat";
 import store from "../store";
+
 Vue.use(Router);
 
 const router = new Router({
@@ -33,8 +34,8 @@ const router = new Router({
       component: Game,
     },
     {
-      path: "/details",
-      name: "details",
+      path: "/games/details/:gameId",
+      name: "game-details",
       component: GameDetails,
     },
     {

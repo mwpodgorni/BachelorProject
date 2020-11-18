@@ -9,33 +9,33 @@ import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import VueChatScroll from 'vue-chat-scroll';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueChatScroll from "vue-chat-scroll";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faCoffee)
+library.add(faCoffee);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/ion-\w*/];
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-Vue.use(VueChatScroll)
+Vue.use(VueChatScroll);
 defineIonPhaser(window);
 
 //required for side-effects
 require("firebase/firestore");
 
-firebase.initializeApp({
+export default firebase.initializeApp({
   apiKey: "AIzaSyBqPvdfLKfnm_-9K6t-cRwu_35jzova9fU",
   authDomain: "jugsquare-1.firebaseapp.com",
   databaseURL: "https://jugsquare-1.firebaseio.com",
   projectId: "jugsquare-1",
   storageBucket: "jugsquare-1.appspot.com",
   messagingSenderId: "15561258022",
-  appId: "1:15561258022:web:7e864062a9d3324530e2e7",
+  appId: "1:15561258022:web:7e864062a9d3324530e2e7",   
   measurementId: "G-YWP9QLLEGV",
 });
 //Initialize Cloud Firestore trhough Firebase

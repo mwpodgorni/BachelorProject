@@ -6,7 +6,7 @@
 </template>
 <script>
 import $ from "jquery";
-import Games from "@/views/Games";
+import Games from "./Games";
 export default {
   name: "Game",
   components: {

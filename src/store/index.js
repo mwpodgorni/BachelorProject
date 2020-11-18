@@ -17,6 +17,9 @@ export default new Vuex.Store({
         invitations: [],
       },
     },
+    games: [],
+    reviews: [],
+    game: null,
   },
 
   mutations: {
@@ -30,7 +33,7 @@ export default new Vuex.Store({
     SET_USER_DATA(state, user) {
       db.collection("users")
         .doc(user.uid)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           state.user.data = doc.data();
         });
     },
@@ -42,6 +45,16 @@ export default new Vuex.Store({
       state.user.data.recentlyPlayed = [];
       state.user.data.suggestions = [];
       state.user.data.friends = [];
+    },
+    SET_GAMES(state, data) {
+      state.games = data;
+    },
+    SET_REVIEWS(state, data) {
+      state.reviews = data;
+    },
+    SET_GAME(state, data) {
+      console.log("Setting game to " + data.title);
+      state.game = data;
     },
   },
   actions: {
@@ -67,10 +80,84 @@ export default new Vuex.Store({
     logout({ commit }) {
       commit("SET_LOGGED_IN", false);
     },
+    fetchGames({ commit }) {
+      var docRef = db.collection("games").doc("games");
+      var games = [];
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            var data = doc.data();
+            console.log("Document data:", data);
+            var keys = Object.keys(data);
+            keys.forEach(function(key) {
+              games.push(data[key]);
+            });
+          } else {
+            console.error("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.error("Error getting document:", error);
+        });
+      console.log("Games " + games);
+      commit("SET_GAMES", games);
+    },
+    fetchReviews({ commit }) {
+      var docRef = db.collection("reviews").doc("reviews");
+      var reviews = [];
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            var data = doc.data();
+            console.log("Document data:", data);
+            var keys = Object.keys(data);
+            keys.forEach(function(key) {
+              reviews.push(data[key]);
+            });
+          } else {
+            console.error("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.error("Error getting document:", error);
+        });
+      console.log(reviews);
+      commit("SET_REVIEWS", reviews);
+    },
+    fetchGame({ commit }, gameId) {
+      var docRef = db.collection("games").doc("games");
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            var data = doc.data();
+            var keys = Object.keys(data);
+            keys.forEach(function(key) {
+              if (data[key].gameId == gameId) {
+                var game = data[key];
+                commit("SET_GAME", game);
+              }
+            });
+          } else {
+            console.error("No such game!");
+          }
+        })
+        .catch(function(error) {
+          console.error("Error getting game", error);
+        });
+    },
   },
   getters: {
     user(state) {
       return state.user;
+    },
+    games(state) {
+      return state.games;
+    },
+    game(state) {
+      return state.game;
     },
   },
 });

@@ -12,8 +12,8 @@
           <div class="col">
             <p id="username" class="mb-0">{{ username }}</p>
             <rating :rating="rating"></rating>
-            <p id="date">{{ date }}</p>
-            <span id="reviewText">{{ reviewText }}</span>
+            <p id="date" class="mb-1">{{ date }}</p>
+            <p id="reviewText">{{ reviewText }}</p>
           </div>
         </div>
       </div>
