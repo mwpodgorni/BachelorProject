@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import firebase from "firebase";
 
 Vue.use(Vuex);
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         recentlyPlayed: [],
         suggestions: [],
         friends: [],
+        favoritedGames: [],
         invitations: [],
       },
     },
@@ -43,6 +45,7 @@ export default new Vuex.Store({
       state.user.data.displayName = null;
       state.user.email = null;
       state.user.data.recentlyPlayed = [];
+      state.user.data.favoritedGames = [];
       state.user.data.suggestions = [];
       state.user.data.friends = [];
     },
@@ -55,6 +58,9 @@ export default new Vuex.Store({
     SET_GAME(state, data) {
       console.log("Setting game to " + data.title);
       state.game = data;
+    },
+    ADD_FAVORITED(state, data) {
+      state.user.data.favoritedGames.push(data);
     },
   },
   actions: {
@@ -146,6 +152,21 @@ export default new Vuex.Store({
         })
         .catch(function(error) {
           console.error("Error getting game", error);
+        });
+    },
+    addFavorited({ commit }, data) {
+      console.log(`Adding ${data.gameId} to favorites for ${data.userId}`);
+
+      db.collection("users")
+        .doc(data.userId)
+        .update({
+          favoritedGames: firebase.firestore.FieldValue.arrayUnion(data.gameId),
+        })
+        .then(function(doc) {
+          console.log(`${data.gameId} added to favorites!`);
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
         });
     },
   },
