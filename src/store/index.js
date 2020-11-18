@@ -169,6 +169,23 @@ export default new Vuex.Store({
           console.log("Error getting document:", error);
         });
     },
+    removeFavorited({ commit }, data) {
+      console.log(`Removing ${data.gameId} from favorites for ${data.userId}`);
+
+      db.collection("users")
+        .doc(data.userId)
+        .update({
+          favoritedGames: firebase.firestore.FieldValue.arrayRemove(
+            data.gameId
+          ),
+        })
+        .then(function(doc) {
+          console.log(`${data.gameId} removed from favorites!`);
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
+        });
+    },
   },
   getters: {
     user(state) {

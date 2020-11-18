@@ -32,6 +32,7 @@
                 </svg>
                 <svg
                   v-if="isFavorited"
+                  @click="removeFavorited()"
                   width="1.5rem"
                   height="1.5rem"
                   viewBox="0 0 16 16"
@@ -272,6 +273,12 @@ export default {
         `Adding ${this.game.gameId} to favorited games for ${this.user.data.displayName}`
       );
       this.$store.dispatch("addFavorited", {
+        gameId: this.game.gameId,
+        userId: this.user.data.userId,
+      });
+    },
+    removeFavorited() {
+      this.$store.dispatch("removeFavorited", {
         gameId: this.game.gameId,
         userId: this.user.data.userId,
       });
