@@ -1,12 +1,14 @@
 <template>
-  <div class="card" style="width: 65%;" @click="viewGameDetails(gameId)">
+  <div class="card mb-2">
     <img class="card-img-top" :src="imageUrl" :alt="title" />
-    <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">
+    <div class="card-body p-1" style="background-color: #133b5c;">
+      <h5 class="card-title mb-1">{{ title }}</h5>
+      <!-- <p class="card-text">
         {{ description }}
-      </p>
-      <a @click.stop="playGame(title)" class="btn btn-primary">Play</a>
+      </p> -->
+      <!-- <a class="btn btn-primary">Play</a> -->
+      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light">Play</button>
+      <button @click="viewGameDetails(gameId)" type="button" class="btn btn-block btn-outline-light">Details</button>
     </div>
   </div>
 </template>

@@ -20,7 +20,7 @@ class Main extends Phaser.Scene {
   }
   preload() {
     this.load.image("wall", wall);
-    this.load.spritesheet("bat", bat, { frameWidth: 30, frameHeight: 30 });
+    this.load.spritesheet("bat", bat, { frameWidth: 30, frameHeight: 19 });
   }
   create() {
     this.bat = this.physics.add.sprite(

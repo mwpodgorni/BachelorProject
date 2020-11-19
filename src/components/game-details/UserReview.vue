@@ -1,16 +1,10 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-2 col-sm-2 pr-0">
-        <img
-          class="avatar"
-          src="https://images.theconversation.com/files/350865/original/file-20200803-24-50u91u.jpg?ixlib=rb-1.1.0&rect=37%2C29%2C4955%2C3293&q=45&auto=format&w=926&fit=clip"
-        />
-      </div>
       <div class="col pl-0">
         <div class="row">
           <div class="col">
-            <p id="username" class="mb-0">{{ username }}</p>
+            <h4 id="username" class="mb-0">{{ username }}</h4>
             <rating :rating="rating"></rating>
             <p id="date" class="mb-1">{{ date }}</p>
             <p id="reviewText">{{ reviewText }}</p>

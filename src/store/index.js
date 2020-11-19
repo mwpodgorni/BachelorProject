@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import firebase from "firebase";
+import { componentsPlugin } from "bootstrap-vue";
 
 Vue.use(Vuex);
 
@@ -35,7 +36,7 @@ export default new Vuex.Store({
     SET_USER_DATA(state, user) {
       db.collection("users")
         .doc(user.uid)
-        .onSnapshot(function(doc) {
+        .onSnapshot(function (doc) {
           state.user.data = doc.data();
         });
     },
@@ -91,22 +92,22 @@ export default new Vuex.Store({
       var games = [];
       docRef
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             var data = doc.data();
             console.log("Document data:", data);
             var keys = Object.keys(data);
-            keys.forEach(function(key) {
+            keys.forEach(function (key) {
               games.push(data[key]);
             });
           } else {
             console.error("No such document!");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error getting document:", error);
         });
-      console.log("Games " + games);
+      // console.log("Games " + games);
       commit("SET_GAMES", games);
     },
     fetchReviews({ commit }) {
@@ -114,33 +115,32 @@ export default new Vuex.Store({
       var reviews = [];
       docRef
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             var data = doc.data();
-            console.log("Document data:", data);
             var keys = Object.keys(data);
-            keys.forEach(function(key) {
+            keys.forEach(function (key) {
               reviews.push(data[key]);
             });
           } else {
             console.error("No such document!");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error getting document:", error);
         });
-      console.log(reviews);
+      // console.log(reviews);
       commit("SET_REVIEWS", reviews);
     },
     fetchGame({ commit }, gameId) {
       var docRef = db.collection("games").doc("games");
       docRef
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             var data = doc.data();
             var keys = Object.keys(data);
-            keys.forEach(function(key) {
+            keys.forEach(function (key) {
               if (data[key].gameId == gameId) {
                 var game = data[key];
                 commit("SET_GAME", game);
@@ -150,7 +150,7 @@ export default new Vuex.Store({
             console.error("No such game!");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error getting game", error);
         });
     },
@@ -162,10 +162,10 @@ export default new Vuex.Store({
         .update({
           favoritedGames: firebase.firestore.FieldValue.arrayUnion(data.gameId),
         })
-        .then(function(doc) {
+        .then(function (doc) {
           console.log(`${data.gameId} added to favorites!`);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting document:", error);
         });
     },
@@ -175,14 +175,12 @@ export default new Vuex.Store({
       db.collection("users")
         .doc(data.userId)
         .update({
-          favoritedGames: firebase.firestore.FieldValue.arrayRemove(
-            data.gameId
-          ),
+          favoritedGames: firebase.firestore.FieldValue.arrayRemove(data.gameId),
         })
-        .then(function(doc) {
+        .then(function (doc) {
           console.log(`${data.gameId} removed from favorites!`);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting document:", error);
         });
     },

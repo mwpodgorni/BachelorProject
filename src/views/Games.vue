@@ -4,23 +4,33 @@
       {{ error }}
     </div>
     <div v-if="games" class="grid px-0 mx-0">
-      <figure
-        v-for="game in gamesData"
-        :key="game.title"
-        class="effect-julia"
-        v-on:click="chooseGame(game)"
-      >
+      <figure v-for="game in gamesData" :key="game.title" class="effect-julia">
         <img :src="game.downloadURL" alt="cover" />
         <figcaption>
           <h2>
             <span>{{ game.title }}</span>
           </h2>
           <p>
-            <span>{{ game.description }}</span>
-            <br />
-            <br />
-            <br />
-            <a @click.stop="viewDetails(game)">View Details</a>
+            <!-- <span>{{ game.description }}</span> -->
+            <!-- <a @click.stop="viewDetails(game)">View Details</a> -->
+            <!-- <button type="button" class="btn btn-outline-light">Play</button>
+            <button type="button" class="btn btn-outline-light">Details</button>
+            <button type="button" class="btn btn-outline-dark">Play</button>
+            <button type="button" class="btn btn-outline-dark">Details</button> -->
+            <b-icon
+              v-on:click="viewDetails(game)"
+              v-b-popover.hover.bottom="'Details'"
+              class="my-auto game-icon"
+              style="width: 45px; height: 45px;"
+              icon="info-square"
+            ></b-icon>
+            <b-icon
+              v-on:click="chooseGame(game)"
+              v-b-popover.hover.bottom="'Play'"
+              class="my-auto pt-1 mx-4 game-icon"
+              style="width: 50px; height: 50px;"
+              icon="controller"
+            ></b-icon>
           </p>
         </figcaption>
       </figure>
@@ -54,7 +64,7 @@ export default {
     },
     setData(data, gamesData) {
       var keys = Object.keys(data);
-      keys.forEach(function(key) {
+      keys.forEach(function (key) {
         gamesData.push(data[key]);
       });
       gamesData.sort(this.compare);
@@ -78,6 +88,9 @@ export default {
 </script>
 
 <style lang="scss">
+.game-icon {
+  cursor: pointer;
+}
 @media only screen and (max-width: 575px) {
   .grid figure {
     width: 94%;
@@ -116,7 +129,7 @@ export default {
   padding: 20px;
   margin: 5px;
   text-align: center;
-  cursor: pointer;
+
   line-height: normal;
 }
 .grid figure img {

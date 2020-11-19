@@ -1,68 +1,37 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" id="details-wrapper">
     <div class="row">
-      <div class="col-9">
-        <div class="row mt-5 px-5">
-          <div class="col-md-3">
-            <img :src="game.downloadURL" class="img-thumbnail img-fluid" />
+      <div class="col-sm-12 col-md-9">
+        <div class="row mt-4">
+          <div class="col-md-4 text-center" v-if="game">
+            <b-img style="width: 100%; height: auto;" fluid :src="game.downloadURL" />
           </div>
-          <div class="col-md-9">
-            <div class="row mt-1">
+          <div class="col-md-8" v-if="game">
+            <div class="row">
               <div class="col">
-                <h2 v-if="game">{{ game.title }}</h2>
+                <h2>{{ game.title }}</h2>
               </div>
-              <div
-                class="col d-flex flex-row-reverse pt-2"
-                v-if="user.loggedIn"
-              >
-                <svg
+              <div class="col d-flex flex-row-reverse" v-if="user.loggedIn">
+                <b-icon
                   v-if="!isFavorited"
                   @click="addFavorited()"
-                  width="1.5rem"
-                  height="1.5rem"
-                  viewBox="0 0 16 16"
-                  class="bi bi-heart"
-                  fill="white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
-                  />
-                </svg>
-                <svg
+                  class="my-auto"
+                  style="width: 30px; height: 30px; color: #ffffff; cursor: pointer;"
+                  icon="heart"
+                ></b-icon>
+                <b-icon
                   v-if="isFavorited"
                   @click="removeFavorited()"
-                  width="1.5rem"
-                  height="1.5rem"
-                  viewBox="0 0 16 16"
-                  class="bi bi-heart-fill"
-                  fill="red"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
-                  />
-                </svg>
+                  class="my-auto"
+                  style="width: 30px; height: 30px; color: #ff0000; cursor: pointer;"
+                  icon="heart-fill"
+                ></b-icon>
               </div>
             </div>
-            <div class="row px-2 align-items-center">
-              <rating v-if="score" :rating="score"></rating>
-              <span class="align-baseline mt-0">
-                <svg
-                  width="1.2em"
-                  height="1.2em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-people-fill ml-4"
-                  fill="white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"
-                  />
-                </svg>
+            <div class="row">
+              <rating class="ml-3" :rating="rating"></rating
+              ><span class="mr-1 ml-3 my-auto">
+                <b-icon class="my-auto" style="width: 23px; height: 23px;" icon="people-fill"></b-icon>
                 {{ nrOfReviews }}
               </span>
             </div>
@@ -76,21 +45,10 @@
                 >
               </div>
               <div class="col d-flex flex-row-reverse pt-2">
-                <button class="btn btn-success" @click="playGame(game.title)">
+                <b-button variant="outline-light" @click="playGame(game.title)">
                   Play
-                  <svg
-                    width="1.3em"
-                    height="1.3em"
-                    viewBox="0 0 16 16"
-                    class="bi bi-play-fill"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"
-                    />
-                  </svg>
-                </button>
+                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="controller"></b-icon>
+                </b-button>
               </div>
             </div>
             <div class="row">
@@ -100,31 +58,8 @@
             </div>
             <div class="row" v-if="game">
               <div class="col-12">
-                <div class="description" v-if="game.description.length > 400">
-                  <span v-if="!readMoreActivated">{{
-                    game.description.slice(0, 400) + "..."
-                  }}</span>
-                  <div class="mt-2">
-                    <a
-                      style="color: gray"
-                      v-if="!readMoreActivated"
-                      href="#"
-                      @click="activateReadMore"
-                      >SHOW MORE</a
-                    >
-                  </div>
-                </div>
-                <div class="description" v-else>
+                <div class="description" style="max-height: 150px; overflow-y: auto;">
                   <span>{{ game.description }}</span>
-                  <div class="mt-2">
-                    <a
-                      style="color: gray"
-                      v-if="readMoreActivated"
-                      href="#"
-                      @click="deactivateReadMore"
-                      >SHOW LESS</a
-                    >
-                  </div>
                 </div>
               </div>
             </div>
@@ -138,11 +73,7 @@
                 <h3>Reviews</h3>
               </div>
             </div>
-            <div
-              class="row mt-3"
-              v-for="review of reviews"
-              :key="review.reviewId"
-            >
+            <div class="row mt-3" v-for="review of reviews" :key="review.reviewId">
               <div class="col-12">
                 <user-review
                   :username="review.user"
@@ -155,17 +86,33 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 mt-5">
+      <div class="col-sm-12 col-md-3 pt-4 text-center" id="similar">
+        <!-- DONT REMOVE - second variant of the 'similar games' -->
+        <!-- <b-card text-variant="white" class="pt-2" title="Similar Games">
+          <b-card-body style="height: 550px; overflow: auto;">
+            <div class="row mx-0 mt-1 px-2" v-for="game in similarGames" :key="game.gameId">
+              <similar-game
+                :imageUrl="game.downloadURL"
+                :title="game.title"
+                :description="game.description"
+                :gameId="game.gameId"
+              ></similar-game>
+            </div>
+          </b-card-body>
+        </b-card> -->
+
         <div class="row">
-          <h3>Similar</h3>
+          <h3 class="mx-auto">Similar Games</h3>
         </div>
-        <div class="row mt-2" v-for="game in similarGames" :key="game.gameId">
-          <similar-game
-            :imageUrl="game.downloadURL"
-            :title="game.title"
-            :description="game.description"
-            :gameId="game.gameId"
-          ></similar-game>
+        <div v-if="similarGames">
+          <div class="row mt-1 px-2" v-for="game in similarGames" :key="game.gameId">
+            <similar-game
+              :imageUrl="game.downloadURL"
+              :title="game.title"
+              :description="game.description"
+              :gameId="game.gameId"
+            ></similar-game>
+          </div>
         </div>
       </div>
     </div>
@@ -184,7 +131,6 @@ export default {
   },
   data() {
     return {
-      readMoreActivated: false,
       nrOfReviews: 0,
     };
   },
@@ -199,12 +145,10 @@ export default {
     },
     reviews() {
       const gameId = this.$route.params.gameId;
-      const filtered = this.$store.state.reviews.filter(
-        (review) => review.gameId === gameId
-      );
+      const filtered = this.$store.state.reviews.filter((review) => review.gameId === gameId);
       return filtered;
     },
-    score() {
+    rating() {
       var score = 0;
       this.reviews.forEach((review) => {
         if (review.gameId === this.game.gameId) {
@@ -218,38 +162,36 @@ export default {
       return this.game.categories;
     },
     similarGames() {
-      var similar = [];
-      this.game.categories.forEach((thisCategory) => {
-        this.games.forEach((game) => {
-          game.categories.forEach((category) => {
-            if (category === thisCategory && this.game.gameId !== game.gameId) {
-              similar.push(game);
-            }
+      if (this.games.length) {
+        var similar = [];
+        this.game.categories.forEach((thisCategory) => {
+          this.games.forEach((game) => {
+            game.categories.forEach((category) => {
+              if (category === thisCategory && this.game.gameId !== game.gameId) {
+                similar.push(game);
+              }
+            });
           });
         });
-      });
-
-      // TODO
-      // Sort the similar games based on score
-
-      return similar.slice(0, 3);
+        // TODO
+        // Sort the similar games based on score
+        return similar;
+      }
     },
     isFavorited() {
       return this.user.data.favoritedGames.includes(this.game.gameId);
+      return false;
     },
   },
   created() {
     this.loadGames();
     this.loadReviews();
-    console.log(this.user.data);
+  },
+  mounted() {
+    let wrapperHeight = document.getElementById("details-wrapper").offsetHeight;
+    document.getElementById("similar").setAttribute("style", "height:" + wrapperHeight + "px");
   },
   methods: {
-    activateReadMore() {
-      this.readMoreActivated = true;
-    },
-    deactivateReadMore() {
-      this.readMoreActivated = false;
-    },
     getCurrentDate() {
       var d = new Date();
       return d;
@@ -269,9 +211,7 @@ export default {
       this.$router.push(`../../../games/${title}`);
     },
     addFavorited() {
-      console.log(
-        `Adding ${this.game.gameId} to favorited games for ${this.user.data.displayName}`
-      );
+      console.log(`Adding ${this.game.gameId} to favorited games for ${this.user.data.displayName}`);
       this.$store.dispatch("addFavorited", {
         gameId: this.game.gameId,
         userId: this.user.data.userId,
@@ -288,6 +228,15 @@ export default {
 </script>
 
 <style scoped>
+#details-wrapper {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+#details-wrapper h3 {
+  color: white;
+}
+
 img {
   height: 13rem;
   width: auto;
@@ -303,5 +252,13 @@ h2,
 p,
 span {
   color: white;
+}
+#similar {
+  /* max-height: 600px; */
+  /* height: inherit; */
+  overflow-y: auto;
+}
+.card-body {
+  padding: 0 !important;
 }
 </style>

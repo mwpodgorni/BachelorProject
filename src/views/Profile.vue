@@ -2,7 +2,7 @@
   <div class="container" id="profile">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-3">{{ user.data.displayName }}</h1>
+        <h1 class="my-2">{{ user.data.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
         <router-link to="edit-profile">
@@ -136,17 +136,29 @@
     </div>
     <div class="row" id="suggestions-row">
       <div class="col px-0 py-2">
-        <h3 class="mx-auto mb-3 py-2 text-center">Suggestions</h3>
-        <div>
+        <h3 class="mx-auto mb-2 py-2 text-center">Suggestions</h3>
+        <div class="suggestions-content">
           <div
             class="py-5 color3"
             id="no-suggestions"
-            v-if="!user.data.suggestions.length"
+            v-if="user.suggestionsLoadingState == 'notLoading'"
           >
             <h4 class="text-center">No suggestions</h4>
           </div>
           <div
-            v-if="user.data.suggestions.length"
+            class="text-center py-5"
+            v-if="user.suggestionsLoadingState == 'loading'"
+          >
+            <b-spinner
+              class="my-2"
+              label="Loading..."
+              variant="light"
+              type="grow"
+            ></b-spinner>
+            <h5 class="my-2">Generating Suggestions</h5>
+          </div>
+          <div
+            v-if="user.suggestionsLoadingState == 'loaded'"
             id="carouselIndicators"
             class="carousel slide"
             data-ride="carousel"
@@ -323,6 +335,9 @@ export default {
 #recentlyPlayed-row,
 #suggestions-row {
   background-color: #133b5c;
+}
+.suggestions-content {
+  background-color: #1e5f74;
 }
 .no-activity {
   height: 265px;

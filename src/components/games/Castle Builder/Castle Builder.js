@@ -22,7 +22,7 @@ function launch(containerId, height, width) {
         },
       },
     },
-    scene: [Main, Start, End],
+    scene: [Start, Main, End],
   });
 }
 
