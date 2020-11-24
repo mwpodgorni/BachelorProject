@@ -72,6 +72,17 @@
               <div class="col">
                 <h3>Reviews</h3>
               </div>
+              <div class="col d-flex flex-row-reverse">
+                <b-button
+                  variant="outline-light"
+                  data-toggle="modal"
+                  data-target="#reviewModal"
+                  @click="modalCreated()"
+                >
+                  Write review
+                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
+                </b-button>
+              </div>
             </div>
             <div class="row mt-3" v-for="review of reviews" :key="review.reviewId">
               <div class="col-12">
@@ -116,6 +127,69 @@
         </div>
       </div>
     </div>
+    <!-- Modal window for adding new reviews  -->
+    <div
+      class="modal fade"
+      id="reviewModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="reviewModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reviewModalLongTitle">Add review</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col">
+                <textarea
+                  id="reviewText"
+                  name="reviewText"
+                  rows="5"
+                  placeholder="Tell others what do you think about this game. Would you recommend it and why?"
+                  v-model="addReviewText"
+                />
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-6 d-flex justify-content-end">
+                <b-icon
+                  @mouseover="highlightStars(star.index)"
+                  @mouseleave="resetHighlightStars()"
+                  @click="selectStars(star.index)"
+                  v-for="star in selectReviewStars"
+                  :key="star.index"
+                  class="my-auto"
+                  style="width: 30px; height: 30px; color: yellow;"
+                  :icon="star.icon"
+                ></b-icon>
+              </div>
+              <div class="col-6 d-flex justify-content-start">
+                <span class="mt-1" style="color: black;">{{ ratingFeedback }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Cancel
+            </button>
+            <button
+              type="button"
+              :disabled="this.selectReviewStars === 0"
+              class="btn btn-primary"
+              @click="submitReview()"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -132,6 +206,10 @@ export default {
   data() {
     return {
       nrOfReviews: 0,
+      selectReviewStars: [],
+      ratingFeedback: "Rating required",
+      addReviewText: "",
+      addReviewRating: 0,
     };
   },
   computed: {
@@ -227,6 +305,54 @@ export default {
         userId: this.user.data.userId,
       });
     },
+    modalCreated() {
+      for (let i = 0; i < 5; i++) {
+        this.selectReviewStars.push({
+          index: i,
+          icon: "star",
+        });
+      }
+    },
+    highlightStars(index) {
+      for (let i = 0; i <= index; i++) {
+        this.selectReviewStars[i].icon = "star-fill";
+      }
+      if (index === 0) {
+        this.ratingFeedback = "Hated it";
+      } else if (index === 1) {
+        this.ratingFeedback = "Didn't like it";
+      } else if (index === 2) {
+        this.ratingFeedback = "Just OK";
+      } else if (index === 3) {
+        this.ratingFeedback = "Liked it";
+      } else if (index === 4) {
+        this.ratingFeedback = "Loved it";
+      }
+    },
+    resetHighlightStars() {
+      for (let i = 0; i < 5; i++) {
+        this.selectReviewStars[i].icon = "star";
+      }
+      this.ratingFeedback = "Rating required";
+    },
+    selectStars(index) {
+      console.log(`Selected ${index + 1} stars!`);
+      for (let i = 0; i <= index; i++) {
+        this.selectReviewStars[i].icon = "star-fill";
+      }
+      this.addReviewRating = index + 1;
+    },
+
+    submitReview() {
+      this.$store.dispatch("addReview", {
+        datePosted: Date.now(),
+        gameId: this.game.gameId,
+        rating: this.addReviewRating,
+        reviewBody: this.addReviewText,
+        reviewId: `${this.game.gameId}_${this.user.data.displayName}`,
+        user: this.user.data.displayName,
+      });
+    },
   },
 };
 </script>
@@ -261,6 +387,10 @@ span {
   /* max-height: 600px; */
   /* height: inherit; */
   overflow-y: auto;
+}
+textarea {
+  width: 100%;
+  /* height: 100%; */
 }
 .card-body {
   padding: 0 !important;

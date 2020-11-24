@@ -254,6 +254,17 @@ export default new Vuex.Store({
     refreshSuggestions({ commit }) {
       commit("GENERATE_SUGGESTIONS");
     },
+    addReview({ commit }, data) {
+      db.collection("reviews")
+        .doc("reviews")
+        .add(data)
+        .then(function (doc) {
+          console.log(`Review Added`);
+        })
+        .catch(function (error) {
+          console.log("Error adding review:", error);
+        });
+    },
   },
   getters: {
     user(state) {
