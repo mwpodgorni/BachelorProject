@@ -8,10 +8,10 @@
           </div>
           <div class="col-md-8" v-if="game">
             <div class="row">
-              <div class="col">
+              <div class="col-10">
                 <h2>{{ game.title }}</h2>
               </div>
-              <div class="col d-flex flex-row-reverse" v-if="user.loggedIn">
+              <div class="col-2 d-flex flex-row-reverse" v-if="user.loggedIn">
                 <b-icon
                   v-if="!isFavorite"
                   @click="addFavorite()"
@@ -29,10 +29,10 @@
               </div>
             </div>
             <div class="row">
-              <rating class="ml-3" :rating="rating"></rating
+              <rating class="ml-3 my-auto" :rating="rating"></rating
               ><span class="mr-1 ml-3 my-auto">
                 <b-icon class="my-auto" style="width: 23px; height: 23px;" icon="people-fill"></b-icon>
-                {{ nrOfReviews }}
+                <span class="my-auto ml-1" style="font-size: 20px;">{{ reviews.length }}</span>
               </span>
             </div>
             <div class="row">
@@ -68,12 +68,48 @@
                 <hr />
               </div>
             </div>
+            <div class="row" v-if="error">
+              <div class="col">
+                <b-alert
+                  class="mb-1"
+                  :show="dismissCountDownError"
+                  variant="danger"
+                  @dismissed="dismissCountDownError = 0"
+                >
+                  {{ error }}
+                </b-alert>
+              </div>
+            </div>
             <div class="row">
               <div class="col">
                 <h3>Reviews</h3>
               </div>
               <div class="col d-flex flex-row-reverse">
-                <b-button
+                <b-button v-b-modal.write-review variant="outline-light">
+                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
+                </b-button>
+
+                <b-modal @ok="submitReview" @hidden="resetForm" id="write-review" centered title="Write Review">
+                  <b-form>
+                    <b-form-textarea
+                      id="textarea"
+                      v-model="reviewText"
+                      placeholder="Tell others what do you think about this game. Would you recommend it and why?"
+                      rows="3"
+                      max-rows="6"
+                    ></b-form-textarea>
+                    <b-form-rating v-model="reviewRating"></b-form-rating>
+                  </b-form>
+                  <template #modal-footer="{  cancel, ok }">
+                    <b-button size="sm" variant="danger" @click="cancel()">
+                      Cancel
+                    </b-button>
+                    <b-button variant="primary" size="sm" class="float-right" v-on:click="ok()">
+                      Submit
+                    </b-button>
+                  </template>
+                </b-modal>
+                <!-- <b-button
                   variant="outline-light"
                   data-toggle="modal"
                   data-target="#reviewModal"
@@ -81,16 +117,32 @@
                 >
                   Write review
                   <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
-                </b-button>
+                </b-button> -->
               </div>
             </div>
-            <div class="row mt-3" v-for="review of reviews" :key="review.reviewId">
-              <div class="col-12">
+            <div
+              class="py-5 color3 mt-1"
+              id="no-suggestions"
+              style="border-radius: 4px;"
+              v-if="reviewsLoadingState == 'notLoading'"
+            >
+              <h4 class="text-center" style="color: white;">No Reviews</h4>
+            </div>
+            <div
+              class="text-center color3 py-5 mt-1"
+              style="border-radius: 4px;"
+              v-if="reviewsLoadingState == 'loading'"
+            >
+              <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+              <h5 class="my-2" style="color: white;">Loading Reviews</h5>
+            </div>
+            <div class="row mt-3" v-if="reviewsLoadingState == 'loaded'">
+              <div class="col-12" v-for="review in reviews" :key="review.reviewId">
                 <user-review
-                  :username="review.user"
+                  :username="review.displayName"
                   :rating="review.rating"
-                  :date="transformReviewDate(review.datePosted)"
-                  :reviewText="review.reviewBody"
+                  :date="review.datePosted.toDate().toLocaleDateString('en-US')"
+                  :reviewText="review.content"
                 ></user-review>
               </div>
             </div>
@@ -128,7 +180,7 @@
       </div>
     </div>
     <!-- Modal window for adding new reviews  -->
-    <div
+    <!-- <div
       class="modal fade"
       id="reviewModal"
       tabindex="-1"
@@ -189,7 +241,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -197,6 +249,7 @@ import { mapGetters } from "vuex";
 import Rating from "../components/game-details/Rating";
 import UserReview from "../components/game-details/UserReview";
 import SimilarGame from "../components/game-details/SimilarGame";
+import firebase from "firebase";
 export default {
   components: {
     Rating,
@@ -205,15 +258,20 @@ export default {
   },
   data() {
     return {
-      nrOfReviews: 0,
+      reviewsArray: [],
       selectReviewStars: [],
       ratingFeedback: "Rating required",
-      addReviewText: "",
-      addReviewRating: 0,
+      reviewText: "",
+      reviewRating: 0,
+      error: "ha",
+      dismissSecs: 5,
+
+      dismissCountDownError: 0,
     };
   },
+
   computed: {
-    ...mapGetters(["games", "user"]),
+    ...mapGetters(["games", "user", "reviews", "reviewsLoadingState"]),
     game() {
       const gameId = this.$route.params.gameId;
       const game = this.games.find((game) => {
@@ -221,20 +279,17 @@ export default {
       });
       return game;
     },
-    reviews() {
-      const gameId = this.$route.params.gameId;
-      const filtered = this.$store.state.reviews.filter((review) => review.gameId === gameId);
-      return filtered;
-    },
+    // reviews() {
+    //   const gameId = this.$route.params.gameId;
+    //   const filtered = this.$store.state.reviews.filter((review) => review.gameId === gameId);
+    //   return filtered;
+    // },
     rating() {
       var score = 0;
       this.reviews.forEach((review) => {
-        if (review.gameId === this.game.gameId) {
-          score += review.rating;
-          this.nrOfReviews++;
-        }
+        score += review.rating;
       });
-      return score / this.nrOfReviews;
+      return score / this.reviews.length;
     },
     categories() {
       return this.game.categories;
@@ -264,7 +319,15 @@ export default {
   },
   created() {
     // this.loadGames();
-    this.loadReviews();
+    // this.loadReviews();
+    let gameId = this.$route.params.gameId;
+    this.$store.dispatch("fetchReviews", gameId);
+  },
+  watch: {
+    "$route.params.gameId"(value) {
+      console.log("param check", value);
+      this.$store.dispatch("fetchReviews", value);
+    },
   },
   mounted() {
     let wrapperHeight = document.getElementById("details-wrapper").offsetHeight;
@@ -279,7 +342,14 @@ export default {
     //   this.$store.dispatch("fetchGames");
     // },
     loadReviews() {
-      this.$store.dispatch("fetchReviews");
+      // this.$store.dispatch("fetchReviews");
+      let gameId = this.$route.params.gameId;
+      db.collection("reviews")
+        .doc(gameId)
+        .onSnapshot(function (doc) {
+          console.log("re", doc.data());
+          this.reviewsArray = doc.data();
+        });
     },
     transformReviewDate(timestamp) {
       var t = new Date(1970, 0, 1);
@@ -305,54 +375,99 @@ export default {
         userId: this.user.data.userId,
       });
     },
-    modalCreated() {
-      for (let i = 0; i < 5; i++) {
-        this.selectReviewStars.push({
-          index: i,
-          icon: "star",
-        });
-      }
+    resetForm() {
+      (this.reviewText = ""), (this.reviewRating = 0);
     },
-    highlightStars(index) {
-      for (let i = 0; i <= index; i++) {
-        this.selectReviewStars[i].icon = "star-fill";
-      }
-      if (index === 0) {
-        this.ratingFeedback = "Hated it";
-      } else if (index === 1) {
-        this.ratingFeedback = "Didn't like it";
-      } else if (index === 2) {
-        this.ratingFeedback = "Just OK";
-      } else if (index === 3) {
-        this.ratingFeedback = "Liked it";
-      } else if (index === 4) {
-        this.ratingFeedback = "Loved it";
-      }
-    },
-    resetHighlightStars() {
-      for (let i = 0; i < 5; i++) {
-        this.selectReviewStars[i].icon = "star";
-      }
-      this.ratingFeedback = "Rating required";
-    },
-    selectStars(index) {
-      console.log(`Selected ${index + 1} stars!`);
-      for (let i = 0; i <= index; i++) {
-        this.selectReviewStars[i].icon = "star-fill";
-      }
-      this.addReviewRating = index + 1;
-    },
+    submitReview(bvModalEvt) {
+      if (this.reviewText && this.reviewRating != 0) {
+        if (!this.isReviewed()) {
+          let gameId = this.$route.params.gameId;
+          let newReview = {
+            datePosted: firebase.firestore.Timestamp.fromDate(new Date()),
+            gameId: gameId,
+            rating: this.reviewRating,
+            content: this.reviewText,
+            reviewId: `${gameId}_${this.user.userId}`,
+            displayName: this.user.data.displayName,
+            userId: this.user.userId,
+          };
+          let vm = this;
+          db.collection("reviews")
+            .doc(gameId)
+            .update({ reviews: firebase.firestore.FieldValue.arrayUnion(newReview) })
+            .then(function (doc) {
+              console.log(`Review Added`);
+              vm.$store.dispatch("addReview", newReview);
+            })
+            .catch(function (error) {
+              console.log("Error adding review:", error);
+            });
+        } else {
+          this.error = "You already reviewed this game.";
+          this.showErrorAlert();
+        }
 
-    submitReview() {
-      this.$store.dispatch("addReview", {
-        datePosted: Date.now(),
-        gameId: this.game.gameId,
-        rating: this.addReviewRating,
-        reviewBody: this.addReviewText,
-        reviewId: `${this.game.gameId}_${this.user.data.displayName}`,
-        user: this.user.data.displayName,
-      });
+        //   this.$store.dispatch("addReview", {
+        //   datePosted: Date.now(),
+        //   gameId: this.game.gameId,
+        //   rating: this.addReviewRating,
+        //   content: this.reviewText,
+        //   reviewId: `${this.game.gameId}_${this.user.data.displayName}`,
+        //   displayName: this.user.data.displayName,
+        // });
+      } else {
+        this.error = "Enter description and rating.";
+        this.showErrorAlert();
+      }
     },
+    isReviewed() {
+      for (let i = 0; i < this.reviews.length; i++) {
+        if (this.user.userId == this.reviews[i].userId) {
+          return true;
+        }
+      }
+      return false;
+    },
+    showErrorAlert() {
+      this.dismissCountDownError = this.dismissSecs;
+    },
+    // modalCreated() {
+    //   for (let i = 0; i < 5; i++) {
+    //     this.selectReviewStars.push({
+    //       index: i,
+    //       icon: "star",
+    //     });
+    //   }
+    // },
+    // highlightStars(index) {
+    //   for (let i = 0; i <= index; i++) {
+    //     this.selectReviewStars[i].icon = "star-fill";
+    //   }
+    //   if (index === 0) {
+    //     this.ratingFeedback = "Hated it";
+    //   } else if (index === 1) {
+    //     this.ratingFeedback = "Didn't like it";
+    //   } else if (index === 2) {
+    //     this.ratingFeedback = "Just OK";
+    //   } else if (index === 3) {
+    //     this.ratingFeedback = "Liked it";
+    //   } else if (index === 4) {
+    //     this.ratingFeedback = "Loved it";
+    //   }
+    // },
+    // resetHighlightStars() {
+    //   for (let i = 0; i < 5; i++) {
+    //     this.selectReviewStars[i].icon = "star";
+    //   }
+    //   this.ratingFeedback = "Rating required";
+    // },
+    // selectStars(index) {
+    //   console.log(`Selected ${index + 1} stars!`);
+    //   for (let i = 0; i <= index; i++) {
+    //     this.selectReviewStars[i].icon = "star-fill";
+    //   }
+    //   this.addReviewRating = index + 1;
+    // },
   },
 };
 </script>

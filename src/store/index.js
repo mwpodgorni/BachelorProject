@@ -21,6 +21,7 @@ export default new Vuex.Store({
     },
     suggestionsLoadingState: "notLoading",
     gamesLoadingState: "notLoading",
+    reviewsLoadingState: "notLoading",
     games: [],
     reviews: [],
     game: null,
@@ -55,6 +56,15 @@ export default new Vuex.Store({
     },
     SET_REVIEWS(state, data) {
       state.reviews = data;
+    },
+    ADD_REVIEW(state, data) {
+      console.log("VIBE CHECK");
+      // console.log("add review", data.datePosted.toDate());
+      state.reviews.push(data);
+      state.reviewsLoadingState = "loaded";
+    },
+    SET_REVIEWS_LOADING_STATUS(state, status) {
+      state.reviewsLoadingState = status;
     },
     SET_GAME(state, data) {
       console.log("Setting game to " + data.title);
@@ -136,28 +146,53 @@ export default new Vuex.Store({
         });
       // console.log("Games " + games);
     },
-    fetchReviews({ commit }) {
-      var docRef = db.collection("reviews").doc("reviews");
-      var reviews = [];
-      docRef
+    // fetchReviews({ commit }) {
+    //   var docRef = db.collection("reviews").doc("reviews");
+    //   var reviews = [];
+    //   docRef
+    //     .get()
+    //     .then(function (doc) {
+    //       if (doc.exists) {
+    //         var data = doc.data();
+    //         var keys = Object.keys(data);
+    //         keys.forEach(function (key) {
+    //           reviews.push(data[key]);
+    //         });
+    //       } else {
+    //         console.error("No such document!");
+    //       }
+    //     })
+    //     .catch(function (error) {
+    //       console.error("Error getting document:", error);
+    //     });
+    //   // console.log(reviews);
+    //   commit("SET_REVIEWS", reviews);
+    // },
+    fetchReviews({ commit }, gameId) {
+      commit("SET_REVIEWS_LOADING_STATUS", "loading");
+      db.collection("reviews")
+        .doc(gameId)
         .get()
         .then(function (doc) {
           if (doc.exists) {
-            var data = doc.data();
-            var keys = Object.keys(data);
-            keys.forEach(function (key) {
-              reviews.push(data[key]);
-            });
+            if (doc.data().reviews.length) {
+              console.log("tes");
+              commit("SET_REVIEWS", doc.data().reviews);
+              commit("SET_REVIEWS_LOADING_STATUS", "loaded");
+            } else {
+              commit("SET_REVIEWS_LOADING_STATUS", "notLoading");
+              commit("SET_REVIEWS", []);
+            }
           } else {
-            console.error("No such document!");
+            console.log("No such document!");
+            commit("SET_REVIEWS_LOADING_STATUS", "notLoading");
           }
         })
         .catch(function (error) {
-          console.error("Error getting document:", error);
+          console.log("Error getting document:", error);
         });
-      // console.log(reviews);
-      commit("SET_REVIEWS", reviews);
     },
+
     fetchGame({ commit }, gameId) {
       var docRef = db.collection("games").doc("games");
       docRef
@@ -255,15 +290,16 @@ export default new Vuex.Store({
       commit("GENERATE_SUGGESTIONS");
     },
     addReview({ commit }, data) {
-      db.collection("reviews")
-        .doc("reviews")
-        .add(data)
-        .then(function (doc) {
-          console.log(`Review Added`);
-        })
-        .catch(function (error) {
-          console.log("Error adding review:", error);
-        });
+      commit("ADD_REVIEW", data);
+      // db.collection("reviews")
+      //   .doc("reviews")
+      //   .add(data)
+      //   .then(function (doc) {
+      //     console.log(`Review Added`);
+      //   })
+      //   .catch(function (error) {
+      //     console.log("Error adding review:", error);
+      //   });
     },
   },
   getters: {
@@ -276,11 +312,17 @@ export default new Vuex.Store({
     game(state) {
       return state.game;
     },
+    reviews(state) {
+      return state.reviews;
+    },
     suggestionsLoadingState(state) {
       return state.suggestionsLoadingState;
     },
     gamesLoadingState(state) {
       return state.gamesLoadingState;
+    },
+    reviewsLoadingState(state) {
+      return state.reviewsLoadingState;
     },
   },
 });
