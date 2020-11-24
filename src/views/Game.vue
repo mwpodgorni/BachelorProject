@@ -24,10 +24,7 @@ export default {
     // // $(window).on("resize", this.changeSize);
 
     const game = await import(
-      /* webpackChunkName: "game" */ "@/components/games/" +
-        this.component +
-        "/" +
-        this.component
+      /* webpackChunkName: "game" */ "@/components/games/" + this.component + "/" + this.component
     );
     this.downloaded = true;
 

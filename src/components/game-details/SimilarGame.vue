@@ -21,7 +21,7 @@ export default {
       this.$router.push(`${gameId}`);
     },
     playGame(game) {
-      console.log(game);
+      this.$store.dispatch("addRecentlyPlayed", { title: this.title, gameId: this.gameId });
       this.$router.push(`../../games/${game}`);
     },
   },

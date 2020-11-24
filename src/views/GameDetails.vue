@@ -13,15 +13,15 @@
               </div>
               <div class="col d-flex flex-row-reverse" v-if="user.loggedIn">
                 <b-icon
-                  v-if="!isFavorited"
-                  @click="addFavorited()"
+                  v-if="!isFavorite"
+                  @click="addFavorite()"
                   class="my-auto"
                   style="width: 30px; height: 30px; color: #ffffff; cursor: pointer;"
                   icon="heart"
                 ></b-icon>
                 <b-icon
-                  v-if="isFavorited"
-                  @click="removeFavorited()"
+                  v-if="isFavorite"
+                  @click="removeFavorite()"
                   class="my-auto"
                   style="width: 30px; height: 30px; color: #ff0000; cursor: pointer;"
                   icon="heart-fill"
@@ -45,7 +45,7 @@
                 >
               </div>
               <div class="col d-flex flex-row-reverse pt-2">
-                <b-button variant="outline-light" @click="playGame(game.title)">
+                <b-button variant="outline-light" @click="playGame(game)">
                   Play
                   <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="controller"></b-icon>
                 </b-button>
@@ -166,11 +166,9 @@ export default {
         var similar = [];
         this.game.categories.forEach((thisCategory) => {
           this.games.forEach((game) => {
-            game.categories.forEach((category) => {
-              if (category === thisCategory && this.game.gameId !== game.gameId) {
-                similar.push(game);
-              }
-            });
+            if (game.categories.includes(thisCategory) && this.game.gameId !== game.gameId && !similar.includes(game)) {
+              similar.push(game);
+            }
           });
         });
         // TODO
@@ -178,13 +176,16 @@ export default {
         return similar;
       }
     },
-    isFavorited() {
-      return this.user.data.favoritedGames.includes(this.game.gameId);
-      return false;
+    isFavorite() {
+      let arr = [];
+      this.user.data.favoriteGames.forEach((e) => {
+        arr.push(e.gameId);
+      });
+      return arr.includes(this.game.gameId);
     },
   },
   created() {
-    this.loadGames();
+    // this.loadGames();
     this.loadReviews();
   },
   mounted() {
@@ -196,9 +197,9 @@ export default {
       var d = new Date();
       return d;
     },
-    loadGames() {
-      this.$store.dispatch("fetchGames");
-    },
+    // loadGames() {
+    //   this.$store.dispatch("fetchGames");
+    // },
     loadReviews() {
       this.$store.dispatch("fetchReviews");
     },
@@ -207,19 +208,22 @@ export default {
       t.setSeconds(timestamp.seconds);
       return t.toLocaleDateString();
     },
-    playGame(title) {
-      this.$router.push(`../../../games/${title}`);
+    playGame(game) {
+      this.$store.dispatch("addRecentlyPlayed", game);
+      this.$router.push(`../../../games/${game.title}`);
     },
-    addFavorited() {
-      console.log(`Adding ${this.game.gameId} to favorited games for ${this.user.data.displayName}`);
-      this.$store.dispatch("addFavorited", {
+    addFavorite() {
+      console.log(`Adding ${this.game.gameId} to favorite games for ${this.user.data.displayName}`);
+      this.$store.dispatch("addFavorite", {
         gameId: this.game.gameId,
+        title: this.game.title,
         userId: this.user.data.userId,
       });
     },
-    removeFavorited() {
-      this.$store.dispatch("removeFavorited", {
+    removeFavorite() {
+      this.$store.dispatch("removeFavorite", {
         gameId: this.game.gameId,
+        title: this.game.title,
         userId: this.user.data.userId,
       });
     },

@@ -3,7 +3,14 @@
     <div v-if="error" class="error">
       {{ error }}
     </div>
-    <div v-if="games" class="grid px-0 mx-0">
+    <div class="py-5 color3" id="no-suggestions" v-if="gamesLoadingState == 'notLoading'">
+      <h4 class="text-center">Something went wrong. Try to refresh the page</h4>
+    </div>
+    <div class="text-center py-5" v-if="gamesLoadingState == 'loading'">
+      <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+      <h5 class="my-2">Loading Games</h5>
+    </div>
+    <div v-if="gamesLoadingState == 'loaded'" class="grid px-0 mx-0">
       <figure v-for="game in gamesData" :key="game.title" class="effect-julia">
         <img :src="game.downloadURL" alt="cover" />
         <figcaption>
@@ -42,20 +49,23 @@ import { mapGetters } from "vuex";
 export default {
   name: "Games",
   data() {
-    return { gamesData: [], error: null };
+    return { error: null };
   },
   created() {
-    this.loadGames();
-    this.gamesData = this.$store.state.games;
-    this.gamesData.sort(this.compare);
-    console.log(this.gamesData);
+    // this.loadGames();
+    // this.gamesData = this.$store.state.games;
+    // this.gamesData.sort(this.compare);
   },
   computed: {
-    ...mapGetters(["games"]),
+    ...mapGetters({ games: "games", gamesLoadingState: "gamesLoadingState" }),
+    gamesData() {
+      const games = this.games;
+      games.sort(this.compare);
+      return games;
+    },
   },
   methods: {
     chooseGame(event) {
-      console.log(event);
       this.$router.push("games/" + event.title);
       this.$emit("chooseGame", event);
     },
@@ -69,9 +79,9 @@ export default {
       });
       gamesData.sort(this.compare);
     },
-    loadGames() {
-      this.$store.dispatch("fetchGames");
-    },
+    // loadGames() {
+    //   this.$store.dispatch("fetchGames");
+    // },
     compare(a, b) {
       const itemA = a.title.toUpperCase();
       const itemB = b.title.toUpperCase();

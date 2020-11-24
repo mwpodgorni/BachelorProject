@@ -105,6 +105,9 @@ export default {
       return this.$route.params.game;
     },
   },
+  beforeCreate() {
+    this.$store.dispatch("fetchGames");
+  },
   methods: {
     signOut() {
       firebase
@@ -123,42 +126,7 @@ export default {
     },
     chooseGame: function (game) {
       console.log("game app", game);
-      if (this.user.loggedIn) {
-        this.user.data.recentlyPlayed.forEach((element) => {
-          if (element.title == game.title) {
-            db.collection("users")
-              .doc(this.user.userId)
-              .update({
-                recentlyPlayed: firebase.firestore.FieldValue.arrayRemove({
-                  gameId: element.gameId,
-                  lastPlayed: element.lastPlayed,
-                  title: element.title,
-                }),
-              })
-              .then(function (doc) {
-                console.log("added to recently Played");
-              })
-              .catch(function (error) {
-                console.log("Error getting document:", error);
-              });
-          }
-        });
-        db.collection("users")
-          .doc(this.user.userId)
-          .update({
-            recentlyPlayed: firebase.firestore.FieldValue.arrayUnion({
-              gameId: "",
-              lastPlayed: new Date(),
-              title: game.title,
-            }),
-          })
-          .then(function (doc) {
-            console.log("added to recently Played");
-          })
-          .catch(function (error) {
-            console.log("Error getting document:", error);
-          });
-      }
+      this.$store.dispatch("addRecentlyPlayed", game);
       this.component = game.title.replace(/\s/g, "");
       this.showAlert();
       // document.body.style.background = "#007267";
