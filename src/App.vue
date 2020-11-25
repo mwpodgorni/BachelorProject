@@ -100,7 +100,6 @@
     <div id="content">
       <transition name="component-fade" mode="out-in">
         <router-view
-          :key="$route.fullPath"
           v-on:chooseGame="chooseGame($event)"
         ></router-view>
       </transition>

@@ -29,57 +29,59 @@
       <div class="col-sm-12 col-md-7 px-0">
         <b-tabs active-nav-item-class="text-dark" class="mt-2">
           <b-tab title="Recently played" active>
-            <div
-              class="row text-center align-items-center mx-0"
-              id="no-activity"
-              v-if="!viewedUser.recentlyPlayed.length"
-            >
-              <div class="col px-0">
-                <h4 class="my-auto py-auto">No recent activity</h4>
-              </div>
-            </div>
-            <b-list-group
-              id="recentlyPlayedUser-list"
-              v-if="viewedUser.recentlyPlayed.length"
-            >
-              <b-list-group-item
-                class="px-1 py-1 list-item"
-                v-for="item in viewedUser.recentlyPlayed"
-                :key="item.title"
+            <div class="container mt-5">
+              <div
+                class="row text-center align-items-center mx-0"
+                id="no-activity"
+                v-if="!viewedUser.recentlyPlayed.length"
               >
-                <div class="row mx-0 color1">
-                  <div class="col-9">
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">{{ item.title }}</div>
-                    </div>
-                    <div class="row m-0 p-0">
-                      <div class="col m-0 p-0">
-                        Last played on:
-                        {{
-                          item.lastPlayed.toDate().toLocaleDateString("en-US")
-                        }}
+                <div class="col px-0">
+                  <h4 class="my-auto py-auto">No recent activity</h4>
+                </div>
+              </div>
+              <b-list-group
+                id="recentlyPlayedUser-list"
+                v-if="viewedUser.recentlyPlayed.length"
+              >
+                <b-list-group-item
+                  class="px-1 py-1 list-item"
+                  v-for="item in viewedUser.recentlyPlayed"
+                  :key="item.title"
+                >
+                  <div class="row mx-0 color1">
+                    <div class="col-9">
+                      <div class="row m-0 p-0">
+                        <div class="col m-0 p-0">{{ item.title }}</div>
+                      </div>
+                      <div class="row m-0 p-0">
+                        <div class="col m-0 p-0">
+                          Last played on:
+                          {{
+                            item.lastPlayed.toDate().toLocaleDateString("en-US")
+                          }}
+                        </div>
                       </div>
                     </div>
+                    <div class="col-3 my-auto">
+                      <p class="h5">
+                        <b-icon
+                          v-on:click="chooseGame(item)"
+                          class="icon float-right"
+                          icon="arrow-up"
+                        ></b-icon>
+                      </p>
+                    </div>
                   </div>
-                  <div class="col-3 my-auto">
-                    <p class="h5">
-                      <b-icon
-                        v-on:click="chooseGame(item)"
-                        class="icon float-right"
-                        icon="arrow-up"
-                      ></b-icon>
-                    </p>
-                  </div>
-                </div>
-              </b-list-group-item>
-            </b-list-group>
+                </b-list-group-item>
+              </b-list-group>
+            </div>
           </b-tab>
           <b-tab title="Favorites">
             <div class="container mt-5">
               <div
                 class="row text-center align-items-center mx-0"
                 id="no-activity"
-                v-if="!viewedUser.favoriteGames.length"
+                v-if="!favoriteGames.length"
               >
                 <div class="col px-0">
                   <h4 class="my-auto py-auto">No favorite games</h4>
@@ -162,58 +164,64 @@ export default {
       return favorites;
     },
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.initializeUserProfile(vm);
-      vm.listenForUpdates(vm);
-    });
+  created() {
+    this.initializeUserProfile(this.$route);
+    this.listenForUpdates(this.$route, this.user);
+  },
+  watch: {
+    $route(newRoute) {
+      this.initializeUserProfile(newRoute);
+      this.listenForUpdates(newRoute, this.user);
+    },
   },
   methods: {
-    initializeUserProfile(vm) {
-      var keyword = vm.$route.params.username;
+    initializeUserProfile(route) {
+      var keyword = route.params.username;
+      var that = this;
       db.collection("users")
         .doc(keyword)
         .onSnapshot(function(doc) {
-          vm.viewedUser = doc.data();
+          that.viewedUser = doc.data();
         });
     },
     goToProfile(userId) {
-      this.$router.push(`./${userId}`)
+      this.$router.push(`./${userId}`);
     },
-    listenForUpdates(vm) {
-      var keyword = vm.$route.params.username;
+    listenForUpdates(route, user) {
+      var keyword = route.params.username;
+      var that = this;
       db.collection("users")
         .doc(keyword)
         .onSnapshot(function(doc) {
           var invitations = [];
           var friends = [];
-          if (vm.user.loggedIn) {
-            if (vm.viewedUser) {
-              vm.viewedUser.invitations.forEach((element) => {
+          if (user.loggedIn) {
+            if (that.viewedUser) {
+              that.viewedUser.invitations.forEach((element) => {
                 invitations.push(element.userId);
               });
-              vm.viewedUser.friends.forEach((element) => {
+              that.viewedUser.friends.forEach((element) => {
                 friends.push(element.userId);
               });
-              if (friends.includes(vm.user.userId)) {
-                vm.displayInviteIcon = false;
-                vm.displayRemoveIcon = true;
-                vm.displayMessageIcon = true;
+              if (friends.includes(that.user.userId)) {
+                that.displayInviteIcon = false;
+                that.displayRemoveIcon = true;
+                that.displayMessageIcon = true;
               } else {
-                if (invitations.includes(vm.user.userId)) {
-                  vm.displayInviteIcon = false;
-                  vm.displayRemoveIcon = true;
+                if (invitations.includes(that.user.userId)) {
+                  that.displayInviteIcon = false;
+                  that.displayRemoveIcon = true;
                 } else {
-                  vm.displayInviteIcon = true;
-                  vm.displayRemoveIcon = false;
+                  that.displayInviteIcon = true;
+                  that.displayRemoveIcon = false;
                 }
-                vm.displayMessageIcon = false;
+                that.displayMessageIcon = false;
               }
             }
           } else {
-            this.displayInviteIcon = false;
-            this.displayRemoveIcon = false;
-            this.displayMessageIcon = false;
+            that.displayInviteIcon = false;
+            that.displayRemoveIcon = false;
+            that.displayMessageIcon = false;
           }
         });
     },
