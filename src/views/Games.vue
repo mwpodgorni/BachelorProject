@@ -3,21 +3,12 @@
     <div v-if="error" class="error">
       {{ error }}
     </div>
-    <div
-      class="py-5 color3"
-      id="no-suggestions"
-      v-if="gamesLoadingState == 'notLoading'"
-    >
+    <div class="py-5 color3" id="no-suggestions" v-if="gamesLoadingState == 'notLoading'">
       <h4 class="text-center">Something went wrong. Try to refresh the page</h4>
     </div>
     <div class="text-center py-5" v-if="gamesLoadingState == 'loading'">
-      <b-spinner
-        class="my-2"
-        label="Loading..."
-        variant="light"
-        type="grow"
-      ></b-spinner>
-      <h5 class="my-2">Loading Games</h5>
+      <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+      <h5 class="my-2" style="color: white;">Loading Games</h5>
     </div>
     <div v-if="gamesLoadingState == 'loaded'" class="grid px-0 mx-0">
       <figure v-for="game in gamesData" :key="game.title" class="effect-julia">
@@ -77,7 +68,7 @@ export default {
     },
     setData(data, gamesData) {
       var keys = Object.keys(data);
-      keys.forEach(function(key) {
+      keys.forEach(function (key) {
         gamesData.push(data[key]);
       });
       gamesData.sort(this.compare);

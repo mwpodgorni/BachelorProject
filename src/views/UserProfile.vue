@@ -5,18 +5,8 @@
         <h1 class="my-3">{{ viewedUser.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
-        <b-icon
-          v-if="displayInviteIcon"
-          v-on:click="sendInvite()"
-          class="icon mr-3"
-          icon="person-plus"
-        ></b-icon>
-        <b-icon
-          v-if="displayRemoveIcon"
-          v-on:click="removeFromFriends()"
-          class="icon mr-3"
-          icon="person-dash"
-        ></b-icon>
+        <b-icon v-if="displayInviteIcon" v-on:click="sendInvite()" class="icon mr-3" icon="person-plus"></b-icon>
+        <b-icon v-if="displayRemoveIcon" v-on:click="removeFromFriends()" class="icon mr-3" icon="person-dash"></b-icon>
         <b-icon
           v-if="displayMessageIcon"
           v-on:click="openConversation()"
@@ -25,74 +15,19 @@
         ></b-icon>
       </div>
     </div>
-    <div class="row color2">
-      <div class="col-sm-12 col-md-7 px-0">
-        <b-tabs active-nav-item-class="text-dark" class="mt-2">
-          <b-tab title="Recently played" active>
-            <div class="container mt-5">
-              <div
-                class="row text-center align-items-center mx-0"
-                id="no-activity"
-                v-if="!viewedUser.recentlyPlayed.length"
-              >
-                <div class="col px-0">
-                  <h4 class="my-auto py-auto">No recent activity</h4>
-                </div>
+    <div class="row color2" id="recentlyPlayed-row">
+      <div class="col-sm-12 col-md-8 pr-2 pl-4">
+        <b-tabs fill active-nav-item-class="text-dark" class="mt-2">
+          <b-tab title="Favorites" active style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
+            <div class="row text-center align-items-center mx-0" id="no-activity" v-if="!favoriteGames.length">
+              <div class="col px-0">
+                <h4 class="my-auto py-auto">Empty</h4>
               </div>
-              <b-list-group
-                id="recentlyPlayedUser-list"
-                v-if="viewedUser.recentlyPlayed.length"
-              >
-                <b-list-group-item
-                  class="px-1 py-1 list-item"
-                  v-for="item in viewedUser.recentlyPlayed"
-                  :key="item.title"
-                >
-                  <div class="row mx-0 color1">
-                    <div class="col-9">
-                      <div class="row m-0 p-0">
-                        <div class="col m-0 p-0">{{ item.title }}</div>
-                      </div>
-                      <div class="row m-0 p-0">
-                        <div class="col m-0 p-0">
-                          Last played on:
-                          {{
-                            item.lastPlayed.toDate().toLocaleDateString("en-US")
-                          }}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-3 my-auto">
-                      <p class="h5">
-                        <b-icon
-                          v-on:click="chooseGame(item)"
-                          class="icon float-right"
-                          icon="arrow-up"
-                        ></b-icon>
-                      </p>
-                    </div>
-                  </div>
-                </b-list-group-item>
-              </b-list-group>
             </div>
-          </b-tab>
-          <b-tab title="Favorites">
-            <div class="container mt-5">
-              <div
-                class="row text-center align-items-center mx-0"
-                id="no-activity"
-                v-if="!favoriteGames.length"
-              >
-                <div class="col px-0">
-                  <h4 class="my-auto py-auto">No favorite games</h4>
-                </div>
-              </div>
-              <div class="row">
-                <div
-                  class="col-6"
-                  v-for="game in favoriteGames"
-                  :key="game.gameId"
-                >
+            <div>
+              <b-row>
+                <b-col sm="12" md="6" v-for="game in favoriteGames" :key="game.gameId">
+                  <!-- <div v-for="game in favoriteGames" :key="game.gameId" style="width: 30%;"> -->
                   <similar-game
                     id="favorites"
                     :imageUrl="game.downloadURL"
@@ -100,32 +35,84 @@
                     :description="game.description"
                     :gameId="game.gameId"
                   ></similar-game>
-                </div>
+                  <!-- </div> -->
+                </b-col>
+              </b-row>
+            </div>
+          </b-tab>
+          <b-tab title="Recently played">
+            <div
+              class="row text-center align-items-center mx-0"
+              id="no-activity"
+              v-if="!viewedUser.recentlyPlayed.length"
+            >
+              <div class="col px-0">
+                <h4 class="my-auto py-auto">No recent activity</h4>
               </div>
             </div>
+            <b-list-group id="recentlyPlayedUser-list" v-if="viewedUser.recentlyPlayed.length">
+              <b-list-group-item
+                class="px-1 py-1 list-item"
+                v-for="item in viewedUser.recentlyPlayed"
+                :key="item.title"
+              >
+                <div class="row mx-0" id="recentlyPlayed-item">
+                  <div class="col-8">
+                    <div class="row m-0 p-0">
+                      <div class="col m-0 p-0 my-auto">
+                        <h5 class="my-auto">{{ item.title }}</h5>
+                      </div>
+                    </div>
+                    <div class="row m-0 p-0">
+                      <div class="col m-0 p-0">
+                        <p class="m-0">
+                          Last played on:
+                          {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 my-auto d-flex justify-content-end">
+                    <b-icon
+                      v-on:click="viewDetails(item)"
+                      v-b-popover.hover.left="'Details'"
+                      class="my-auto game-icon"
+                      style="width: 30px; height: 30px;"
+                      icon="info-square"
+                    ></b-icon>
+                    <b-icon
+                      v-on:click="chooseGame(item)"
+                      v-b-popover.hover.left="'Play'"
+                      class="my-auto ml-3 game-icon"
+                      style="width: 30px; height: 30px;"
+                      icon="controller"
+                    ></b-icon>
+                  </div>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
           </b-tab>
         </b-tabs>
       </div>
-      <div class="col-sm-12 col-md-5">
-        <div class="container mt-3 ml-3">
-          <div class="row">
-            <h3>Friends</h3>
-          </div>
-          <!-- <div class="row"> -->
-          <b-list-group class="p-0 m-0">
-            <b-list-group-item
-              class="list-item"
-              v-for="friend in viewedUser.friends"
-              :key="friend.userId"
-              @click="goToProfile(friend.userId)"
-            >
-              <div class="row">
-                <p>{{ friend.displayName }}</p>
+      <div class="col-sm-12 col-md-4">
+        <h3 class="mx-auto my-2 text-center">Friends</h3>
+
+        <!-- <div class="row"> -->
+        <b-list-group class="p-0 m-0">
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="friend in viewedUser.friends"
+            :key="friend.userId"
+            @click="goToProfile(friend.userId)"
+          >
+            <div class="row mx-0" id="recentlyPlayed-item">
+              <div class="col my-auto">
+                <h5 class="my-auto py-1">{{ friend.displayName }}</h5>
               </div>
-            </b-list-group-item>
-          </b-list-group>
-          <!-- </div> -->
-        </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+        <!-- </div> -->
       </div>
     </div>
   </div>
@@ -175,12 +162,15 @@ export default {
     },
   },
   methods: {
+    viewDetails(game) {
+      this.$router.push("../../games/details/" + game.gameId);
+    },
     initializeUserProfile(route) {
       var keyword = route.params.username;
       var that = this;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function(doc) {
+        .onSnapshot(function (doc) {
           that.viewedUser = doc.data();
         });
     },
@@ -192,7 +182,7 @@ export default {
       var that = this;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function(doc) {
+        .onSnapshot(function (doc) {
           var invitations = [];
           var friends = [];
           if (user.loggedIn) {
@@ -247,7 +237,7 @@ export default {
           .then(() => {
             console.log("Added to friends.");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error adding to friends: ", error);
           });
         db.collection("users")
@@ -261,7 +251,7 @@ export default {
           .then(() => {
             console.log("Added to user friends.");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error adding to user friends: ", error);
           });
         var invitations = [];
@@ -280,7 +270,7 @@ export default {
             .then(() => {
               console.log("removed invitation from user account");
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.error("Error removing invitation: ", error);
             });
         }
@@ -296,7 +286,7 @@ export default {
           .then(() => {
             console.log("Document successfully updated!");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error updating document: ", error);
           });
       }
@@ -319,7 +309,7 @@ export default {
           .then(() => {
             console.log("Removed from user friends.");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error removing from user friends: ", error);
           });
         db.collection("users")
@@ -331,12 +321,10 @@ export default {
             }),
           })
           .then(() => {
-            this.viewedUser.friends = this.viewedUser.friends.filter(
-              (element) => element.userId != this.user.userId
-            );
+            this.viewedUser.friends = this.viewedUser.friends.filter((element) => element.userId != this.user.userId);
             console.log("removed from friends.");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error removing from friends: ", error);
           });
       } else {
@@ -356,7 +344,7 @@ export default {
         .then(() => {
           console.log("removed invitation from viewed user account");
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error removing invitation: ", error);
         });
     },
@@ -367,10 +355,8 @@ export default {
         .where("participants", "array-contains", this.user.userId)
         .get()
         .then((querySnapshot) => {
-          querySnapshot.forEach(function(doc) {
-            if (
-              doc.data().participants.includes(vueInstance.viewedUser.userId)
-            ) {
+          querySnapshot.forEach(function (doc) {
+            if (doc.data().participants.includes(vueInstance.viewedUser.userId)) {
               createConversation = false;
             } else {
             }
@@ -384,16 +370,13 @@ export default {
                 createdAt: new Date(),
                 creatorId: this.user.userId,
                 messages: [],
-                usernames: [
-                  this.user.data.displayName,
-                  this.viewedUser.displayName,
-                ],
+                usernames: [this.user.data.displayName, this.viewedUser.displayName],
                 participants: [this.user.userId, this.viewedUser.userId],
               })
-              .then(function() {
+              .then(function () {
                 console.log("Document successfully written!");
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 console.error("Error writing document: ", error);
               });
           }
