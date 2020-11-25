@@ -182,6 +182,7 @@
                 :key="review.reviewId"
               >
                 <user-review
+                  :userId="review.userId"
                   :username="review.displayName"
                   :rating="review.rating"
                   :date="review.datePosted.toDate().toLocaleDateString('en-US')"
@@ -306,10 +307,13 @@ export default {
     },
     isFavorite() {
       let arr = [];
-      this.user.data.favoriteGames.forEach((e) => {
-        arr.push(e.gameId);
-      });
-      return arr.includes(this.game.gameId);
+      if (this.user.data.favoriteGames) {
+        this.user.data.favoriteGames.forEach((e) => {
+          arr.push(e.gameId);
+        });
+        return arr.includes(this.game.gameId);
+      }
+      return false;
     },
   },
   created() {
@@ -317,11 +321,6 @@ export default {
     // this.loadReviews();
     let gameId = this.$route.params.gameId;
     this.$store.dispatch("fetchReviews", gameId);
-    console.log(
-      `User logged in: ${
-        this.user.loggedIn
-      }; Game Reviewed: ${this.isReviewed()}`
-    );
   },
   watch: {
     "$route.params.gameId"(value) {

@@ -26,50 +26,104 @@
       </div>
     </div>
     <div class="row color2">
-      <div class="col px-0">
-        <h3 class="mx-auto my-2 text-center">Recently Played</h3>
-        <div
-          class="row text-center align-items-center mx-0"
-          id="no-activity"
-          v-if="!viewedUser.recentlyPlayed.length"
-        >
-          <div class="col px-0">
-            <h4 class="my-auto py-auto">No recent activity</h4>
-          </div>
-        </div>
-        <b-list-group
-          id="recentlyPlayedUser-list"
-          v-if="viewedUser.recentlyPlayed.length"
-        >
-          <b-list-group-item
-            class="px-1 py-1 list-item"
-            v-for="item in viewedUser.recentlyPlayed"
-            :key="item.title"
-          >
-            <div class="row mx-0 color1">
-              <div class="col-9">
-                <div class="row m-0 p-0">
-                  <div class="col m-0 p-0">{{ item.title }}</div>
-                </div>
-                <div class="row m-0 p-0">
-                  <div class="col m-0 p-0">
-                    Last played on:
-                    {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-3 my-auto">
-                <p class="h5">
-                  <b-icon
-                    v-on:click="chooseGame(item)"
-                    class="icon float-right"
-                    icon="arrow-up"
-                  ></b-icon>
-                </p>
+      <div class="col-sm-12 col-md-7 px-0">
+        <b-tabs active-nav-item-class="text-dark" class="mt-2">
+          <b-tab title="Recently played" active>
+            <div
+              class="row text-center align-items-center mx-0"
+              id="no-activity"
+              v-if="!viewedUser.recentlyPlayed.length"
+            >
+              <div class="col px-0">
+                <h4 class="my-auto py-auto">No recent activity</h4>
               </div>
             </div>
-          </b-list-group-item>
-        </b-list-group>
+            <b-list-group
+              id="recentlyPlayedUser-list"
+              v-if="viewedUser.recentlyPlayed.length"
+            >
+              <b-list-group-item
+                class="px-1 py-1 list-item"
+                v-for="item in viewedUser.recentlyPlayed"
+                :key="item.title"
+              >
+                <div class="row mx-0 color1">
+                  <div class="col-9">
+                    <div class="row m-0 p-0">
+                      <div class="col m-0 p-0">{{ item.title }}</div>
+                    </div>
+                    <div class="row m-0 p-0">
+                      <div class="col m-0 p-0">
+                        Last played on:
+                        {{
+                          item.lastPlayed.toDate().toLocaleDateString("en-US")
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3 my-auto">
+                    <p class="h5">
+                      <b-icon
+                        v-on:click="chooseGame(item)"
+                        class="icon float-right"
+                        icon="arrow-up"
+                      ></b-icon>
+                    </p>
+                  </div>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
+          </b-tab>
+          <b-tab title="Favorites">
+            <div class="container mt-5">
+              <div
+                class="row text-center align-items-center mx-0"
+                id="no-activity"
+                v-if="!viewedUser.favoriteGames.length"
+              >
+                <div class="col px-0">
+                  <h4 class="my-auto py-auto">No favorite games</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div
+                  class="col-6"
+                  v-for="game in favoriteGames"
+                  :key="game.gameId"
+                >
+                  <similar-game
+                    id="favorites"
+                    :imageUrl="game.downloadURL"
+                    :title="game.title"
+                    :description="game.description"
+                    :gameId="game.gameId"
+                  ></similar-game>
+                </div>
+              </div>
+            </div>
+          </b-tab>
+        </b-tabs>
+      </div>
+      <div class="col-sm-12 col-md-5">
+        <div class="container mt-3 ml-3">
+          <div class="row">
+            <h3>Friends</h3>
+          </div>
+          <!-- <div class="row"> -->
+          <b-list-group class="p-0 m-0">
+            <b-list-group-item
+              class="list-item"
+              v-for="friend in viewedUser.friends"
+              :key="friend.userId"
+              @click="goToProfile(friend.userId)"
+            >
+              <div class="row">
+                <p>{{ friend.displayName }}</p>
+              </div>
+            </b-list-group-item>
+          </b-list-group>
+          <!-- </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -77,8 +131,12 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
+import SimilarGame from "../components/game-details/SimilarGame";
 export default {
   name: "UserProfile",
+  components: {
+    SimilarGame,
+  },
   data() {
     return {
       viewedUser: null,
@@ -90,7 +148,19 @@ export default {
   computed: {
     ...mapGetters({
       user: "user",
+      games: "games",
     }),
+    favoriteGames() {
+      var favorites = [];
+      this.games.forEach((game) => {
+        this.viewedUser.favoriteGames.forEach((favoriteGame) => {
+          if (game.gameId === favoriteGame.gameId) {
+            favorites.push(game);
+          }
+        });
+      });
+      return favorites;
+    },
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -103,15 +173,18 @@ export default {
       var keyword = vm.$route.params.username;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           vm.viewedUser = doc.data();
         });
+    },
+    goToProfile(userId) {
+      this.$router.push(`./${userId}`)
     },
     listenForUpdates(vm) {
       var keyword = vm.$route.params.username;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           var invitations = [];
           var friends = [];
           if (vm.user.loggedIn) {
@@ -166,7 +239,7 @@ export default {
           .then(() => {
             console.log("Added to friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error adding to friends: ", error);
           });
         db.collection("users")
@@ -180,7 +253,7 @@ export default {
           .then(() => {
             console.log("Added to user friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error adding to user friends: ", error);
           });
         var invitations = [];
@@ -199,7 +272,7 @@ export default {
             .then(() => {
               console.log("removed invitation from user account");
             })
-            .catch(function (error) {
+            .catch(function(error) {
               console.error("Error removing invitation: ", error);
             });
         }
@@ -215,7 +288,7 @@ export default {
           .then(() => {
             console.log("Document successfully updated!");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error updating document: ", error);
           });
       }
@@ -238,7 +311,7 @@ export default {
           .then(() => {
             console.log("Removed from user friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error removing from user friends: ", error);
           });
         db.collection("users")
@@ -255,7 +328,7 @@ export default {
             );
             console.log("removed from friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error removing from friends: ", error);
           });
       } else {
@@ -275,7 +348,7 @@ export default {
         .then(() => {
           console.log("removed invitation from viewed user account");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Error removing invitation: ", error);
         });
     },
@@ -286,7 +359,7 @@ export default {
         .where("participants", "array-contains", this.user.userId)
         .get()
         .then((querySnapshot) => {
-          querySnapshot.forEach(function (doc) {
+          querySnapshot.forEach(function(doc) {
             if (
               doc.data().participants.includes(vueInstance.viewedUser.userId)
             ) {
@@ -309,10 +382,10 @@ export default {
                 ],
                 participants: [this.user.userId, this.viewedUser.userId],
               })
-              .then(function () {
+              .then(function() {
                 console.log("Document successfully written!");
               })
-              .catch(function (error) {
+              .catch(function(error) {
                 console.error("Error writing document: ", error);
               });
           }
@@ -351,5 +424,8 @@ export default {
 }
 .list-item {
   background-color: #1e5f74 !important;
+}
+.list-item:hover {
+  background-color: #1d2d50 !important;
 }
 </style>

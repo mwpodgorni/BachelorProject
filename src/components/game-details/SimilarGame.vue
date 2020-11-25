@@ -2,13 +2,13 @@
   <div class="card mb-2">
     <img class="card-img-top" :src="imageUrl" :alt="title" />
     <div class="card-body p-1" style="background-color: #133b5c;">
-      <h5 class="card-title mb-1">{{ title }}</h5>
+      <h5 class="card-title mx-2">{{ title }}</h5>
       <!-- <p class="card-text">
         {{ description }}
       </p> -->
       <!-- <a class="btn btn-primary">Play</a> -->
-      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light">Play</button>
-      <button @click="viewGameDetails(gameId)" type="button" class="btn btn-block btn-outline-light">Details</button>
+      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light mt-1">Play</button>
+      <button @click="viewGameDetails(gameId)" type="button" class="btn btn-block btn-outline-light mt-1">Details</button>
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ p {
 p {
   font-size: 14px;
 }
-.card:hover {
+/* .card:hover {
   cursor: pointer;
-}
+} */
 </style>

@@ -2,25 +2,35 @@
   <div class="container" id="profile">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-2" v-on:click="test()">{{ user.data.displayName }}</h1>
+        <h1 class="my-2" v-on:click="test()">
+          {{ this.user.data.displayName }}
+        </h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
         <router-link to="edit-profile">
           <b-icon class="icon mr-1" icon="pencil-square"></b-icon>
         </router-link>
+        <!-- <b-button @click="test()">Test</b-button> -->
       </div>
     </div>
     <div class="row" id="recentlyPlayed-row">
       <div class="col-sm-12 col-md-6 px-2 color2">
         <b-tabs active-nav-item-class="text-dark" class="mt-2">
           <b-tab title="Favorite" active>
-            <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.favoriteGames.length">
+            <div
+              class="row text-center align-items-center mx-0 no-activity"
+              v-if="!this.user.data.favoriteGames"
+            >
               <div class="col px-0 color3">
                 <h4 class="my-auto py-auto">No favorite games</h4>
               </div>
             </div>
-            <b-list-group id="recentlyPlayed-list" v-if="user.data.favoriteGames.length">
-              <b-list-group-item class="p-1 list-item" v-for="item in user.data.favoriteGames" :key="item.gameId">
+            <b-list-group id="recentlyPlayed-list" v-else>
+              <b-list-group-item
+                class="p-1 list-item"
+                v-for="item in user.data.favoriteGames"
+                :key="item.gameId"
+              >
                 <div class="row mx-0" id="recentlyPlayed-item">
                   <div class="col-8 my-auto">
                     <h5 class="my-auto">
@@ -54,13 +64,23 @@
               </b-list-group-item> </b-list-group
           ></b-tab>
           <b-tab title="Recently Played">
-            <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.recentlyPlayed.length">
+            <div
+              class="row text-center align-items-center mx-0 no-activity"
+              v-if="!user.data.recentlyPlayed"
+            >
               <div class="col px-0 color3">
                 <h4 class="my-auto py-auto">No recent activity</h4>
               </div>
             </div>
-            <b-list-group id="recentlyPlayed-list" v-if="user.data.recentlyPlayed.length">
-              <b-list-group-item class="p-1 list-item" v-for="item in user.data.recentlyPlayed" :key="item.gameId">
+            <b-list-group
+              id="recentlyPlayed-list"
+              v-if="user.data.recentlyPlayed"
+            >
+              <b-list-group-item
+                class="p-1 list-item"
+                v-for="item in user.data.recentlyPlayed"
+                :key="item.gameId"
+              >
                 <div class="row mx-0" id="recentlyPlayed-item">
                   <div class="col-8">
                     <div class="row m-0 p-0">
@@ -70,7 +90,12 @@
                     </div>
                     <div class="row m-0 p-0">
                       <div class="col m-0 p-0">
-                        <p class="m-0">Last played on: {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}</p>
+                        <p class="m-0">
+                          Last played on:
+                          {{
+                            item.lastPlayed.toDate().toLocaleDateString("en-US")
+                          }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -97,20 +122,31 @@
       </div>
       <div class="col-sm-12 col-md-3 px-2 color2">
         <h3 class="mx-auto my-2 text-center">Friends</h3>
-        <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.friends.length">
+        <div
+          class="row text-center align-items-center mx-0 no-activity"
+          v-if="!user.data.friends.length"
+        >
           <div class="col px-0 color3">
             <h4 class="my-auto py-auto">No friends</h4>
           </div>
         </div>
-        <b-list-group v-if="user.data.friends.length">
-          <b-list-group-item class="p-1 list-item" v-for="item in user.data.friends" :key="item.userId">
+        <b-list-group v-else>
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="item in user.data.friends"
+            :key="item.userId"
+          >
             <div class="row mx-0" id="recentlyPlayed-item">
               <div class="col-9 my-auto">
                 <h5 class="my-auto">{{ item.displayName }}</h5>
               </div>
               <div class="col-3 my-auto">
                 <p class="h4">
-                  <b-icon v-on:click="chooseUser(item.userId)" class="icon float-right py-1" icon="arrow-up"></b-icon>
+                  <b-icon
+                    v-on:click="chooseUser(item.userId)"
+                    class="icon float-right py-1"
+                    icon="arrow-up"
+                  ></b-icon>
                 </p>
               </div>
             </div>
@@ -119,25 +155,40 @@
       </div>
       <div class="col-sm-12 col-md-3 px-2 color2">
         <h3 class="mx-auto my-2 text-center">Invitations</h3>
-        <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.invitations.length">
+        <div
+          class="row text-center align-items-center mx-0 no-activity"
+          v-if="!user.data.invitations.length"
+        >
           <div class="col px-0">
             <h4 class="my-auto py-auto">No Invitations</h4>
           </div>
         </div>
-        <b-list-group id="recentlyPlayed-list" v-if="user.data.invitations.length">
-          <b-list-group-item class="p-1 list-item" v-for="item in user.data.invitations" :key="item.userId">
+        <b-list-group id="recentlyPlayed-list" v-else>
+          <b-list-group-item
+            class="p-1 list-item"
+            v-for="item in user.data.invitations"
+            :key="item.userId"
+          >
             <div class="row mx-0" id="recentlyPlayed-item">
               <div class="col-8 my-auto">
                 <h5 class="my-auto">{{ item.displayName }}</h5>
               </div>
               <div class="col-2 my-auto">
                 <p class="h5">
-                  <b-icon v-on:click="acceptInvitation(item)" class="icon float-right" icon="check2"></b-icon>
+                  <b-icon
+                    v-on:click="acceptInvitation(item)"
+                    class="icon float-right"
+                    icon="check2"
+                  ></b-icon>
                 </p>
               </div>
               <div class="col-2 my-auto">
                 <p class="h5">
-                  <b-icon v-on:click="rejectInvitation(item)" class="icon float-right" icon="x"></b-icon>
+                  <b-icon
+                    v-on:click="rejectInvitation(item)"
+                    class="icon float-right"
+                    icon="x"
+                  ></b-icon>
                 </p>
               </div>
             </div>
@@ -149,11 +200,23 @@
       <div class="col px-0 py-2">
         <h3 class="mx-auto mb-2 py-2 text-center">Suggestions</h3>
         <div class="suggestions-content">
-          <div class="py-5 color3" id="no-suggestions" v-if="suggestionsLoadingState == 'notLoading'">
+          <div
+            class="py-5 color3"
+            id="no-suggestions"
+            v-if="suggestionsLoadingState == 'notLoading'"
+          >
             <h4 class="text-center">No suggestions</h4>
           </div>
-          <div class="text-center py-5" v-if="suggestionsLoadingState == 'loading'">
-            <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+          <div
+            class="text-center py-5"
+            v-if="suggestionsLoadingState == 'loading'"
+          >
+            <b-spinner
+              class="my-2"
+              label="Loading..."
+              variant="light"
+              type="grow"
+            ></b-spinner>
             <h5 class="my-2">Generating Suggestions</h5>
           </div>
           <div
@@ -175,7 +238,10 @@
               <div
                 v-for="(suggestion, index) in user.data.suggestions"
                 :key="suggestion.gameId"
-                v-bind:class="[carouselClass, index === 0 ? carouselActiveClass : '']"
+                v-bind:class="[
+                  carouselClass,
+                  index === 0 ? carouselActiveClass : '',
+                ]"
               >
                 <img
                   v-on:click="chooseGame(suggestion)"
@@ -210,7 +276,10 @@
               role="button"
               data-slide="prev"
             >
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
               <span class="sr-only">Previous</span>
             </a>
             <a
@@ -220,7 +289,10 @@
               role="button"
               data-slide="next"
             >
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
               <span class="sr-only">Next</span>
             </a>
           </div>
@@ -249,7 +321,7 @@ export default {
   },
   methods: {
     test() {
-      console.log("test", this.user.data.suggestions);
+      console.log("test", this.suggestionsLoadingState);
     },
     viewDetails(game) {
       this.$router.push("games/details/" + game.gameId);
@@ -280,7 +352,7 @@ export default {
         .then(() => {
           console.log("Added to friends.");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // The document probably doesn't exist.
           console.error("Error adding to friends: ", error);
         });
@@ -295,7 +367,7 @@ export default {
         .then(() => {
           console.log("Added to user friends.");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // The document probably doesn't exist.
           console.error("Error adding to user friends: ", error);
         });
@@ -310,7 +382,7 @@ export default {
         .then(() => {
           console.log("Removed invitation");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // The document probably doesn't exist.
           console.error("Error removing invitation: ", error);
         });
@@ -327,7 +399,7 @@ export default {
         .then(() => {
           console.log("Removed invitation");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           // The document probably doesn't exist.
           console.error("Error removing invitation: ", error);
         });

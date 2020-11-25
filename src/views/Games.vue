@@ -3,11 +3,20 @@
     <div v-if="error" class="error">
       {{ error }}
     </div>
-    <div class="py-5 color3" id="no-suggestions" v-if="gamesLoadingState == 'notLoading'">
+    <div
+      class="py-5 color3"
+      id="no-suggestions"
+      v-if="gamesLoadingState == 'notLoading'"
+    >
       <h4 class="text-center">Something went wrong. Try to refresh the page</h4>
     </div>
     <div class="text-center py-5" v-if="gamesLoadingState == 'loading'">
-      <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+      <b-spinner
+        class="my-2"
+        label="Loading..."
+        variant="light"
+        type="grow"
+      ></b-spinner>
       <h5 class="my-2">Loading Games</h5>
     </div>
     <div v-if="gamesLoadingState == 'loaded'" class="grid px-0 mx-0">
@@ -18,12 +27,6 @@
             <span>{{ game.title }}</span>
           </h2>
           <p>
-            <!-- <span>{{ game.description }}</span> -->
-            <!-- <a @click.stop="viewDetails(game)">View Details</a> -->
-            <!-- <button type="button" class="btn btn-outline-light">Play</button>
-            <button type="button" class="btn btn-outline-light">Details</button>
-            <button type="button" class="btn btn-outline-dark">Play</button>
-            <button type="button" class="btn btn-outline-dark">Details</button> -->
             <b-icon
               v-on:click="viewDetails(game)"
               v-b-popover.hover.bottom="'Details'"
@@ -74,7 +77,7 @@ export default {
     },
     setData(data, gamesData) {
       var keys = Object.keys(data);
-      keys.forEach(function (key) {
+      keys.forEach(function(key) {
         gamesData.push(data[key]);
       });
       gamesData.sort(this.compare);

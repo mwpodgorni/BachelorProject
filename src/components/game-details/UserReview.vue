@@ -4,7 +4,9 @@
       <div class="col pl-0">
         <div class="row">
           <div class="col">
-            <h4 id="username" class="mb-0">{{ username }}</h4>
+            <h4 id="username" class="mb-0" @click="goToProfile()">
+              {{ username }}
+            </h4>
             <rating id="rating" :rating="rating"></rating>
             <p id="date" class="mb-1">{{ date }}</p>
             <p id="reviewText">{{ reviewText }}</p>
@@ -21,9 +23,14 @@ export default {
   components: {
     Rating,
   },
-  props: ["username", "rating", "date", "reviewText"],
+  props: ["userId", "username", "rating", "date", "reviewText"],
   data() {
     return {};
+  },
+  methods: {
+    goToProfile() {
+      this.$router.push(`../../user-profile/${this.userId}`);
+    },
   },
 };
 </script>
@@ -46,5 +53,8 @@ export default {
 }
 #reviewText {
   font-size: small;
+}
+h4:hover {
+  cursor: pointer;
 }
 </style>

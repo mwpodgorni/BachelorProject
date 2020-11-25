@@ -1,36 +1,70 @@
 <template>
   <div id="app" class="color1">
     <div id="navbar-wrapper">
-      <b-navbar id="navbar" toggleable="sm" type="dark" class="py-0 color2" sticky>
+      <b-navbar
+        id="navbar"
+        toggleable="sm"
+        type="dark"
+        class="py-0 color2"
+        sticky
+      >
         <b-navbar-brand>JugSquare</b-navbar-brand>
-        <b-navbar-toggle class="ml-auto mr-2" target="nav-collapse"></b-navbar-toggle>
+        <b-navbar-toggle
+          class="ml-auto mr-2"
+          target="nav-collapse"
+        ></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item>
-              <router-link to="../../games" class="nav-link py-0 my-0">Games</router-link>
+              <router-link to="../../games" class="nav-link py-0 my-0"
+                >Games</router-link
+              >
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
             <b-nav-form class="row m-0 pr-2 py-2">
-              <b-form-input v-model="keyword" size="sm" class="col-9" placeholder="Search"></b-form-input>
-              <b-button v-model="keyword" @click.prevent="search" variant="outline-light" size="sm" class="col-3"
+              <b-form-input
+                v-model="keyword"
+                size="sm"
+                class="col-9"
+                placeholder="Search"
+              ></b-form-input>
+              <b-button
+                v-model="keyword"
+                @click.prevent="search"
+                variant="outline-light"
+                size="sm"
+                class="col-3"
                 >Search</b-button
               >
             </b-nav-form>
             <b-nav-item v-if="!user.loggedIn" class="my-auto">
-              <router-link to="../login" class="nav-link p-0 m-0">Login</router-link>
+              <router-link to="../login" class="nav-link p-0 m-0"
+                >Login</router-link
+              >
             </b-nav-item>
             <b-nav-item v-if="!user.loggedIn" class="my-auto">
-              <router-link to="../register" class="nav-link p-0 m-0">Register</router-link>
+              <router-link to="../register" class="nav-link p-0 m-0"
+                >Register</router-link
+              >
             </b-nav-item>
             <b-nav-item-dropdown right v-if="user.loggedIn">
               <template v-slot:button-content>
-                <b-icon class="my-auto" id="icon" style="width: 27px; height: 27px;" icon="person-circle"></b-icon>
+                <b-icon
+                  class="my-auto"
+                  id="icon"
+                  style="width: 27px; height: 27px;"
+                  icon="person-circle"
+                ></b-icon>
               </template>
               <b-dropdown-item to="../../profile">Profile</b-dropdown-item>
-              <b-dropdown-item v-on:click="openChat()">Messages</b-dropdown-item>
-              <b-dropdown-item @click.prevent="signOut">Sign Out</b-dropdown-item>
+              <b-dropdown-item v-on:click="openChat()"
+                >Messages</b-dropdown-item
+              >
+              <b-dropdown-item @click.prevent="signOut"
+                >Sign Out</b-dropdown-item
+              >
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -65,7 +99,10 @@
     </div>
     <div id="content">
       <transition name="component-fade" mode="out-in">
-        <router-view v-on:chooseGame="chooseGame($event)"></router-view>
+        <router-view
+          :key="$route.fullPath"
+          v-on:chooseGame="chooseGame($event)"
+        ></router-view>
       </transition>
     </div>
   </div>
@@ -124,16 +161,17 @@ export default {
         this.$router.push("../../chat");
       }
     },
-    chooseGame: function (game) {
+    chooseGame: function(game) {
       console.log("game app", game);
       this.$store.dispatch("addRecentlyPlayed", game);
       this.component = game.title.replace(/\s/g, "");
       this.showAlert();
       // document.body.style.background = "#007267";
     },
-    openGames: function () {
+    openGames: function() {
       if (this.component != "Games") {
-        document.body.style.background = "linear-gradient(to bottom, #09203f 0%, #537895 100%)";
+        document.body.style.background =
+          "linear-gradient(to bottom, #09203f 0%, #537895 100%)";
         // Math.floor(Math.random() * 3)
       }
       this.component = "Games";
