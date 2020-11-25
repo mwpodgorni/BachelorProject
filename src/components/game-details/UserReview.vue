@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col">
             <h4 id="username" class="mb-0">{{ username }}</h4>
-            <rating :rating="rating"></rating>
+            <rating id="rating" :rating="rating"></rating>
             <p id="date" class="mb-1">{{ date }}</p>
             <p id="reviewText">{{ reviewText }}</p>
           </div>
@@ -24,9 +24,6 @@ export default {
   props: ["username", "rating", "date", "reviewText"],
   data() {
     return {};
-  },
-  created() {
-    // console.log("date: " + this.date);
   },
 };
 </script>

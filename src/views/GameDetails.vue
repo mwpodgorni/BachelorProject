@@ -4,7 +4,11 @@
       <div class="col-sm-12 col-md-9">
         <div class="row mt-4">
           <div class="col-md-4 text-center" v-if="game">
-            <b-img style="width: 100%; height: auto;" fluid :src="game.downloadURL" />
+            <b-img
+              style="width: 100%; height: auto;"
+              fluid
+              :src="game.downloadURL"
+            />
           </div>
           <div class="col-md-8" v-if="game">
             <div class="row">
@@ -31,8 +35,14 @@
             <div class="row">
               <rating class="ml-3 my-auto" :rating="rating"></rating
               ><span class="mr-1 ml-3 my-auto">
-                <b-icon class="my-auto" style="width: 23px; height: 23px;" icon="people-fill"></b-icon>
-                <span class="my-auto ml-1" style="font-size: 20px;">{{ reviews.length }}</span>
+                <b-icon
+                  class="my-auto"
+                  style="width: 23px; height: 23px;"
+                  icon="people-fill"
+                ></b-icon>
+                <span class="my-auto ml-1" style="font-size: 20px;">{{
+                  reviews.length
+                }}</span>
               </span>
             </div>
             <div class="row">
@@ -47,7 +57,11 @@
               <div class="col d-flex flex-row-reverse pt-2">
                 <b-button variant="outline-light" @click="playGame(game)">
                   Play
-                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="controller"></b-icon>
+                  <b-icon
+                    class="my-auto ml-2"
+                    style="width: 20px; height: 20px;"
+                    icon="controller"
+                  ></b-icon>
                 </b-button>
               </div>
             </div>
@@ -58,7 +72,10 @@
             </div>
             <div class="row" v-if="game">
               <div class="col-12">
-                <div class="description" style="max-height: 150px; overflow-y: auto;">
+                <div
+                  class="description"
+                  style="max-height: 150px; overflow-y: auto;"
+                >
                   <span>{{ game.description }}</span>
                 </div>
               </div>
@@ -85,11 +102,25 @@
                 <h3>Reviews</h3>
               </div>
               <div class="col d-flex flex-row-reverse">
-                <b-button v-b-modal.write-review variant="outline-light">
-                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
+                <b-button
+                  v-if="this.user.loggedIn && !this.isReviewed()"
+                  v-b-modal.write-review
+                  variant="outline-light"
+                >
+                  <b-icon
+                    class="my-auto ml-2"
+                    style="width: 20px; height: 20px;"
+                    icon="pen"
+                  ></b-icon>
                 </b-button>
 
-                <b-modal @ok="submitReview" @hidden="resetForm" id="write-review" centered title="Write Review">
+                <b-modal
+                  @ok="submitReview"
+                  @hidden="resetForm"
+                  id="write-review"
+                  centered
+                  title="Write Review"
+                >
                   <b-form>
                     <b-form-textarea
                       id="textarea"
@@ -99,45 +130,57 @@
                       max-rows="6"
                     ></b-form-textarea>
                     <b-form-rating v-model="reviewRating"></b-form-rating>
+                    <div class="d-block text-center pt-3">
+                      <p id="ratingFeedback">
+                        {{ ratingFeedback }}
+                      </p>
+                    </div>
                   </b-form>
+
                   <template #modal-footer="{  cancel, ok }">
                     <b-button size="sm" variant="danger" @click="cancel()">
                       Cancel
                     </b-button>
-                    <b-button variant="primary" size="sm" class="float-right" v-on:click="ok()">
+                    <b-button
+                      :disabled="reviewRating === 0"
+                      variant="primary"
+                      size="sm"
+                      class="float-right"
+                      v-on:click="ok()"
+                    >
                       Submit
                     </b-button>
                   </template>
                 </b-modal>
-                <!-- <b-button
-                  variant="outline-light"
-                  data-toggle="modal"
-                  data-target="#reviewModal"
-                  @click="modalCreated()"
-                >
-                  Write review
-                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
-                </b-button> -->
               </div>
             </div>
             <div
-              class="py-5 color3 mt-1"
+              class="py-5 mt-1"
               id="no-suggestions"
               style="border-radius: 4px;"
               v-if="reviewsLoadingState == 'notLoading'"
             >
-              <h4 class="text-center" style="color: white;">No Reviews</h4>
+              <h5 class="text-center" style="color: white;">No Reviews</h5>
             </div>
             <div
               class="text-center color3 py-5 mt-1"
               style="border-radius: 4px;"
               v-if="reviewsLoadingState == 'loading'"
             >
-              <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
+              <b-spinner
+                class="my-2"
+                label="Loading..."
+                variant="light"
+                type="grow"
+              ></b-spinner>
               <h5 class="my-2" style="color: white;">Loading Reviews</h5>
             </div>
             <div class="row mt-3" v-if="reviewsLoadingState == 'loaded'">
-              <div class="col-12" v-for="review in reviews" :key="review.reviewId">
+              <div
+                class="col-12"
+                v-for="review in reviews"
+                :key="review.reviewId"
+              >
                 <user-review
                   :username="review.displayName"
                   :rating="review.rating"
@@ -168,7 +211,11 @@
           <h3 class="mx-auto">Similar Games</h3>
         </div>
         <div v-if="similarGames">
-          <div class="row mt-1 px-2" v-for="game in similarGames" :key="game.gameId">
+          <div
+            class="row mt-1 px-2"
+            v-for="game in similarGames"
+            :key="game.gameId"
+          >
             <similar-game
               :imageUrl="game.downloadURL"
               :title="game.title"
@@ -179,69 +226,6 @@
         </div>
       </div>
     </div>
-    <!-- Modal window for adding new reviews  -->
-    <!-- <div
-      class="modal fade"
-      id="reviewModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="reviewModalTitle"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="reviewModalLongTitle">Add review</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col">
-                <textarea
-                  id="reviewText"
-                  name="reviewText"
-                  rows="5"
-                  placeholder="Tell others what do you think about this game. Would you recommend it and why?"
-                  v-model="addReviewText"
-                />
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-6 d-flex justify-content-end">
-                <b-icon
-                  @mouseover="highlightStars(star.index)"
-                  @mouseleave="resetHighlightStars()"
-                  @click="selectStars(star.index)"
-                  v-for="star in selectReviewStars"
-                  :key="star.index"
-                  class="my-auto"
-                  style="width: 30px; height: 30px; color: yellow;"
-                  :icon="star.icon"
-                ></b-icon>
-              </div>
-              <div class="col-6 d-flex justify-content-start">
-                <span class="mt-1" style="color: black;">{{ ratingFeedback }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Cancel
-            </button>
-            <button
-              type="button"
-              :disabled="this.selectReviewStars === 0"
-              class="btn btn-primary"
-              @click="submitReview()"
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -260,12 +244,10 @@ export default {
     return {
       reviewsArray: [],
       selectReviewStars: [],
-      ratingFeedback: "Rating required",
       reviewText: "",
       reviewRating: 0,
       error: "ha",
       dismissSecs: 5,
-
       dismissCountDownError: 0,
     };
   },
@@ -279,17 +261,26 @@ export default {
       });
       return game;
     },
-    // reviews() {
-    //   const gameId = this.$route.params.gameId;
-    //   const filtered = this.$store.state.reviews.filter((review) => review.gameId === gameId);
-    //   return filtered;
-    // },
     rating() {
       var score = 0;
       this.reviews.forEach((review) => {
         score += review.rating;
       });
       return score / this.reviews.length;
+    },
+    ratingFeedback() {
+      if (this.reviewRating === 1) {
+        return "Hated it";
+      } else if (this.reviewRating === 2) {
+        return "Didn't like it";
+      } else if (this.reviewRating === 3) {
+        return "Just OK";
+      } else if (this.reviewRating === 4) {
+        return "Liked it";
+      } else if (this.reviewRating === 5) {
+        return "Loved it";
+      }
+      return "Rating required";
     },
     categories() {
       return this.game.categories;
@@ -299,7 +290,11 @@ export default {
         var similar = [];
         this.game.categories.forEach((thisCategory) => {
           this.games.forEach((game) => {
-            if (game.categories.includes(thisCategory) && this.game.gameId !== game.gameId && !similar.includes(game)) {
+            if (
+              game.categories.includes(thisCategory) &&
+              this.game.gameId !== game.gameId &&
+              !similar.includes(game)
+            ) {
               similar.push(game);
             }
           });
@@ -322,6 +317,11 @@ export default {
     // this.loadReviews();
     let gameId = this.$route.params.gameId;
     this.$store.dispatch("fetchReviews", gameId);
+    console.log(
+      `User logged in: ${
+        this.user.loggedIn
+      }; Game Reviewed: ${this.isReviewed()}`
+    );
   },
   watch: {
     "$route.params.gameId"(value) {
@@ -331,22 +331,20 @@ export default {
   },
   mounted() {
     let wrapperHeight = document.getElementById("details-wrapper").offsetHeight;
-    document.getElementById("similar").setAttribute("style", "height:" + wrapperHeight + "px");
+    document
+      .getElementById("similar")
+      .setAttribute("style", "height:" + wrapperHeight + "px");
   },
   methods: {
     getCurrentDate() {
       var d = new Date();
       return d;
     },
-    // loadGames() {
-    //   this.$store.dispatch("fetchGames");
-    // },
     loadReviews() {
-      // this.$store.dispatch("fetchReviews");
       let gameId = this.$route.params.gameId;
       db.collection("reviews")
         .doc(gameId)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           console.log("re", doc.data());
           this.reviewsArray = doc.data();
         });
@@ -361,7 +359,9 @@ export default {
       this.$router.push(`../../../games/${game.title}`);
     },
     addFavorite() {
-      console.log(`Adding ${this.game.gameId} to favorite games for ${this.user.data.displayName}`);
+      console.log(
+        `Adding ${this.game.gameId} to favorite games for ${this.user.data.displayName}`
+      );
       this.$store.dispatch("addFavorite", {
         gameId: this.game.gameId,
         title: this.game.title,
@@ -394,33 +394,27 @@ export default {
           let vm = this;
           db.collection("reviews")
             .doc(gameId)
-            .update({ reviews: firebase.firestore.FieldValue.arrayUnion(newReview) })
-            .then(function (doc) {
+            .update({
+              reviews: firebase.firestore.FieldValue.arrayUnion(newReview),
+            })
+            .then(function(doc) {
               console.log(`Review Added`);
               vm.$store.dispatch("addReview", newReview);
             })
-            .catch(function (error) {
+            .catch(function(error) {
               console.log("Error adding review:", error);
             });
         } else {
           this.error = "You already reviewed this game.";
           this.showErrorAlert();
         }
-
-        //   this.$store.dispatch("addReview", {
-        //   datePosted: Date.now(),
-        //   gameId: this.game.gameId,
-        //   rating: this.addReviewRating,
-        //   content: this.reviewText,
-        //   reviewId: `${this.game.gameId}_${this.user.data.displayName}`,
-        //   displayName: this.user.data.displayName,
-        // });
       } else {
         this.error = "Enter description and rating.";
         this.showErrorAlert();
       }
     },
     isReviewed() {
+      this.reviews.length;
       for (let i = 0; i < this.reviews.length; i++) {
         if (this.user.userId == this.reviews[i].userId) {
           return true;
@@ -502,6 +496,10 @@ span {
   /* max-height: 600px; */
   /* height: inherit; */
   overflow-y: auto;
+}
+#ratingFeedback {
+  color: black;
+  font-weight: bold;
 }
 textarea {
   width: 100%;

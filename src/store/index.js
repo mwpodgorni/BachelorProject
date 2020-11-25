@@ -59,7 +59,6 @@ export default new Vuex.Store({
     },
     ADD_REVIEW(state, data) {
       console.log("VIBE CHECK");
-      // console.log("add review", data.datePosted.toDate());
       state.reviews.push(data);
       state.reviewsLoadingState = "loaded";
     },
@@ -144,30 +143,7 @@ export default new Vuex.Store({
         .catch(function (error) {
           console.error("Error getting document:", error);
         });
-      // console.log("Games " + games);
     },
-    // fetchReviews({ commit }) {
-    //   var docRef = db.collection("reviews").doc("reviews");
-    //   var reviews = [];
-    //   docRef
-    //     .get()
-    //     .then(function (doc) {
-    //       if (doc.exists) {
-    //         var data = doc.data();
-    //         var keys = Object.keys(data);
-    //         keys.forEach(function (key) {
-    //           reviews.push(data[key]);
-    //         });
-    //       } else {
-    //         console.error("No such document!");
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       console.error("Error getting document:", error);
-    //     });
-    //   // console.log(reviews);
-    //   commit("SET_REVIEWS", reviews);
-    // },
     fetchReviews({ commit }, gameId) {
       commit("SET_REVIEWS_LOADING_STATUS", "loading");
       db.collection("reviews")
@@ -216,7 +192,6 @@ export default new Vuex.Store({
         });
     },
     addFavorite({ commit }, data) {
-      // console.log(`Adding ${data.gameId} to favorites for ${data.userId}`);
       db.collection("users")
         .doc(data.userId)
         .update({
@@ -232,7 +207,6 @@ export default new Vuex.Store({
     },
 
     removeFavorite({ commit }, data) {
-      // console.log(`Removing ${data.gameId} from favorites for ${data.userId}`);
       db.collection("users")
         .doc(data.userId)
         .update({
@@ -291,15 +265,6 @@ export default new Vuex.Store({
     },
     addReview({ commit }, data) {
       commit("ADD_REVIEW", data);
-      // db.collection("reviews")
-      //   .doc("reviews")
-      //   .add(data)
-      //   .then(function (doc) {
-      //     console.log(`Review Added`);
-      //   })
-      //   .catch(function (error) {
-      //     console.log("Error adding review:", error);
-      //   });
     },
   },
   getters: {
