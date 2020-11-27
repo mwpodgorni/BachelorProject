@@ -5,8 +5,18 @@
         <h1 class="my-3">{{ viewedUser.displayName }}</h1>
       </div>
       <div class="col-2 my-auto d-flex justify-content-end">
-        <b-icon v-if="displayInviteIcon" v-on:click="sendInvite()" class="icon mr-3" icon="person-plus"></b-icon>
-        <b-icon v-if="displayRemoveIcon" v-on:click="removeFromFriends()" class="icon mr-3" icon="person-dash"></b-icon>
+        <b-icon
+          v-if="displayInviteIcon"
+          v-on:click="sendInvite()"
+          class="icon mr-3"
+          icon="person-plus"
+        ></b-icon>
+        <b-icon
+          v-if="displayRemoveIcon"
+          v-on:click="removeFromFriends()"
+          class="icon mr-3"
+          icon="person-dash"
+        ></b-icon>
         <b-icon
           v-if="displayMessageIcon"
           v-on:click="openConversation()"
@@ -18,24 +28,36 @@
     <div class="row color2" id="recentlyPlayed-row">
       <div class="col-sm-12 col-md-8 pr-2 pl-4">
         <b-tabs fill active-nav-item-class="text-dark" class="mt-2">
-          <b-tab title="Favorites" active style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
-            <div class="row text-center align-items-center mx-0" id="no-activity" v-if="!favoriteGames.length">
+          <b-tab
+            title="Favorites"
+            active
+            style="max-height: 500px; overflow-y: auto; overflow-x: hidden;"
+          >
+            <div
+              class="row text-center align-items-center mx-0"
+              id="no-activity"
+              v-if="!favoriteGames.length"
+            >
               <div class="col px-0">
                 <h4 class="my-auto py-auto">Empty</h4>
               </div>
             </div>
             <div>
               <b-row>
-                <b-col sm="12" md="6" v-for="game in favoriteGames" :key="game.gameId">
-                  <!-- <div v-for="game in favoriteGames" :key="game.gameId" style="width: 30%;"> -->
+                <b-col
+                  sm="12"
+                  md="6"
+                  v-for="game in favoriteGames"
+                  :key="game.gameId"
+                >
                   <similar-game
                     id="favorites"
                     :imageUrl="game.downloadURL"
                     :title="game.title"
                     :description="game.description"
                     :gameId="game.gameId"
+                    :inUserProfile="true"
                   ></similar-game>
-                  <!-- </div> -->
                 </b-col>
               </b-row>
             </div>
@@ -50,7 +72,10 @@
                 <h4 class="my-auto py-auto">No recent activity</h4>
               </div>
             </div>
-            <b-list-group id="recentlyPlayedUser-list" v-if="viewedUser.recentlyPlayed.length">
+            <b-list-group
+              id="recentlyPlayedUser-list"
+              v-if="viewedUser.recentlyPlayed.length"
+            >
               <b-list-group-item
                 class="px-1 py-1 list-item"
                 v-for="item in viewedUser.recentlyPlayed"
@@ -67,7 +92,9 @@
                       <div class="col m-0 p-0">
                         <p class="m-0">
                           Last played on:
-                          {{ item.lastPlayed.toDate().toLocaleDateString("en-US") }}
+                          {{
+                            item.lastPlayed.toDate().toLocaleDateString("en-US")
+                          }}
                         </p>
                       </div>
                     </div>
@@ -96,8 +123,6 @@
       </div>
       <div class="col-sm-12 col-md-4">
         <h3 class="mx-auto my-2 text-center">Friends</h3>
-
-        <!-- <div class="row"> -->
         <b-list-group class="p-0 m-0">
           <b-list-group-item
             class="p-1 list-item"
@@ -112,7 +137,6 @@
             </div>
           </b-list-group-item>
         </b-list-group>
-        <!-- </div> -->
       </div>
     </div>
   </div>
@@ -170,7 +194,7 @@ export default {
       var that = this;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           that.viewedUser = doc.data();
         });
     },
@@ -182,7 +206,7 @@ export default {
       var that = this;
       db.collection("users")
         .doc(keyword)
-        .onSnapshot(function (doc) {
+        .onSnapshot(function(doc) {
           var invitations = [];
           var friends = [];
           if (user.loggedIn) {
@@ -237,7 +261,7 @@ export default {
           .then(() => {
             console.log("Added to friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error adding to friends: ", error);
           });
         db.collection("users")
@@ -251,7 +275,7 @@ export default {
           .then(() => {
             console.log("Added to user friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error adding to user friends: ", error);
           });
         var invitations = [];
@@ -270,7 +294,7 @@ export default {
             .then(() => {
               console.log("removed invitation from user account");
             })
-            .catch(function (error) {
+            .catch(function(error) {
               console.error("Error removing invitation: ", error);
             });
         }
@@ -286,7 +310,7 @@ export default {
           .then(() => {
             console.log("Document successfully updated!");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error updating document: ", error);
           });
       }
@@ -309,7 +333,7 @@ export default {
           .then(() => {
             console.log("Removed from user friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error removing from user friends: ", error);
           });
         db.collection("users")
@@ -321,10 +345,12 @@ export default {
             }),
           })
           .then(() => {
-            this.viewedUser.friends = this.viewedUser.friends.filter((element) => element.userId != this.user.userId);
+            this.viewedUser.friends = this.viewedUser.friends.filter(
+              (element) => element.userId != this.user.userId
+            );
             console.log("removed from friends.");
           })
-          .catch(function (error) {
+          .catch(function(error) {
             console.error("Error removing from friends: ", error);
           });
       } else {
@@ -344,7 +370,7 @@ export default {
         .then(() => {
           console.log("removed invitation from viewed user account");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error("Error removing invitation: ", error);
         });
     },
@@ -355,8 +381,10 @@ export default {
         .where("participants", "array-contains", this.user.userId)
         .get()
         .then((querySnapshot) => {
-          querySnapshot.forEach(function (doc) {
-            if (doc.data().participants.includes(vueInstance.viewedUser.userId)) {
+          querySnapshot.forEach(function(doc) {
+            if (
+              doc.data().participants.includes(vueInstance.viewedUser.userId)
+            ) {
               createConversation = false;
             } else {
             }
@@ -370,13 +398,16 @@ export default {
                 createdAt: new Date(),
                 creatorId: this.user.userId,
                 messages: [],
-                usernames: [this.user.data.displayName, this.viewedUser.displayName],
+                usernames: [
+                  this.user.data.displayName,
+                  this.viewedUser.displayName,
+                ],
                 participants: [this.user.userId, this.viewedUser.userId],
               })
-              .then(function () {
+              .then(function() {
                 console.log("Document successfully written!");
               })
-              .catch(function (error) {
+              .catch(function(error) {
                 console.error("Error writing document: ", error);
               });
           }

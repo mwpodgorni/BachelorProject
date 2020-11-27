@@ -222,6 +222,7 @@
               :title="game.title"
               :description="game.description"
               :gameId="game.gameId"
+              :inGameDetails="true"
             ></similar-game>
           </div>
         </div>
@@ -317,8 +318,6 @@ export default {
     },
   },
   created() {
-    // this.loadGames();
-    // this.loadReviews();
     let gameId = this.$route.params.gameId;
     this.$store.dispatch("fetchReviews", gameId);
   },
@@ -424,43 +423,6 @@ export default {
     showErrorAlert() {
       this.dismissCountDownError = this.dismissSecs;
     },
-    // modalCreated() {
-    //   for (let i = 0; i < 5; i++) {
-    //     this.selectReviewStars.push({
-    //       index: i,
-    //       icon: "star",
-    //     });
-    //   }
-    // },
-    // highlightStars(index) {
-    //   for (let i = 0; i <= index; i++) {
-    //     this.selectReviewStars[i].icon = "star-fill";
-    //   }
-    //   if (index === 0) {
-    //     this.ratingFeedback = "Hated it";
-    //   } else if (index === 1) {
-    //     this.ratingFeedback = "Didn't like it";
-    //   } else if (index === 2) {
-    //     this.ratingFeedback = "Just OK";
-    //   } else if (index === 3) {
-    //     this.ratingFeedback = "Liked it";
-    //   } else if (index === 4) {
-    //     this.ratingFeedback = "Loved it";
-    //   }
-    // },
-    // resetHighlightStars() {
-    //   for (let i = 0; i < 5; i++) {
-    //     this.selectReviewStars[i].icon = "star";
-    //   }
-    //   this.ratingFeedback = "Rating required";
-    // },
-    // selectStars(index) {
-    //   console.log(`Selected ${index + 1} stars!`);
-    //   for (let i = 0; i <= index; i++) {
-    //     this.selectReviewStars[i].icon = "star-fill";
-    //   }
-    //   this.addReviewRating = index + 1;
-    // },
   },
 };
 </script>
