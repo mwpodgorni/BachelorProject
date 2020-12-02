@@ -77,7 +77,7 @@ export default new Vuex.Store({
       state.suggestionsLoadingState = "loading";
       state.user.data.suggestions = [];
       Recommendations(state.user.data, state.games).then(() => {
-        console.log(state.user.data.suggestions.length);
+        // console.log(state.user.data.suggestions.length);
         if (state.user.data.suggestions.length) {
           state.suggestionsLoadingState = "loaded";
         } else {

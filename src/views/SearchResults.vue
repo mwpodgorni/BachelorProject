@@ -4,25 +4,13 @@
       <div class="col-sm-12 col-md-6 px-1">
         <b-card no-body class="mb-1 card">
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.users class="accordion-button"
-              >Users</b-button
-            >
+            <b-button block v-b-toggle.users class="accordion-button">Users</b-button>
           </b-card-header>
-          <b-collapse
-            id="users"
-            visible
-            accordion="users-accordion"
-            role="tabpanel"
-            class="color2"
-          >
+          <b-collapse id="users" visible accordion="users-accordion" role="tabpanel" class="color2">
             <b-card-body class="p-0">
               <div
                 class="row text-center text-light align-items-center mx-0"
-                v-if="
-                  !usersResults.length ||
-                  (usersResults.length == 1 &&
-                    usersResults[0].userId == loggedUser.userId)
-                "
+                v-if="!usersResults.length || (usersResults.length == 1 && usersResults[0].userId == loggedUser.userId)"
               >
                 <div class="col px-0 color3">
                   <h4 class="my-5 py-auto">No users for searched keyword</h4>
@@ -49,21 +37,11 @@
       <div class="col-sm-12 col-md-6 px-1">
         <b-card no-body class="mb-1 card">
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.games class="accordion-button"
-              >Games</b-button
-            >
+            <b-button block v-b-toggle.games class="accordion-button">Games</b-button>
           </b-card-header>
-          <b-collapse
-            id="games"
-            visible
-            accordion="games-accordion"
-            role="tabpanel"
-          >
+          <b-collapse id="games" visible accordion="games-accordion" role="tabpanel">
             <b-card-body class="p-0">
-              <div
-                class="row text-center text-light align-items-center mx-0"
-                v-if="!gamesResults.length"
-              >
+              <div class="row text-center text-light align-items-center mx-0" v-if="!gamesResults.length">
                 <div class="col px-0 color3">
                   <h4 class="my-5 py-auto">
                     No games for search keyword
@@ -72,22 +50,14 @@
               </div>
               <div id="search-games" v-if="gamesResults.length">
                 <div class="row text-center align-items-center my-1 mx-1">
-                  <div
-                    class="col-md-6 my-1 px-1"
-                    v-for="game in gamesResults"
-                    :key="game.title"
-                    v-on:click="chooseGame(game)"
-                  >
-                    <div>
-                      <img
-                        :src="game.downloadURL"
-                        class="img-fluid list-item"
-                      />
-
-                      <div class="carousel-caption">
-                        <h5>{{ game.title }}</h5>
-                      </div>
-                    </div>
+                  <div class="col-md-6 my-1 px-1" v-for="game in gamesResults" :key="game.title">
+                    <similar-game
+                      :imageUrl="game.downloadURL"
+                      :title="game.title"
+                      :description="game.description"
+                      :gameId="game.gameId"
+                      :inProfile="false"
+                    ></similar-game>
                   </div>
                 </div>
               </div>
@@ -101,8 +71,10 @@
 <script>
 import Router from "vue-router";
 import { mapGetters } from "vuex";
+import SimilarGame from "../components/game-details/SimilarGame";
 export default {
   name: "SearchResults",
+  components: { SimilarGame },
   data() {
     return {
       keyword: null,
@@ -118,6 +90,7 @@ export default {
   computed: {
     ...mapGetters({
       loggedUser: "user",
+      games: "games",
     }),
   },
   beforeRouteEnter(to, from, next) {
@@ -154,17 +127,28 @@ export default {
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
-      db.collection("games")
-        .where("title", "==", keyword)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            vm.setGames(doc.data());
-          });
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
+      // db.collection("games")
+      //   // .where("title", "==", keyword)
+      //   .get()
+      //   .then(function (querySnapshot) {
+      //     querySnapshot.forEach(function (doc) {
+      //       console.log("LOOK", doc.data());
+      //       vm.setGames(doc.data());
+      //     });
+      //   })
+      //   .catch(function (error) {
+      //     console.log("Error getting documents: ", error);
+      //   });
+
+      this.games.forEach((game) => {
+        if (
+          game.title.toLowerCase() == keyword.toLowerCase() ||
+          game.description.toLowerCase().includes(keyword.toLowerCase()) ||
+          game.keywords.join().toLowerCase().includes(keyword.toLowerCase())
+        ) {
+          this.setGames(game);
+        }
+      });
     },
   },
 };
