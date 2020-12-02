@@ -56,7 +56,7 @@
                       :title="game.title"
                       :description="game.description"
                       :gameId="game.gameId"
-                      :inProfile="false"
+                      :inGameDetails="true"
                     ></similar-game>
                   </div>
                 </div>

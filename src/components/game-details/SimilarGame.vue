@@ -3,13 +3,13 @@
     <img class="card-img-top" :src="imageUrl" :alt="title" />
     <div class="card-body p-1" style="background-color: #133b5c;">
       <div v-if="inGameDetails">
-        <h5 class="card-title text-center" v-if="inGameDetails">{{ title }}</h5>
-        <p class="card-text">
+        <h5 class="card-title text-center my-auto" v-if="inGameDetails">{{ title }}</h5>
+        <!-- <p class="card-text">
           {{ description }}
-        </p>
+        </p> -->
       </div>
-      <div class="card-title d-flex justify-content-between" v-if="inProfile">
-        <h5>{{ title }}</h5>
+      <div class="card-title d-flex justify-content-between mb-0" v-if="inProfile">
+        <h5 class="my-auto">{{ title }}</h5>
         <b-icon
           @click="removeFavoriteClicked()"
           class="my-auto"
@@ -21,7 +21,7 @@
         <h5>{{ title }}</h5>
       </div>
 
-      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light mt-3">
+      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light mt-2">
         Play
       </button>
       <button @click="viewGameDetails(gameId)" type="button" class="btn btn-block btn-outline-light mt-1">
