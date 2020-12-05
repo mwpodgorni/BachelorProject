@@ -71,9 +71,7 @@
               </div>
               <div class="form-group row my-0 py-0">
                 <div class="col text-center mt-2">
-                  <router-link to="login" class="my-0 py-0" id="login-link"
-                    >Already have an account?</router-link
-                  >
+                  <router-link to="login" class="my-0 py-0" id="login-link">Already have an account?</router-link>
                 </div>
               </div>
             </form>
@@ -98,6 +96,7 @@ export default {
   methods: {
     register() {
       if (this.user.password == this.user.confirmPassword) {
+        let vm = this;
         firebase
           .auth()
           .createUserWithEmailAndPassword(this.user.email, this.user.password)
@@ -112,12 +111,15 @@ export default {
                   .set({
                     userId: res.user.uid,
                     displayName: this.user.username,
+                    favoriteGames: [],
                     recentlyPlayed: [],
                     suggestions: [],
                     friends: [],
                     invitations: [],
+                  })
+                  .then(function () {
+                    vm.$router.push({ name: "profile" });
                   });
-                this.$router.push({ name: "profile" });
               });
           })
           .catch((error) => {

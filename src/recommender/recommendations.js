@@ -1,6 +1,6 @@
 import ContentBasedRecommender from "./content-based-recommender";
 export default async function Recommendations(userData, games) {
-  // console.log("suggestions generator", userData.suggestions);
+  console.log("suggestions generator", userData);
 
   if (userData.favoriteGames.length) {
     let favoriteIds = [];

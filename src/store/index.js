@@ -106,10 +106,13 @@ export default new Vuex.Store({
       if (user) {
         db.collection("users")
           .doc(user.uid)
-          .onSnapshot(function(doc) {
-            console.log(doc.data());
-            commit("SET_USER_DATA", doc.data());
-            commit("GENERATE_SUGGESTIONS");
+          .onSnapshot(function (doc) {
+            if (doc.data()) {
+              console.log(doc.data());
+
+              commit("SET_USER_DATA", doc.data());
+              commit("GENERATE_SUGGESTIONS");
+            }
           });
       } else {
         commit("CLEAR_USER");
@@ -125,12 +128,12 @@ export default new Vuex.Store({
       var games = [];
       docRef
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             var data = doc.data();
             console.log("Document data:", data);
             var keys = Object.keys(data);
-            keys.forEach(function(key) {
+            keys.forEach(function (key) {
               games.push(data[key]);
             });
             commit("SET_GAMES", games);
@@ -142,7 +145,7 @@ export default new Vuex.Store({
             console.error("No such document!");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error getting document:", error);
         });
     },
@@ -151,7 +154,7 @@ export default new Vuex.Store({
       db.collection("reviews")
         .doc(gameId)
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             if (doc.data().reviews.length) {
               console.log("tes");
@@ -166,7 +169,7 @@ export default new Vuex.Store({
             commit("SET_REVIEWS_LOADING_STATUS", "notLoading");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting document:", error);
         });
     },
@@ -175,11 +178,11 @@ export default new Vuex.Store({
       var docRef = db.collection("games").doc("games");
       docRef
         .get()
-        .then(function(doc) {
+        .then(function (doc) {
           if (doc.exists) {
             var data = doc.data();
             var keys = Object.keys(data);
-            keys.forEach(function(key) {
+            keys.forEach(function (key) {
               if (data[key].gameId == gameId) {
                 var game = data[key];
                 commit("SET_GAME", game);
@@ -189,7 +192,7 @@ export default new Vuex.Store({
             console.error("No such game!");
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error getting game", error);
         });
     },
@@ -202,11 +205,11 @@ export default new Vuex.Store({
             gameId: data.gameId,
           }),
         })
-        .then(function(doc) {
+        .then(function (doc) {
           console.log(`${data.gameId} added to favorites!`);
           commit("GENERATE_SUGGESTIONS");
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting document:", error);
         });
     },
@@ -220,11 +223,11 @@ export default new Vuex.Store({
             gameId: data.gameId,
           }),
         })
-        .then(function(doc) {
+        .then(function (doc) {
           console.log(`${data.gameId} removed from favorites!`);
           commit("GENERATE_SUGGESTIONS");
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Error getting document:", error);
         });
     },
@@ -242,10 +245,10 @@ export default new Vuex.Store({
                   title: element.title,
                 }),
               })
-              .then(function(doc) {
+              .then(function (doc) {
                 console.log("removed from recently Played");
               })
-              .catch(function(error) {
+              .catch(function (error) {
                 console.log("Error getting document:", error);
               });
           }
@@ -259,11 +262,11 @@ export default new Vuex.Store({
               title: game.title,
             }),
           })
-          .then(function(doc) {
+          .then(function (doc) {
             console.log("added to recently Played");
             commit("GENERATE_SUGGESTIONS");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log("Error getting document:", error);
           });
       }

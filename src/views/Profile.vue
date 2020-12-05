@@ -16,7 +16,7 @@
       <div class="col-sm-12 col-md-6 px-2 color2">
         <b-tabs active-nav-item-class="text-dark" fill class="mt-2">
           <b-tab title="Favorite" active>
-            <div class="row text-center align-items-center mx-0 no-activity" v-if="!favoriteGames">
+            <div class="row text-center align-items-center mx-0 no-activity" v-if="!favoriteGames.length">
               <div class="col px-0 color3">
                 <h4 class="my-auto py-auto">Empty</h4>
               </div>
@@ -76,12 +76,12 @@
             </b-container>
           </b-tab>
           <b-tab title="Recently Played">
-            <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.recentlyPlayed">
+            <div class="row text-center align-items-center mx-0 no-activity" v-if="!user.data.recentlyPlayed.length">
               <div class="col px-0 color3">
                 <h4 class="my-auto py-auto">Empty</h4>
               </div>
             </div>
-            <b-list-group id="recentlyPlayed-list" v-if="user.data.recentlyPlayed">
+            <b-list-group id="recentlyPlayed-list" v-if="user.data.recentlyPlayed.length">
               <b-list-group-item class="p-1 list-item" v-for="item in user.data.recentlyPlayed" :key="item.gameId">
                 <div class="row mx-0" id="recentlyPlayed-item">
                   <div class="col-8">
