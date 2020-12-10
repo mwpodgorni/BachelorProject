@@ -2,7 +2,7 @@
   <div class="container" id="profile">
     <div class="row" id="username-row">
       <div class="col">
-        <h1 class="my-2">
+        <h1 class="my-2" v-on:click="test()">
           {{ this.user.data.displayName }}
         </h1>
       </div>
@@ -340,6 +340,9 @@ export default {
     },
   },
   methods: {
+    test() {
+      console.log("test", this.suggestionsLoadingState);
+    },
     viewDetails(game) {
       this.$router.push("games/details/" + game.gameId);
     },

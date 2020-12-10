@@ -245,6 +245,7 @@ export default {
   data() {
     return {
       reviewsArray: [],
+      selectReviewStars: [],
       reviewText: "",
       reviewRating: 0,
       error: "ha",

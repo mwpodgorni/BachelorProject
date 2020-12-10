@@ -29,7 +29,16 @@ export default {
         starsArray.push({ icon: "star", index: index });
         index++;
       }
+      // console.log(Math.floor(this.rating));
+      // return Math.floor(this.rating);
       return starsArray;
+    },
+  },
+  methods: {
+    getFullStars() {
+      var fullStars = new Array(Math.floor(this.rating));
+      console.log(fullStars);
+      return fullStars;
     },
   },
 };

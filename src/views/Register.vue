@@ -86,7 +86,6 @@
 
 <script>
 import firebase from "firebase";
-import { mapGetters } from "vuex";
 
 export default {
   name: "Register",
@@ -96,47 +95,35 @@ export default {
       error: null,
     };
   },
-  computed: {
-    ...mapGetters({ loggedInUser: "user" }),
-  },
   methods: {
     register() {
       if (this.user.password == this.user.confirmPassword) {
-        this.$store.dispatch("signUp", {
-          email: this.user.email,
-          password: this.user.password,
-          username: this.user.username,
-        });
-        console.log(this.loggedInUser);
-        if (this.loggedInUser) {
-          this.$router.push({ name: "profile" });
-        }
-        // firebase
-        //   .auth()
-        //   .createUserWithEmailAndPassword(this.user.email, this.user.password)
-        //   .then((res) => {
-        //     res.user
-        //       .updateProfile({
-        //         displayName: this.user.username,
-        //       })
-        //       .then(() => {
-        //         db.collection("users")
-        //           .doc(res.user.uid)
-        //           .set({
-        //             userId: res.user.uid,
-        //             displayName: this.user.username,
-        //             recentlyPlayed: [],
-        //             suggestions: [],
-        //             friends: [],
-        //             invitations: [],
-        //           });
-        //         this.$router.push({ name: "profile" });
-        //       });
-        //   })
-        //   .catch((error) => {
-        //     this.error = error.message;
-        //     console.log("err", error);
-        //   });
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.user.email, this.user.password)
+          .then((res) => {
+            res.user
+              .updateProfile({
+                displayName: this.user.username,
+              })
+              .then(() => {
+                db.collection("users")
+                  .doc(res.user.uid)
+                  .set({
+                    userId: res.user.uid,
+                    displayName: this.user.username,
+                    recentlyPlayed: [],
+                    suggestions: [],
+                    friends: [],
+                    invitations: [],
+                  });
+                this.$router.push({ name: "profile" });
+              });
+          })
+          .catch((error) => {
+            this.error = error.message;
+            console.log("err", error);
+          });
       } else {
         this.error = "Password and password confirmation don't match.";
       }

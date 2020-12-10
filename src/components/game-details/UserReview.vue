@@ -24,6 +24,9 @@ export default {
     Rating,
   },
   props: ["userId", "username", "rating", "date", "reviewText"],
+  data() {
+    return {};
+  },
   methods: {
     goToProfile() {
       this.$router.push(`../../user-profile/${this.userId}`);

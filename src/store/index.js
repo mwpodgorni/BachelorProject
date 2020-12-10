@@ -19,7 +19,6 @@ export default new Vuex.Store({
         invitations: [],
       },
     },
-    error: null,
     suggestionsLoadingState: "notLoading",
     gamesLoadingState: "notLoading",
     reviewsLoadingState: "notLoading",
@@ -38,9 +37,6 @@ export default new Vuex.Store({
     },
     SET_USER_DATA(state, data) {
       state.user.data = data;
-    },
-    SET_ERROR(state, data) {
-      state.error = data;
     },
     CLEAR_USER(state) {
       state.user.userId = null;
@@ -94,65 +90,6 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    authAction({ commit }) {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          commit("SET_USER", user);
-        } else {
-          commit("SET_USER", null);
-        }
-      });
-    },
-    signUp({ commit }, user) {
-      console.log(
-        `Creating user: ${user.email} , ${user.password}, ${user.username}`
-      );
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(user.email, user.password)
-        .then((res) => {
-          res.user
-            .updateProfile({
-              displayName: user.username,
-            })
-            .then(() => {
-              db.collection("users")
-                .doc(res.user.uid)
-                .set({
-                  userId: res.user.uid,
-                  displayName: user.username,
-                  recentlyPlayed: [],
-                  suggestions: [],
-                  friends: [],
-                  favoriteGames: [],
-                  invitations: [],
-                });
-            });
-        })
-        .catch((error) => {
-          console.log("err", error);
-          commit("SET_ERROR", error.message);
-        });
-    },
-    signIn({ commit }, payload) {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(payload.email, payload.password)
-        .catch((error) => {
-          commit("SET_ERROR", error.message);
-        });
-    },
-    signOut({ commit }) {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          commit("SET_USER", null);
-        })
-        .catch((error) => {
-          commit("SET_ERROR", error.message);
-        });
-    },
     fetchUser({ commit }, user) {
       commit("SET_LOGGED_IN", user != null);
       if (user) {
