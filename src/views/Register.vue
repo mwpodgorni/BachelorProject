@@ -71,9 +71,7 @@
               </div>
               <div class="form-group row my-0 py-0">
                 <div class="col text-center mt-2">
-                  <router-link to="login" class="my-0 py-0" id="login-link"
-                    >Already have an account?</router-link
-                  >
+                  <router-link to="login" class="my-0 py-0" id="login-link">Already have an account?</router-link>
                 </div>
               </div>
             </form>
