@@ -1,16 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Login from "../views/Login";
-import Register from "../views/Register";
-import ForgotPassword from "../views/ForgotPassword";
-import SearchResults from "../views/SearchResults";
+
 import Games from "../views/Games";
-import Game from "../views/Game";
-import GameDetails from "../views/GameDetails.vue";
-import Profile from "../views/Profile";
-import EditProfile from "../views/EditProfile";
-import UserProfile from "../views/UserProfile";
-import Chat from "../views/Chat";
+
 import store from "../store";
 
 Vue.use(Router);
@@ -31,27 +23,27 @@ const router = new Router({
     {
       path: "/games/:game",
       name: "game",
-      component: Game,
+      component: () => import("@/views/Game"),
     },
     {
       path: "/games/details/:gameId",
       name: "game-details",
-      component: GameDetails,
+      component: () => import("@/views/GameDetails"),
     },
     {
       path: "/search/:keyword",
       name: "search",
-      component: SearchResults,
+      component: () => import("@/views/SearchResults"),
     },
     {
       path: "/user-profile/:username",
       name: "user-profile",
-      component: UserProfile,
+      component: () => import("@/views/UserProfile"),
     },
     {
       path: "/profile",
       name: "profile",
-      component: Profile,
+      component: () => import("@/views/Profile"),
       meta: {
         requiresAuth: true,
       },
@@ -59,7 +51,7 @@ const router = new Router({
     {
       path: "/edit-profile",
       name: "edit-profile",
-      component: EditProfile,
+      component: () => import("@/views/EditProfile"),
       meta: {
         requiresAuth: true,
       },
@@ -67,7 +59,7 @@ const router = new Router({
     {
       path: "/chat/:userId?",
       name: "chat",
-      component: Chat,
+      component: () => import("@/views/Chat"),
       meta: {
         requiresAuth: true,
       },
@@ -75,7 +67,7 @@ const router = new Router({
     {
       path: "/login",
       name: "login",
-      component: Login,
+      component: () => import("@/views/Login"),
       meta: {
         disableIfLoggedIn: true,
       },
@@ -83,7 +75,7 @@ const router = new Router({
     {
       path: "/register",
       name: "register",
-      component: Register,
+      component: () => import("@/views/Register"),
       meta: {
         disableIfLoggedIn: true,
       },
@@ -91,7 +83,7 @@ const router = new Router({
     {
       path: "/forgot-password",
       name: "forgot-password",
-      component: ForgotPassword,
+      component: () => import("@/views/ForgotPassword"),
     },
   ],
 });

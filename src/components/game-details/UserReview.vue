@@ -18,31 +18,15 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import Rating from "../game-details/Rating";
 export default {
   components: {
     Rating,
   },
   props: ["userId", "username", "rating", "date", "reviewText"],
-<<<<<<< Updated upstream
-=======
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapGetters({
-      user: "user",
-    }),
-  },
->>>>>>> Stashed changes
   methods: {
     goToProfile() {
-      if (this.user.userId != this.userId) {
-        this.$router.push(`../../user-profile/${this.userId}`);
-      } else {
-        this.$router.push(`../../profile`);
-      }
+      this.$router.push(`../../user-profile/${this.userId}`);
     },
   },
 };
