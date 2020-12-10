@@ -40,10 +40,17 @@
               </div>
               <div class="form-group row my-0 py-0">
                 <div class="col-6 text-center">
-                  <router-link to="register" class="my-0 py-0" id="login-link">Create new account</router-link>
+                  <router-link to="register" class="my-0 py-0" id="login-link"
+                    >Create new account</router-link
+                  >
                 </div>
                 <div class="col-6 text-center">
-                  <router-link to="forgot-password" class="my-0 py-0" id="login-link">Forgot password</router-link>
+                  <router-link
+                    to="forgot-password"
+                    class="my-0 py-0"
+                    id="login-link"
+                    >Forgot password</router-link
+                  >
                 </div>
               </div>
             </form>
