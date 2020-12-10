@@ -76,7 +76,4 @@ p {
 p {
   font-size: 14px;
 }
-/* .card:hover {
-  cursor: pointer;
-} */
 </style>

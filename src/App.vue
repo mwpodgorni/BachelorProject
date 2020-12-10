@@ -99,9 +99,7 @@
     </div>
     <div id="content">
       <transition name="component-fade" mode="out-in">
-        <router-view
-          v-on:chooseGame="chooseGame($event)"
-        ></router-view>
+        <router-view v-on:chooseGame="chooseGame($event)"></router-view>
       </transition>
     </div>
   </div>
@@ -109,7 +107,7 @@
 
 <script>
 import Games from "@/views/Games";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import firebase from "firebase";
 import GameDetails from "./views/GameDetails";
 export default {
@@ -144,7 +142,11 @@ export default {
   beforeCreate() {
     this.$store.dispatch("fetchGames");
   },
+  mounted() {
+    this.authAction();
+  },
   methods: {
+    ...mapActions(["authAction"]),
     signOut() {
       firebase
         .auth()

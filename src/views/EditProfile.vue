@@ -162,7 +162,6 @@ export default {
       passwordSuccess: "Password has been updated.",
       password: "",
       newPassword: "",
-      users: null,
       confirmNewPassword: "",
     };
   },
