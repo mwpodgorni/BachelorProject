@@ -99,19 +99,6 @@ export default {
     });
   },
   methods: {
-    setUsers(data) {
-      this.usersResults.push(data);
-    },
-    setGames(data) {
-      this.gamesResults.push(data);
-    },
-    chooseGame(event) {
-      this.$router.push("../../games/" + event.title);
-      this.$emit("chooseGame", event);
-    },
-    chooseUser(userId) {
-      this.$router.push("../../user-profile/" + userId);
-    },
     initializeSearch(vm) {
       vm.usersResults = [];
       vm.gamesResults = [];
@@ -149,6 +136,19 @@ export default {
           this.setGames(game);
         }
       });
+    },
+    setUsers(data) {
+      this.usersResults.push(data);
+    },
+    setGames(data) {
+      this.gamesResults.push(data);
+    },
+    chooseGame(event) {
+      this.$router.push("../../games/" + event.title);
+      this.$emit("chooseGame", event);
+    },
+    chooseUser(userId) {
+      this.$router.push("../../user-profile/" + userId);
     },
   },
 };

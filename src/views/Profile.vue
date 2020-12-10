@@ -268,7 +268,6 @@ export default {
           }
         });
       });
-      console.log(favorites);
       return favorites;
     },
   },

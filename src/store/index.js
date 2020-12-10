@@ -62,7 +62,6 @@ export default new Vuex.Store({
       state.reviews = data;
     },
     ADD_REVIEW(state, data) {
-      console.log("VIBE CHECK");
       state.reviews.push(data);
       state.reviewsLoadingState = "loaded";
     },
@@ -189,6 +188,7 @@ export default new Vuex.Store({
       commit("SET_GAMES_LOADING_STATUS", "loading");
       var docRef = db.collection("games").doc("games");
       var games = [];
+      var isLogged = this.state.user.loggedIn;
       docRef
         .get()
         .then(function (doc) {
@@ -201,9 +201,13 @@ export default new Vuex.Store({
             });
             commit("SET_GAMES", games);
             commit("SET_GAMES_LOADING_STATUS", "loaded");
-            commit("GENERATE_SUGGESTIONS");
+            if (isLogged) {
+              commit("GENERATE_SUGGESTIONS");
+            }
           } else {
-            commit("SET_SUGGESTIONS_LOADING_STATUS", "notLoading");
+            if (isLogged) {
+              commit("SET_SUGGESTIONS_LOADING_STATUS", "notLoading");
+            }
             commit("SET_GAMES_LOADING_STATUS", "notLoading");
             console.error("No such document!");
           }
@@ -236,7 +240,6 @@ export default new Vuex.Store({
           console.log("Error getting document:", error);
         });
     },
-
     fetchGame({ commit }, gameId) {
       var docRef = db.collection("games").doc("games");
       docRef
