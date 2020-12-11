@@ -21,18 +21,10 @@
         <h5>{{ title }}</h5>
       </div>
 
-      <button
-        @click.stop="playGame(title)"
-        type="button"
-        class="btn btn-block btn-outline-light mt-3"
-      >
+      <button @click.stop="playGame(title)" type="button" class="btn btn-block btn-outline-light mt-3">
         Play
       </button>
-      <button
-        @click="viewGameDetails(gameId)"
-        type="button"
-        class="btn btn-block btn-outline-light mt-1"
-      >
+      <button @click="viewGameDetails(gameId)" type="button" class="btn btn-block btn-outline-light mt-1">
         Details
       </button>
     </div>
@@ -41,15 +33,7 @@
 
 <script>
 export default {
-  props: [
-    "imageUrl",
-    "title",
-    "description",
-    "gameId",
-    "inGameDetails",
-    "inProfile",
-    "inUserProfile",
-  ],
+  props: ["imageUrl", "title", "description", "gameId", "inGameDetails", "inProfile", "inUserProfile"],
   methods: {
     viewGameDetails(gameId) {
       this.$router.push(`${gameId}`);

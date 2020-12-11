@@ -2,7 +2,7 @@
   <div class="container h-100">
     <div class="row justify-content-center h-100">
       <div class="col-md-8">
-        <div class="card text-white bg-dark mt-5">
+        <div class="card text-white mt-5">
           <div class="card-header">Reset Password</div>
           <div class="card-body">
             <div v-if="success" class="alert alert-success">
@@ -33,14 +33,10 @@
               </div>
               <div class="form-group row my-0 py-0">
                 <div class="col-6 text-center">
-                  <router-link to="login" class="my-0 py-0" id="login-link"
-                    >Login</router-link
-                  >
+                  <router-link to="login" class="my-0 py-0" id="login-link">Login</router-link>
                 </div>
                 <div class="col-6 text-center">
-                  <router-link to="register" class="my-0 py-0" id="login-link"
-                    >Create new account</router-link
-                  >
+                  <router-link to="register" class="my-0 py-0" id="login-link">Create new account</router-link>
                 </div>
               </div>
             </form>
@@ -80,4 +76,11 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.container {
+  background: transparent;
+}
+.card {
+  background-color: #133b5c !important;
+}
+</style>

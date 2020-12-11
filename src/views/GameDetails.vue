@@ -1,14 +1,10 @@
 <template>
   <div class="container-fluid" id="details-wrapper">
     <div class="row">
-      <div class="col-sm-12 col-md-9">
+      <div class="col-sm-12 col-md-9" id="game-details">
         <div class="row mt-4">
           <div class="col-md-4 text-center" v-if="game">
-            <b-img
-              style="width: 100%; height: auto;"
-              fluid
-              :src="game.downloadURL"
-            />
+            <b-img style="width: 100%; height: auto;" fluid :src="game.downloadURL" />
           </div>
           <div class="col-md-8" v-if="game">
             <div class="row">
@@ -35,14 +31,8 @@
             <div class="row">
               <rating class="ml-3 my-auto" :rating="rating"></rating
               ><span class="mr-1 ml-3 my-auto">
-                <b-icon
-                  class="my-auto"
-                  style="width: 23px; height: 23px;"
-                  icon="people-fill"
-                ></b-icon>
-                <span class="my-auto ml-1" style="font-size: 20px;">{{
-                  reviews.length
-                }}</span>
+                <b-icon class="my-auto" style="width: 23px; height: 23px;" icon="people-fill"></b-icon>
+                <span class="my-auto ml-1" style="font-size: 20px;">{{ reviews.length }}</span>
               </span>
             </div>
             <div class="row">
@@ -57,11 +47,7 @@
               <div class="col d-flex flex-row-reverse pt-2">
                 <b-button variant="outline-light" @click="playGame(game)">
                   Play
-                  <b-icon
-                    class="my-auto ml-2"
-                    style="width: 20px; height: 20px;"
-                    icon="controller"
-                  ></b-icon>
+                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="controller"></b-icon>
                 </b-button>
               </div>
             </div>
@@ -72,10 +58,7 @@
             </div>
             <div class="row" v-if="game">
               <div class="col-12">
-                <div
-                  class="description"
-                  style="max-height: 150px; overflow-y: auto;"
-                >
+                <div class="description" style="max-height: 150px; overflow-y: auto;">
                   <span>{{ game.description }}</span>
                 </div>
               </div>
@@ -107,20 +90,10 @@
                   v-b-modal.write-review
                   variant="outline-light"
                 >
-                  <b-icon
-                    class="my-auto ml-2"
-                    style="width: 20px; height: 20px;"
-                    icon="pen"
-                  ></b-icon>
+                  <b-icon class="my-auto ml-2" style="width: 20px; height: 20px;" icon="pen"></b-icon>
                 </b-button>
 
-                <b-modal
-                  @ok="submitReview"
-                  @hidden="resetForm"
-                  id="write-review"
-                  centered
-                  title="Write Review"
-                >
+                <b-modal @ok="submitReview" @hidden="resetForm" id="write-review" centered title="Write Review">
                   <b-form>
                     <b-form-textarea
                       id="textarea"
@@ -167,20 +140,11 @@
               style="border-radius: 4px;"
               v-if="reviewsLoadingState == 'loading'"
             >
-              <b-spinner
-                class="my-2"
-                label="Loading..."
-                variant="light"
-                type="grow"
-              ></b-spinner>
+              <b-spinner class="my-2" label="Loading..." variant="light" type="grow"></b-spinner>
               <h5 class="my-2" style="color: white;">Loading Reviews</h5>
             </div>
             <div class="row mt-3" v-if="reviewsLoadingState == 'loaded'">
-              <div
-                class="col-12"
-                v-for="review in reviews"
-                :key="review.reviewId"
-              >
+              <div class="col-12" v-for="review in reviews" :key="review.reviewId">
                 <user-review
                   :userId="review.userId"
                   :username="review.displayName"
@@ -212,11 +176,7 @@
           <h3 class="mx-auto">Similar Games</h3>
         </div>
         <div v-if="similarGames">
-          <div
-            class="row mt-1 px-2"
-            v-for="game in similarGames"
-            :key="game.gameId"
-          >
+          <div class="row mt-1 px-2" v-for="game in similarGames" :key="game.gameId">
             <similar-game
               :imageUrl="game.downloadURL"
               :title="game.title"
@@ -236,6 +196,7 @@ import Rating from "../components/game-details/Rating";
 import UserReview from "../components/game-details/UserReview";
 import SimilarGame from "../components/game-details/SimilarGame";
 import firebase from "firebase";
+
 export default {
   components: {
     Rating,
@@ -292,17 +253,11 @@ export default {
         var similar = [];
         this.game.categories.forEach((thisCategory) => {
           this.games.forEach((game) => {
-            if (
-              game.categories.includes(thisCategory) &&
-              this.game.gameId !== game.gameId &&
-              !similar.includes(game)
-            ) {
+            if (game.categories.includes(thisCategory) && this.game.gameId !== game.gameId && !similar.includes(game)) {
               similar.push(game);
             }
           });
         });
-        // TODO
-        // Sort the similar games based on score
         return similar;
       }
     },
@@ -329,9 +284,7 @@ export default {
   },
   mounted() {
     let wrapperHeight = document.getElementById("details-wrapper").offsetHeight;
-    document
-      .getElementById("similar")
-      .setAttribute("style", "height:" + wrapperHeight + "px");
+    document.getElementById("similar").setAttribute("style", "height:" + wrapperHeight + "px");
   },
   methods: {
     getCurrentDate() {
@@ -342,8 +295,7 @@ export default {
       let gameId = this.$route.params.gameId;
       db.collection("reviews")
         .doc(gameId)
-        .onSnapshot(function(doc) {
-          console.log("re", doc.data());
+        .onSnapshot(function (doc) {
           this.reviewsArray = doc.data();
         });
     },
@@ -357,9 +309,7 @@ export default {
       this.$router.push(`../../../games/${game.title}`);
     },
     addFavorite() {
-      console.log(
-        `Adding ${this.game.gameId} to favorite games for ${this.user.data.displayName}`
-      );
+      console.log(`Adding ${this.game.gameId} to favorite games for ${this.user.data.displayName}`);
       this.$store.dispatch("addFavorite", {
         gameId: this.game.gameId,
         title: this.game.title,
@@ -395,11 +345,11 @@ export default {
             .update({
               reviews: firebase.firestore.FieldValue.arrayUnion(newReview),
             })
-            .then(function(doc) {
+            .then(function (doc) {
               console.log(`Review Added`);
               vm.$store.dispatch("addReview", newReview);
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.log("Error adding review:", error);
             });
         } else {
@@ -454,7 +404,7 @@ span {
   color: white;
 }
 #similar {
-  /* max-height: 600px; */
+  /* max-height: 60s0px; */
   /* height: inherit; */
   overflow-y: auto;
 }

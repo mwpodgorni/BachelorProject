@@ -70,10 +70,8 @@
                 </div>
               </div>
               <div class="form-group row my-0 py-0">
-                <div class="col text-center mt-2">
-                  <router-link to="login" class="my-0 py-0" id="login-link"
-                    >Already have an account?</router-link
-                  >
+                <div class="col text-center mt-3">
+                  <router-link to="login" id="login-link">Already have an account?</router-link>
                 </div>
               </div>
             </form>
@@ -86,6 +84,7 @@
 
 <script>
 import firebase from "firebase";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Register",
@@ -94,6 +93,9 @@ export default {
       user: { username: "", email: "", password: "", confirmPassword: "" },
       error: null,
     };
+  },
+  computed: {
+    ...mapGetters({ loggedInUser: "user" }),
   },
   methods: {
     register() {
@@ -107,16 +109,14 @@ export default {
                 displayName: this.user.username,
               })
               .then(() => {
-                db.collection("users")
-                  .doc(res.user.uid)
-                  .set({
-                    userId: res.user.uid,
-                    displayName: this.user.username,
-                    recentlyPlayed: [],
-                    suggestions: [],
-                    friends: [],
-                    invitations: [],
-                  });
+                db.collection("users").doc(res.user.uid).set({
+                  userId: res.user.uid,
+                  displayName: this.user.username,
+                  recentlyPlayed: [],
+                  suggestions: [],
+                  friends: [],
+                  invitations: [],
+                });
                 this.$router.push({ name: "profile" });
               });
           })
@@ -138,6 +138,13 @@ export default {
 }
 
 .card-header h3 {
+  color: white;
+}
+#login-link {
+  text-decoration: none;
+  color: #848899;
+}
+#login-link:hover {
   color: white;
 }
 </style>
